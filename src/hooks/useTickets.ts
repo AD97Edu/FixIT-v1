@@ -81,7 +81,7 @@ export const useCreateTicket = () => {
           : 'low';
         
         // Verificar que status sea uno de los valores permitidos
-        const validStatuses = ['open', 'in_progress', 'resolved', 'closed'];
+        const validStatuses = ['open', 'in_progress', 'resolved'];
         const status = validStatuses.includes(ticket.status as Status) 
           ? ticket.status 
           : 'open';

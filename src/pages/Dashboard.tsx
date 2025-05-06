@@ -35,7 +35,6 @@ const STATUS_COLORS: Record<Status, string> = {
   open: '#3b82f6', // blue-500
   in_progress: '#f59e0b', // amber-500
   resolved: '#10b981', // emerald-500
-  closed: '#6b7280', // gray-500
 };
 
 const CATEGORY_COLORS: Record<Category, string> = {
@@ -67,7 +66,6 @@ const Dashboard = () => {
     const openTickets = tickets.filter(t => t.status === "open").length;
     const inProgressTickets = tickets.filter(t => t.status === "in_progress").length;
     const resolvedTickets = tickets.filter(t => t.status === "resolved").length;
-    const closedTickets = tickets.filter(t => t.status === "closed").length;
     const highPriorityTickets = tickets.filter(t => t.priority === "high").length;
     
     // Tickets creados esta semana
@@ -88,7 +86,6 @@ const Dashboard = () => {
       { name: 'Open', value: openTickets, color: STATUS_COLORS.open },
       { name: 'In Progress', value: inProgressTickets, color: STATUS_COLORS.in_progress },
       { name: 'Resolved', value: resolvedTickets, color: STATUS_COLORS.resolved },
-      { name: 'Closed', value: closedTickets, color: STATUS_COLORS.closed }
     ].filter(item => item.value > 0); // Solo mostramos estados con tickets
     
     // Preparar datos para gráfico de tickets diarios esta semana
@@ -112,7 +109,7 @@ const Dashboard = () => {
         try {
           const updatedDate = parseISO(ticket.updatedAt);
           return format(updatedDate, 'E') === day && 
-                 (ticket.status === 'resolved' || ticket.status === 'closed');
+                 (ticket.status === 'resolved' );
         } catch (e) {
           return false;
         }
@@ -189,7 +186,7 @@ const Dashboard = () => {
     // NUEVA VISUALIZACIÓN 2: Tiempos de resolución por prioridad
     // Solo consideramos tickets resueltos o cerrados
     const resolvedOrClosedTickets = tickets.filter(ticket => 
-      ticket.status === 'resolved' || ticket.status === 'closed'
+      ticket.status === 'resolved'
     );
     
     // Calculamos tiempos de resolución (en horas) para cada ticket
