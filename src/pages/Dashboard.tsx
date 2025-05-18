@@ -474,22 +474,6 @@ const Dashboard = () => {
           className="shadow-md hover:shadow-lg transition-shadow bg-white"
         />
       </div>
-      
-      {/* Tickets recientes */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-800">{t('recentActivity')}</h2>
-        {dashboardData.recentTickets.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {dashboardData.recentTickets.map(ticket => (
-              <TicketCard key={ticket.id} ticket={ticket} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8 bg-white rounded-lg shadow-md">
-            <p className="text-gray-600">{t('noData')}</p>
-          </div>
-        )}
-      </div>
     </div>
   );
 };
