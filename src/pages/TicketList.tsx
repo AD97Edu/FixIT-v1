@@ -86,7 +86,6 @@ const TicketList = () => {
               <SelectItem value="open">{t('status_open')}</SelectItem>
               <SelectItem value="in_progress">{t('status_in_progress')}</SelectItem>
               <SelectItem value="resolved">{t('status_resolved')}</SelectItem>
-              <SelectItem value="closed">{t('status_closed')}</SelectItem>
             </SelectContent>
           </Select>
 

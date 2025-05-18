@@ -1,6 +1,6 @@
 export type Priority = "low" | "medium" | "high" | "info";
 
-export type Status = "open" | "in_progress" | "resolved" | "closed";
+export type Status = "open" | "in_progress" | "resolved";
 
 export type Category = "technical" | "billing" | "account" | "other";
 

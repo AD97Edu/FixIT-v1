@@ -203,27 +203,31 @@ export function AppSidebar({ hideHeader, inSheet = false, collapsed = false }: A
             )}
           </div>
         )}
-        
+
         {/* Navegación */}
         <div className={cn(
-          "p-2 flex-1",
+          "p-2 flex-1 flex flex-col",
           collapsed ? "px-1" : "p-4"
         )}>
           {!collapsed && (
             <div className="mb-4 text-sm font-medium text-gray-500 px-2">{t('navigation')}</div>
           )}
-          <nav className="space-y-2">
+          <nav className="space-y-2 flex-1 flex flex-col">
             {navItems.map((item) => (
               <NavItem key={item.path} item={item} />
             ))}
-            
             {/* Añadimos el selector de idioma antes del botón de logout */}
             <LanguageSelector collapsed={collapsed} inSheet={inSheet} />
-            
-            <LogoutButton />
           </nav>
+          {/* Botón de logout siempre abajo */}
+          <div className={cn(
+            "mt-auto pt-2",
+            collapsed ? "flex justify-center" : ""
+          )}>
+            <LogoutButton />
+          </div>
         </div>
-        
+
         {/* Footer - solo visible si no está colapsado */}
         {!collapsed && (
           <div className="p-4 border-t border-gray-100 text-xs text-center text-gray-500">
