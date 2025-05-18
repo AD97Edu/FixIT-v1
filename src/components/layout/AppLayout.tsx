@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppSidebar } from './AppSidebar';
 import { Menu, ArrowLeftToLine, ArrowRightToLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,17 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children }: AppLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
@@ -47,7 +58,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       {/* Contenido principal */}
       <div className="flex-1 flex flex-col overflow-auto bg-gradient-to-br from-blue-50/40 to-slate-50">
         {/* Header con botón hamburguesa (visible en móvil y escritorio) */}
-        <header className="flex items-center p-4 border-b bg-white/80 backdrop-blur-sm">
+        <header className={`sticky top-0 z-50 flex items-center p-4 border-b bg-white/80 backdrop-blur-sm transition-all duration-200 ${isScrolled ? 'opacity-70' : 'opacity-100'}`}>
           {/* Mobile burger menu */}
           <div className="md:hidden">
             <Sheet>
