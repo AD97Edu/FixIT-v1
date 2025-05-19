@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { ArrowDownAZ, ArrowUpAZ, Plus, Search, SortAsc, SortDesc } from "lucide-react";
 import { useTickets } from "@/hooks/useTickets";
 import { useLanguage } from "@/hooks/useLanguage";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 // Opciones de ordenamiento
 type SortOption = "newest" | "oldest";
@@ -19,6 +20,8 @@ const TicketList = () => {
   const [statusFilter, setStatusFilter] = useState<Status | "all">("open"); // Por defecto: "open"
   const [priorityFilter, setPriorityFilter] = useState<Priority | "all">("all");
   const [sortBy, setSortBy] = useState<SortOption>("newest"); // Por defecto: ordenar por más recientes
+  const [currentPage, setCurrentPage] = useState(1);
+  const TICKETS_PER_PAGE = 18;
   
   // Aplicar filtros y ordenar
   const filteredAndSortedTickets = useMemo(() => {
@@ -45,6 +48,20 @@ const TicketList = () => {
       }
     });
   }, [tickets, searchTerm, statusFilter, priorityFilter, sortBy]);
+
+  // Calcular el total de páginas
+  const totalPages = Math.ceil(filteredAndSortedTickets.length / TICKETS_PER_PAGE);
+
+  // Obtener los tickets para la página actual
+  const paginatedTickets = filteredAndSortedTickets.slice(
+    (currentPage - 1) * TICKETS_PER_PAGE,
+    currentPage * TICKETS_PER_PAGE
+  );
+
+  // Cambiar de página
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   if (isLoading) {
     return <div className="text-center py-12">{t('loading')}...</div>;
@@ -138,9 +155,9 @@ const TicketList = () => {
       </div>
       
       {/* Ticket List */}
-      {filteredAndSortedTickets.length > 0 ? (
+      {paginatedTickets.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredAndSortedTickets.map(ticket => (
+          {paginatedTickets.map(ticket => (
             <TicketCard key={ticket.id} ticket={ticket} />
           ))}
         </div>
@@ -156,6 +173,38 @@ const TicketList = () => {
               {t('createTicket')}
             </Button>
           </Link>
+        </div>
+      )}
+
+      {/* Paginación */}
+      {totalPages > 1 && (
+        <div className="mt-8 flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                  className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    isActive={currentPage === i + 1}
+                    onClick={() => handlePageChange(i + 1)}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                  className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       )}
     </div>
