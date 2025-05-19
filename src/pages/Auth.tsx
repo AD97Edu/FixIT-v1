@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,29 +43,34 @@ const Auth = () => {
         if (error) throw error;
         toast.success("Signed up successfully! Please check your email for verification.");
       }
-    } catch (error: any) {
-      toast.error(error.message);
+  } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 relative" style={{ backgroundImage: 'url(/render-background.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="absolute inset-0 bg-black/40 z-0" />
+      <Card className="w-full max-w-md z-10">
+        <div className="flex justify-center pt-6">
+          <img src="/Fixit-LOGO.png" alt="Fixit Logo" className="h-20" />
+        </div>
         <CardHeader>
-          <CardTitle>{isLogin ? "Login" : "Sign Up"}</CardTitle>
+          <CardTitle>{isLogin ? "Inicio de sesión" : "Registro de cuenta"}</CardTitle>
           <CardDescription>
             {isLogin
-              ? "Welcome back! Please log in to your account"
-              : "Create a new account to get started"}
+              ? "Bienvenido! Por favor, inicia sesión en tu cuenta"
+              : "Crea una nueva cuenta para comenzar a usar Fixit."}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
               <div className="space-y-1">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName">Nombre completo</Label>
                 <Input
                   id="fullName"
                   placeholder="John Doe"
@@ -77,12 +81,12 @@ const Auth = () => {
               </div>
             )}
             <div className="space-y-1">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Correo electrónico</Label>
               <div className="relative">
                 <Input
                   id="email"
                   type="email"
-                  placeholder="name@example.com"
+                  placeholder="nombre@ejemplo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -92,12 +96,12 @@ const Auth = () => {
               </div>
             </div>
             <div className="space-y-1">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Contraseña</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder="Introduce tu contraseña"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -118,7 +122,7 @@ const Auth = () => {
               </div>
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Loading..." : isLogin ? "Login" : "Sign Up"}
+              {isLoading ? "Cargando..." : isLogin ? "Entrar" : "Registrarse"}
             </Button>
           </form>
           <div className="mt-4 text-center">
@@ -128,8 +132,8 @@ const Auth = () => {
               className="text-sm text-primary hover:underline"
             >
               {isLogin
-                ? "Don't have an account? Sign up"
-                : "Already have an account? Login"}
+                ? "No tienes una cuenta? Regístrate"
+                : "Ya tienes una cuenta? Inicia sesión"}
             </button>
           </div>
         </CardContent>

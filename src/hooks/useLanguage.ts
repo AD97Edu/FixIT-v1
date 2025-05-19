@@ -350,6 +350,7 @@ export function useLanguage() {
     if (lng === 'en' || lng === 'es') {
       setCurrentLanguage(lng);
       localStorage.setItem('language', lng);
+      window.location.reload(); // Recarga la página al cambiar el idioma
     }
   };
 
