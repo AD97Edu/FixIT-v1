@@ -22,7 +22,8 @@ const transformTicketData = (ticket: any): Ticket => {
     createdAt: ticket.created_at,
     updatedAt: ticket.updated_at,
     assignedTo: ticket.assigned_to,
-    submittedBy: ticket.submitted_by
+    submittedBy: ticket.submitted_by,
+    imageUrls: Array.isArray(ticket.image_urls) ? ticket.image_urls : [] // Garantiza que siempre es un array
   };
 };
 
@@ -61,8 +62,16 @@ export const useCreateTicket = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (ticket: Omit<Ticket, 'id' | 'createdAt' | 'updatedAt' | 'shortId'>) => {
-      console.log("Creating ticket with data:", ticket); // Para depuración
+    mutationFn: async (ticketData: {
+      title: string; 
+      description: string; 
+      category: string; 
+      status: string; 
+      priority: string;
+      userId: string;
+      imageUrls?: string[]; // Añadimos campo para URLs de imágenes
+    }) => {
+      console.log("Creating ticket with data:", ticketData); // Para depuración
       
       try {
         // Primero, verificamos si podemos obtener el perfil del usuario
@@ -76,27 +85,27 @@ export const useCreateTicket = () => {
         // Asegurarnos de que los valores enviados sean permitidos en la base de datos
         // Verificar que priority sea uno de los valores permitidos
         const validPriorities = ['low', 'medium', 'high', 'critical', 'por asignar'];
-        const priority = validPriorities.includes(ticket.priority) 
-          ? ticket.priority 
+        const priority = validPriorities.includes(ticketData.priority) 
+          ? ticketData.priority 
           : 'low';
         
         // Verificar que status sea uno de los valores permitidos
         const validStatuses = ['open', 'in_progress', 'resolved'];
-        const status = validStatuses.includes(ticket.status as Status) 
-          ? ticket.status 
+        const status = validStatuses.includes(ticketData.status as Status) 
+          ? ticketData.status 
           : 'open';
           
         // Intentamos crear el ticket
         const { data, error } = await supabase
           .from('tickets')
           .insert({
-            title: ticket.title,
-            description: ticket.description,
+            title: ticketData.title,
+            description: ticketData.description,
             priority: priority,
             status: status,
-            category: ticket.category,
+            category: ticketData.category,
             submitted_by: authData.session.user.id, // Usar directamente el ID del usuario autenticado
-            assigned_to: ticket.assignedTo
+            image_urls: ticketData.imageUrls || [] // Añadimos las URLs de las imágenes
           })
           .select()
           .single();

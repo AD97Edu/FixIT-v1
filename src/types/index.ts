@@ -16,6 +16,7 @@ export interface Ticket {
   updatedAt: string;
   assignedTo?: string;
   submittedBy: string;
+  imageUrls: string[]; // URLs de imágenes adjuntas (no opcional para evitar problemas)
 }
 
 export interface User {

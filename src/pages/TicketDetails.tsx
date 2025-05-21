@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import StatusBadge from "@/components/tickets/StatusBadge";
 import PriorityBadge from "@/components/tickets/PriorityBadge";
-import { AlertTriangle, ArrowLeft, Calendar, Check, Edit2, FileText, MessageCircle, MoreHorizontal, User, X } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Calendar, Check, Edit2, FileText, Image as ImageIcon, MessageCircle, MoreHorizontal, User, X } from "lucide-react";
 import { toast } from "sonner";
 import { useTicket, useUpdateTicketStatus, useUpdateTicketPriority } from "@/hooks/useTickets";
 import { useComments, useAddComment, useEditComment } from "@/hooks/useComments";
@@ -217,13 +217,38 @@ const TicketDetails = () => {
             )}
           </div>
         </CardHeader>
-        <CardContent>
-          <h3 className="font-medium mb-2">Description</h3>
+        <CardContent>          <h3 className="font-medium mb-2">Description</h3>
           <p className="whitespace-pre-line">{ticket.description}</p>
+          
+          {/* Imágenes adjuntas */}
+          {ticket.imageUrls && ticket.imageUrls.length > 0 && (
+            <div className="mt-6">
+              <h3 className="font-medium mb-3 flex items-center">
+                <ImageIcon className="mr-2 h-5 w-5" />
+                Attached Images
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {ticket.imageUrls.map((imageUrl, index) => (
+                  <div key={index} className="relative group">
+                    <a href={imageUrl} target="_blank" rel="noopener noreferrer">
+                      <div className="aspect-square rounded-md overflow-hidden border border-gray-200 hover:border-primary transition-colors w-20">
+                        <img 
+                          src={imageUrl} 
+                          alt={`Attached image ${index + 1}`} 
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="mb-6">
         <CardHeader>
           <div className="flex justify-between items-center">
             <CardTitle className="text-xl">

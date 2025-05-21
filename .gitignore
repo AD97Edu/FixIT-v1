@@ -7,7 +7,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+supabase
 supabase_schema.sql
+docs
 
 node_modules
 dist

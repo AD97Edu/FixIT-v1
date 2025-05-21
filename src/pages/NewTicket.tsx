@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,8 +14,10 @@ import { useCreateTicket } from "@/hooks/useTickets";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { tryCreateTicket, checkTicketsSchema } from "@/diagnostics/checkSchema";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, X, Upload, Image as ImageIcon } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
+import { v4 as uuidv4 } from 'uuid';
+import { uploadTicketImage, moveTicketImages } from "@/services/storage";
 
 const formSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(100),
@@ -29,6 +31,12 @@ const NewTicket = () => {
   const { mutate: createTicket, isPending, isError, error } = useCreateTicket();
   const { user } = useAuth();
   const [showDiagnosticHelp, setShowDiagnosticHelp] = useState(false);
+  
+  // Estados para la gestión de imágenes
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [tempId] = useState(`temp-${uuidv4()}`); // ID temporal para subir imágenes
   
   // Ejecutamos el diagnóstico cuando se monta el componente
   useEffect(() => {
@@ -52,28 +60,84 @@ const NewTicket = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  // Manejador para seleccionar imágenes
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const filesArray = Array.from(event.target.files);
+      
+      // Verificar el tamaño máximo (2MB por archivo)
+      const validFiles = filesArray.filter(file => {
+        if (file.size > 2 * 1024 * 1024) {
+          toast.error(`El archivo ${file.name} excede el tamaño máximo permitido (2MB)`);
+          return false;
+        }
+        return true;
+      });
+      
+      setSelectedImages(prev => [...prev, ...validFiles]);
+    }
+  };
+
+  // Manejador para eliminar una imagen
+  const handleRemoveImage = (index: number) => {
+    setSelectedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Subir imágenes a Supabase Storage
+  const uploadImages = async (): Promise<string[]> => {
+    if (selectedImages.length === 0) return [];
+    
+    setIsUploadingImages(true);
+    
+    try {
+      const uploadPromises = selectedImages.map(file => 
+        uploadTicketImage(file, tempId)
+      );
+      
+      const urls = await Promise.all(uploadPromises);
+      setImageUrls(urls);
+      return urls;
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      toast.error("Error al subir las imágenes. Intente nuevamente.");
+      return [];
+    } finally {
+      setIsUploadingImages(false);
+    }
+  };
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!user) {
       toast.error("You need to be logged in to create a ticket");
       return;
     }
     
-    createTicket({
-      ...values,
-      userId: user.id,
-      status: "open",
-      priority: "info", // Por defecto, será asignado por un administrador
-    }, {
-      onSuccess: () => {
-        toast.success("Ticket created successfully!");
-        navigate("/tickets");
-      },
-      onError: (error) => {
-        console.error("Error creating ticket:", error);
-        toast.error("Failed to create ticket. Please try again.");
-        setShowDiagnosticHelp(true);
-      }
-    });
+    try {
+      // Primero subimos las imágenes
+      const uploadedImageUrls = await uploadImages();
+      
+      // Luego creamos el ticket con las URLs de las imágenes
+      createTicket({
+        ...values,
+        userId: user.id,
+        status: "open",
+        priority: "info", // Por defecto, será asignado por un administrador
+        imageUrls: uploadedImageUrls
+      }, {
+        onSuccess: (ticket) => {
+          toast.success("Ticket created successfully!");
+          navigate("/tickets");
+        },
+        onError: (error) => {
+          console.error("Error creating ticket:", error);
+          toast.error("Failed to create ticket. Please try again.");
+          setShowDiagnosticHelp(true);
+        }
+      });
+    } catch (error) {
+      console.error("Error in form submission:", error);
+      toast.error("An error occurred while submitting the form");
+    }
   };
 
   return (
@@ -153,8 +217,7 @@ const NewTicket = () => {
                   )}
                 />
               </div>
-              
-              <FormField
+                <FormField
                 control={form.control}
                 name="description"
                 render={({ field }) => (
@@ -175,6 +238,66 @@ const NewTicket = () => {
                 )}
               />
               
+              {/* Campo para subir imágenes */}
+              <div className="space-y-3">
+                <div className="flex flex-col">
+                  <FormLabel htmlFor="image-upload">{t('attachImages')}</FormLabel>
+                  <FormDescription>
+                    {t('uploadImagesDesc')}
+                  </FormDescription>
+                  
+                  <div className="mt-2">
+                    <label htmlFor="image-upload" className="cursor-pointer">
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:bg-gray-50 transition-colors">
+                        <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                        <p className="mt-2 text-sm text-gray-600">
+                          {t('clickToUpload')}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          PNG, JPG, GIF {t('upTo')} 2MB
+                        </p>
+                      </div>
+                      <Input 
+                        id="image-upload" 
+                        type="file" 
+                        accept="image/*" 
+                        className="hidden" 
+                        multiple 
+                        onChange={handleImageSelect}
+                      />
+                    </label>
+                  </div>
+                </div>
+                
+                {/* Vista previa de las imágenes seleccionadas */}
+                {selectedImages.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="text-sm font-medium mb-2">{t('selectedImages')} ({selectedImages.length})</h4>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                      {selectedImages.map((file, index) => (
+                        <div key={index} className="relative group">
+                          <div className="aspect-square rounded-md overflow-hidden border border-gray-200">
+                            <img 
+                              src={URL.createObjectURL(file)} 
+                              alt={`Preview ${index}`} 
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImage(index)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md opacity-90 hover:opacity-100"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                          <p className="text-xs mt-1 truncate">{file.name}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              
               <div className="flex justify-end gap-3">
                 <Button 
                   type="button" 
@@ -183,8 +306,11 @@ const NewTicket = () => {
                 >
                   {t('cancel')}
                 </Button>
-                <Button type="submit" disabled={isPending}>
-                  {isPending ? t('submitting') : t('submit')}
+                <Button 
+                  type="submit" 
+                  disabled={isPending || isUploadingImages}
+                >
+                  {isPending || isUploadingImages ? t('submitting') : t('submit')}
                 </Button>
               </div>
             </form>
