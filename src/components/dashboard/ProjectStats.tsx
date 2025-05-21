@@ -151,10 +151,9 @@ const ProjectStats = ({ tickets, title = "Project Statistics", className }: Proj
           
           <div className="pt-4 border-t">
             <div className="text-sm font-medium mb-2">{t("categoryDistribution")}</div>
-            <div className="space-y-2">
-              {stats.categoriesDistribution.map(cat => (
+            <div className="space-y-2">              {stats.categoriesDistribution.map(cat => (
                 <div key={cat.name} className="flex justify-between items-center">
-                  <div className="text-sm">{t(cat.name.toLowerCase())}</div>
+                  <div className="text-sm">{t(`category_${cat.name.toLowerCase()}`)}</div>
                   <div className="text-sm font-medium">{cat.percentage}%</div>
                 </div>
               ))}
