@@ -196,3 +196,19 @@ export const useUpdateTicketPriority = () => {
     }
   });
 };
+
+export const useRecentTickets = (limit: number = 6) => {
+  return useQuery({
+    queryKey: ['tickets', 'recent', limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('tickets')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (error) throw error;
+      return data.map(transformTicketData) as Ticket[];
+    }
+  });
+};

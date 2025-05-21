@@ -7,7 +7,7 @@ import ResolutionTrend from "@/components/dashboard/ResolutionTrend";
 import CategoryAnalysis from "@/components/dashboard/CategoryAnalysis";
 import ProjectStats from "@/components/dashboard/ProjectStats";
 import { Priority, Status, Category } from "@/types";
-import { useTickets } from "@/hooks/useTickets";
+import { useTickets, useRecentTickets } from "@/hooks/useTickets";
 import { useLanguage } from "@/hooks/useLanguage";
 import { 
   BarChart, 
@@ -54,6 +54,7 @@ const PRIORITY_COLORS: Record<Priority, string> = {
 const Dashboard = () => {
   const { t } = useLanguage();
   const { data: tickets = [], isLoading } = useTickets();
+  const { data: recentTickets = [], isLoading: isLoadingRecent } = useRecentTickets(6);
   
   // Calculamos el inicio y fin de la semana actual
   const now = new Date();
@@ -120,11 +121,9 @@ const Dashboard = () => {
         Created: ticketsCreatedOnDay.length,
         Resolved: ticketsClosedOnDay.length
       };
-    });
-
-    // Obtener tickets recientes (6 en lugar de 3)
+    });    // Obtener tickets recientes (6 tickets más recientes por fecha de creación)
     const recentTickets = [...tickets]
-      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .slice(0, 6);
     
     // NUEVA VISUALIZACIÓN 1: Tickets por categoría a lo largo del tiempo (últimas 7 días)
@@ -276,8 +275,7 @@ const Dashboard = () => {
       highPriorityTrend
     };
   }, [tickets, startOfCurrentWeek, endOfCurrentWeek]);
-
-  if (isLoading) {
+  if (isLoading || isLoadingRecent) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
         <div className="text-center">
@@ -291,41 +289,24 @@ const Dashboard = () => {
   return (
     <div className="space-y-6 pb-8">
       <h1 className="text-3xl font-bold text-gray-800">{t('dashboard')}</h1>
-      
-      {/* Estadísticas básicas y resumen del proyecto */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <StatusCard 
-            title={t('tickets')} 
-            value={tickets.length} 
-            icon={<FileText className="h-5 w-5" />} 
-            className="shadow-md hover:shadow-lg transition-shadow bg-white"
-            trend={{
-              value: dashboardData.weeklyTicketsTrend,
-              label: `${t('vs')} ${t('lastWeek')}`,
-              positive: dashboardData.weeklyTicketsTrend >= 0
-            }}
-          />
-          <StatusCard 
-            title={t('openTickets')} 
-            value={dashboardData.openTickets} 
-            icon={<Clock className="h-5 w-5" />} 
-            className="shadow-md hover:shadow-lg transition-shadow bg-white"
-          />
-          <StatusCard 
-            title={t('highPriorityTickets')} 
-            value={dashboardData.highPriorityTickets} 
-            icon={<AlertTriangle className="h-5 w-5" />}
-            className="shadow-md hover:shadow-lg transition-shadow bg-red-50"
-            trend={{
-              value: dashboardData.highPriorityTrend,
-              label: `${t('vs')} ${t('lastWeek')}`,
-              positive: dashboardData.highPriorityTrend <= 0
-            }}
-          />
-        </div>
-        <div className="lg:col-span-2">
-          <ProjectStats tickets={tickets} title={t('statistics')} className="shadow-md hover:shadow-lg transition-shadow bg-white" />
+        {/* Estadísticas básicas y resumen del proyecto */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">        <div className="lg:col-span-3">
+          <Card className="shadow-md hover:shadow-lg transition-shadow bg-white h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center">
+                <FileText className="h-5 w-5 mr-2" />
+                {t('recentTickets')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 overflow-y-auto max-h-[350px] pr-1">
+                {recentTickets.map((ticket) => (
+                  <TicketCard key={ticket.id} ticket={ticket} />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>        <div className="lg:col-span-2">
+          <ProjectStats tickets={tickets} title={t('statistics')} className="shadow-md hover:shadow-lg transition-shadow bg-white h-full" />
         </div>
       </div>
       
