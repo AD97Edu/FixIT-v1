@@ -17,6 +17,7 @@ const ProjectStats = ({ tickets, title = "Project Statistics", className }: Proj
     if (!tickets.length) {
       return {
         total: 0,
+        inProgressCount: 0,
         avgResolutionDays: 0,
         resolvedLastWeek: 0,
         openPercentage: 0,
@@ -35,19 +36,20 @@ const ProjectStats = ({ tickets, title = "Project Statistics", className }: Proj
     const openTickets = tickets.filter(t => t.status === "open" || t.status === "in_progress");
     const openPercentage = (openTickets.length / total) * 100;
     
+    // Tickets en progreso
+    const inProgressCount = tickets.filter(t => t.status === "in_progress").length;
+    
     // Tickets resueltos en la última semana
     const resolvedLastWeek = tickets.filter(t => {
       try {
         const updatedDate = parseISO(t.updatedAt);
-        return (t.status === "resolved" || t.status === "closed") && 
-               isAfter(updatedDate, lastWeek);
+        return t.status === "resolved" && isAfter(updatedDate, lastWeek);
       } catch (e) {
         return false;
       }
     }).length;
-    
-    // Tiempo medio de resolución (en días)
-    const resolvedTickets = tickets.filter(t => t.status === "resolved" || t.status === "closed");
+      // Tiempo medio de resolución (en días)
+    const resolvedTickets = tickets.filter(t => t.status === "resolved");
     let avgResolutionDays = 0;
     
     if (resolvedTickets.length > 0) {
@@ -96,6 +98,7 @@ const ProjectStats = ({ tickets, title = "Project Statistics", className }: Proj
     
     return {
       total,
+      inProgressCount,
       avgResolutionDays,
       resolvedLastWeek,
       openPercentage: parseFloat(openPercentage.toFixed(1)),
@@ -111,9 +114,19 @@ const ProjectStats = ({ tickets, title = "Project Statistics", className }: Proj
           <Activity className="h-5 w-5 mr-2" />
           {t("projectStatistics")}
         </CardTitle>
-      </CardHeader>
-      <CardContent>
+      </CardHeader>      <CardContent>
         <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <div className="text-sm text-gray-500">{t("totalTickets")}</div>
+              <div className="text-2xl font-bold">{stats.total}</div>
+            </div>
+            <div className="space-y-2">
+              <div className="text-sm text-gray-500">{t("inProgressTickets")}</div>
+              <div className="text-2xl font-bold">{stats.inProgressCount}</div>
+            </div>
+          </div>
+          
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="text-sm text-gray-500">{t("averageResolutionTime")}</div>

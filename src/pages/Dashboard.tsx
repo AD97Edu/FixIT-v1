@@ -54,7 +54,7 @@ const PRIORITY_COLORS: Record<Priority, string> = {
 const Dashboard = () => {
   const { t } = useLanguage();
   const { data: tickets = [], isLoading } = useTickets();
-  const { data: recentTickets = [], isLoading: isLoadingRecent } = useRecentTickets(6);
+  const { data: recentTickets = [], isLoading: isLoadingRecent } = useRecentTickets(10);
   
   // Calculamos el inicio y fin de la semana actual
   const now = new Date();
@@ -80,13 +80,11 @@ const Dashboard = () => {
       } catch (e) {
         return false;
       }
-    });
-
-    // Preparar datos para gráfico de estado
+    });    // Preparar datos para gráfico de estado
     const statusData = [
-      { name: 'Open', value: openTickets, color: STATUS_COLORS.open },
-      { name: 'In Progress', value: inProgressTickets, color: STATUS_COLORS.in_progress },
-      { name: 'Resolved', value: resolvedTickets, color: STATUS_COLORS.resolved },
+      { name: t('status_open'), value: openTickets, color: STATUS_COLORS.open },
+      { name: t('status_in_progress'), value: inProgressTickets, color: STATUS_COLORS.in_progress },
+      { name: t('status_resolved'), value: resolvedTickets, color: STATUS_COLORS.resolved },
     ].filter(item => item.value > 0); // Solo mostramos estados con tickets
     
     // Preparar datos para gráfico de tickets diarios esta semana
@@ -115,11 +113,10 @@ const Dashboard = () => {
           return false;
         }
       });
-      
-      return {
+        return {
         name: day,
-        Created: ticketsCreatedOnDay.length,
-        Resolved: ticketsClosedOnDay.length
+        [t('Created')]: ticketsCreatedOnDay.length,
+        [t('Resolved')]: ticketsClosedOnDay.length
       };
     });    // Obtener tickets recientes (6 tickets más recientes por fecha de creación)
     const recentTickets = [...tickets]
@@ -274,7 +271,7 @@ const Dashboard = () => {
       weeklyTicketsTrend,
       highPriorityTrend
     };
-  }, [tickets, startOfCurrentWeek, endOfCurrentWeek]);
+  }, [tickets, startOfCurrentWeek, endOfCurrentWeek, t]);
   if (isLoading || isLoadingRecent) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
@@ -328,11 +325,10 @@ const Dashboard = () => {
                 >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
+                  <YAxis />                  <Tooltip />
                   <Legend />
-                  <Bar dataKey="Created" fill="#3b82f6" />
-                  <Bar dataKey="Resolved" fill="#10b981" />
+                  <Bar dataKey={t('Created')} fill="#3b82f6" />
+                  <Bar dataKey={t('Resolved')} fill="#10b981" />
                 </BarChart>
               </ResponsiveContainer>
             </div>

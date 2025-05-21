@@ -28,6 +28,7 @@ const translations = {
     "noData": "No data available",
     
     // Dashboard
+    "recentTickets": "Recently created tickets",
     "openTickets": "Open Tickets",
     "inProgressTickets": "In Progress",
     "resolvedTickets": "Resolved",
@@ -154,21 +155,20 @@ const translations = {
     "detailedDescription": "Detailed description of the issue...",
     "provideInformation": "Provide information about the issue you're experiencing",
     "provideRelevantInfo": "Please provide as much relevant information as possible",
-    "submitting": "Submitting...",
-
-    // ProjectStats keys
+    "submitting": "Submitting...",    // ProjectStats keys
     "projectStatistics": "Project Statistics",
+    "totalTickets": "Total Tickets",
     "averageResolutionTime": "Average Resolution Time",
     "unresolvedTickets": "Unresolved Tickets",
     "resolvedLastWeek": "Resolved Last Week",
     "oldestOpenTicket": "Oldest Open Ticket",
     "categoryDistribution": "Category Distribution",
     // For categories, already present: category_technical, category_billing, category_account, category_other
-  },
-  es: {
+  },  es: {
     // Navegación y menú lateral (existentes)
+    "recentTickets": "Tickets abiertos recientemente",
     "navigation": "Navegación",
-    "dashboard": "Panel",
+    "dashboard": "Panel de estadísticas",
     "tickets": "Tickets",
     "newTicket": "Nuevo Ticket",
     "search": "Buscar",
@@ -177,6 +177,8 @@ const translations = {
     "language": "Idioma",
     "en": "Inglés",
     "es": "Español",
+    "Created": "Creados",
+    "Resolved": "Resueltos",
     "quickIssueResolution": "Resolución Rápida de Incidencias",
     "version": "FixIT v1.0",
     
@@ -316,10 +318,9 @@ const translations = {
     "detailedDescription": "Descripción detallada del problema...",
     "provideInformation": "Proporcione información sobre el problema que está experimentando",
     "provideRelevantInfo": "Por favor proporcione toda la información relevante posible",
-    "submitting": "Enviando...",
-
-    // ProjectStats keys
+    "submitting": "Enviando...",    // ProjectStats keys
     "projectStatistics": "Estadísticas del Proyecto",
+    "totalTickets": "Total de Tickets",
     "averageResolutionTime": "Tiempo Medio de Resolución",
     "unresolvedTickets": "Tickets Sin Resolver",
     "resolvedLastWeek": "Resueltos la Última Semana",
