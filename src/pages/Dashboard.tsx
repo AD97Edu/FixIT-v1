@@ -426,35 +426,19 @@ const Dashboard = () => {
       </div>
       
       {/* Tercera fila de gráficos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">        {/* Gráfico de tendencia de resolución */}
-        <Card className="card-enhanced">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center">
-              <TrendingUp className="h-5 w-5 mr-2" />
-              {`${t('ticketTrends')} (14 ${t('days')})`}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px] flex items-center justify-center">
-              <p className="text-muted-foreground">Resolución de tendencias</p>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Gráfico de tendencia de resolución */}        <ResolutionTrend 
+          tickets={tickets} 
+          days={14} 
+          title={`${t('ticketTrends')} (14 ${t('days')})`}
+          className="h-full" 
+        />
         
-        {/* Análisis de categorías */}
-        <Card className="card-enhanced">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center">
-              <Layers className="h-5 w-5 mr-2" />
-              {`${t('priority')} ${t('ticketsByCategory')}`}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px] flex items-center justify-center">
-              <p className="text-muted-foreground">Análisis por categoría</p>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Análisis de categorías */}        <CategoryAnalysis 
+          tickets={tickets} 
+          title={`${t('priority')} ${t('ticketsByCategory')}`}
+          className="h-full" 
+        />
       </div>
     </div>
   );

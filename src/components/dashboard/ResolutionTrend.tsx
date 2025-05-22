@@ -22,7 +22,7 @@ interface ResolutionTrendProps {
   className?: string;
 }
 
-const ResolutionTrend = ({ tickets, days = 30, title = "Resolution Time Trend", className }: ResolutionTrendProps) => {
+const ResolutionTrend: React.FC<ResolutionTrendProps> = ({ tickets, days = 30, title = "Resolution Time Trend", className }) => {
   const trendData = useMemo(() => {
     if (!tickets.length) return [];
 
@@ -33,10 +33,10 @@ const ResolutionTrend = ({ tickets, days = 30, title = "Resolution Time Trend", 
     const daysInterval = eachDayOfInterval({ start: startDate, end: today });
     
     // Mapear cada día a un objeto con fecha y tiempo medio de resolución
-    return daysInterval.map(day => {
-      const dayString = format(day, 'MMM dd');
+    return daysInterval.map(day => {      const dayString = format(day, 'MMM dd');
       
-      // Obtener tickets resueltos en este día      const resolvedTickets = tickets.filter(ticket => {
+      // Obtener tickets resueltos en este día
+      const resolvedTickets = tickets.filter(ticket => {
         try {
           const updatedDate = parseISO(ticket.updatedAt);
           return (
