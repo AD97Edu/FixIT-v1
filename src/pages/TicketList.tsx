@@ -111,12 +111,13 @@ const TicketList = () => {
           >
             <SelectTrigger className="w-full md:w-[140px]">
               <SelectValue placeholder={t('priority')} />
-            </SelectTrigger>
-            <SelectContent>
+            </SelectTrigger>            <SelectContent>
               <SelectItem value="all">{t('all')} {t('priority')}</SelectItem>
+              <SelectItem value="toassign">{t('priority_toassign')}</SelectItem>
               <SelectItem value="low">{t('priority_low')}</SelectItem>
               <SelectItem value="medium">{t('priority_medium')}</SelectItem>
               <SelectItem value="high">{t('priority_high')}</SelectItem>
+              <SelectItem value="critical">{t('priority_critical')}</SelectItem>
               <SelectItem value="info">{t('priority_info')}</SelectItem>
             </SelectContent>
           </Select>

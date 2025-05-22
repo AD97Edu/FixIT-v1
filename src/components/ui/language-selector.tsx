@@ -21,11 +21,10 @@ export function LanguageSelector({ collapsed = false, inSheet = false }: Languag
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        {collapsed ? (
-          <Button
+        {collapsed ? (          <Button
             variant="ghost"
             size="icon"
-            className="w-full flex justify-center items-center p-3 rounded-md hover:bg-gray-100 hover:text-primary/80 transition-colors"
+            className="w-full flex justify-center items-center p-3 rounded-md text-sidebar-foreground hover:bg-sidebar-accent/70 hover:text-sidebar-primary/80 transition-colors"
           >
             <GlobeIcon className="h-5 w-5" />
           </Button>
@@ -33,7 +32,7 @@ export function LanguageSelector({ collapsed = false, inSheet = false }: Languag
           <Button
             variant="ghost"
             className={cn(
-              "w-full flex items-center gap-3 p-3 rounded-md text-gray-600 hover:bg-gray-100 hover:text-primary/80 transition-colors justify-start",
+              "w-full flex items-center gap-3 p-3 rounded-md text-sidebar-foreground hover:bg-sidebar-accent/70 hover:text-sidebar-primary/80 transition-colors justify-start",
               inSheet && "justify-start"
             )}
           >

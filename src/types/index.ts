@@ -1,4 +1,4 @@
-export type Priority = "low" | "medium" | "high" | "info";
+export type Priority = "toassign" | "low" | "medium" | "high" | "critical" | "info";
 
 export type Status = "open" | "in_progress" | "resolved";
 

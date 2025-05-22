@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, AlertTriangle, CheckCircle, Clock, BarChart3, PieChart, Calendar, Layers, Timer } from "lucide-react";
+import { FileText, AlertTriangle, CheckCircle, Clock, BarChart3, PieChart, Calendar, Layers, Timer, TrendingUp } from "lucide-react";
 import StatusCard from "@/components/dashboard/StatusCard";
 import TicketCard from "@/components/tickets/TicketCard";
 import ResolutionTrend from "@/components/dashboard/ResolutionTrend";
@@ -282,10 +282,9 @@ const Dashboard = () => {
       </div>
     );
   }
-
   return (
     <div className="space-y-6 pb-8">
-      <h1 className="text-3xl font-bold text-gray-800">{t('dashboard')}</h1>
+      <h1 className="text-3xl font-bold">{t('dashboard')}</h1>
         {/* Estadísticas básicas y resumen del proyecto */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">        <div className="lg:col-span-3">          <Card className="card-enhanced h-full">
             <CardHeader className="pb-2">

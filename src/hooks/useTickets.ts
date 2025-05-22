@@ -84,7 +84,7 @@ export const useCreateTicket = () => {
         
         // Asegurarnos de que los valores enviados sean permitidos en la base de datos
         // Verificar que priority sea uno de los valores permitidos
-        const validPriorities = ['low', 'medium', 'high', 'critical', 'por asignar'];
+        const validPriorities = ['low', 'medium', 'high', 'critical', 'toassign'];
         const priority = validPriorities.includes(ticketData.priority) 
           ? ticketData.priority 
           : 'low';

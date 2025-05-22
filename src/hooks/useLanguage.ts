@@ -49,13 +49,13 @@ const translations = {
     "category_billing": "Billing",
     "category_account": "Account",
     "category_other": "Other",
-    
-    // Prioridades
+      // Prioridades
     "priority": "Priority",
+    "priority_toassign": "To Assign",
     "priority_high": "High",
     "priority_medium": "Medium",
     "priority_low": "Low",
-    "priority_info": "Information",
+    "priority_critical": "Critical",
     
     // Tiempo
     "today": "Today",
@@ -79,10 +79,24 @@ const translations = {
     "category": "Category",
     "status": "Status",
     "assignedTo": "Assigned To",
+    "submittedBy": "Submitted by",
     "created": "Created",
     "updated": "Updated",
     "comments": "Comments",
+    "attachedImages": "Attached Images",
     "addComment": "Add Comment",
+    "typeCommentHere": "Type your comment here...",
+    "noComments": "No comments yet. Be the first to comment.",
+    
+    // Comment actions and messages
+    "commentEmpty": "Comment cannot be empty",
+    "mustBeLoggedIn": "You must be logged in to comment",
+    "commentAdded": "Comment added successfully",
+    "commentAddFailed": "Failed to add comment. Please try again.",
+    "commentUpdated": "Comment updated successfully",
+    "commentUpdateFailed": "Failed to update comment. Please try again.",
+    "posting": "Posting...",    "postComment": "Post Comment",
+    "edit": "Edit",
     "saveChanges": "Save Changes",
     "cancel": "Cancel",
     "submit": "Submit",
@@ -167,6 +181,11 @@ const translations = {
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
     // For categories, already present: category_technical, category_billing, category_account, category_other
+
+    // Error messages
+    "ticketNotFound": "Ticket Not Found",
+    "ticketNotFoundDesc": "The ticket you're looking for doesn't exist or has been removed.",
+    "returnToTickets": "Return to Tickets",
   },  es: {
     // Navegación y menú lateral (existentes)
     "recentTickets": "Tickets abiertos recientemente",
@@ -200,10 +219,10 @@ const translations = {
     "resolvedTickets": "Resueltos",
     "closedTickets": "Cerrados",
     "highPriorityTickets": "Alta Prioridad",
-    "ticketsThisWeek": "Tickets Esta Semana",
-    "resolutionTime": "Tiempo de Resolución",
+    "ticketsThisWeek": "Tickets creados/resueltos esta semana",
+    "resolutionTime": "Media de tiempo de resolución según prioridad",
     "ticketsByCategory": "Tickets por Categoría",
-    "statusDistribution": "Distribución por Estado",
+    "statusDistribution": "Distribución de tickets según su estado",
     "ticketTrends": "Tendencias de Tickets",
     
     // Status y Categorías
@@ -215,12 +234,13 @@ const translations = {
     "category_billing": "Facturación",
     "category_account": "Cuenta",
     "category_other": "Otro",
-    
-    // Prioridades
+      // Prioridades
     "priority": "Prioridad",
+    "priority_toassign": "Por asignar",
     "priority_high": "Alta",
     "priority_medium": "Media",
     "priority_low": "Baja",
+    "priority_critical": "Crítica",
     "priority_info": "Información",
     
     // Tiempo
@@ -245,10 +265,24 @@ const translations = {
     "category": "Categoría",
     "status": "Estado",
     "assignedTo": "Asignado a",
+    "submittedBy": "Enviado por",
     "created": "Creado",
     "updated": "Actualizado",
     "comments": "Comentarios",
-    "addComment": "Añadir Comentario",
+    "attachedImages": "Imágenes adjuntas",
+    "addComment": "Añadir comentario",
+    "typeCommentHere": "Escribe tu comentario aquí...",
+    "noComments": "Aún no hay comentarios. Sé el primero en comentar.",
+    
+    // Comment actions and messages
+    "commentEmpty": "El comentario no puede estar vacío",
+    "mustBeLoggedIn": "Debes iniciar sesión para comentar",
+    "commentAdded": "Comentario añadido con éxito",
+    "commentAddFailed": "Error al añadir el comentario. Por favor, inténtalo de nuevo.",
+    "commentUpdated": "Comentario actualizado con éxito",
+    "commentUpdateFailed": "Error al actualizar el comentario. Por favor, inténtalo de nuevo.",
+    "posting": "Publicando...",    "postComment": "Publicar Comentario",
+    "edit": "Editar",
     "saveChanges": "Guardar Cambios",
     "cancel": "Cancelar",
     "submit": "Enviar",
@@ -333,6 +367,11 @@ const translations = {
     "darkMode": "Modo Oscuro",
     "lightMode": "Modo Claro",
     // For categories, already present: category_technical, category_billing, category_account, category_other
+
+    // Error messages
+    "ticketNotFound": "Ticket No Encontrado",
+    "ticketNotFoundDesc": "El ticket que buscas no existe o ha sido eliminado.",
+    "returnToTickets": "Volver a Tickets",
   }
 };
 

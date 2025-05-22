@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import StatusBadge from "@/components/tickets/StatusBadge";
 import PriorityBadge from "@/components/tickets/PriorityBadge";
@@ -26,6 +27,7 @@ const TicketDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useLanguage();
   
   const { data: ticket, isLoading: isLoadingTicket } = useTicket(id!);
   const { data: comments = [], isLoading: isLoadingComments } = useComments(id!);
@@ -37,32 +39,29 @@ const TicketDetails = () => {
   const [newComment, setNewComment] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState("");
-  
-  if (isLoadingTicket || isLoadingComments) {
-    return <div className="text-center py-12">Loading...</div>;
+    if (isLoadingTicket || isLoadingComments) {
+    return <div className="text-center py-12">{t('loading')}...</div>;
   }
   
   if (!ticket) {
-    return (
-      <div className="text-center py-12">
+    return (      <div className="text-center py-12">
         <AlertTriangle className="mx-auto h-12 w-12 text-yellow-500" />
-        <h2 className="mt-4 text-2xl font-semibold">Ticket Not Found</h2>
-        <p className="mt-2 text-gray-600">The ticket you're looking for doesn't exist or has been removed.</p>
+        <h2 className="mt-4 text-2xl font-semibold">{t('ticketNotFound')}</h2>
+        <p className="mt-2 text-gray-600">{t('ticketNotFoundDesc')}</p>
         <Button onClick={() => navigate('/tickets')} className="mt-6">
-          Return to Tickets
+          {t('returnToTickets')}
         </Button>
       </div>
     );
   }
   
   const handleAddComment = () => {
-    if (!newComment.trim()) {
-      toast.error("Comment cannot be empty");
+    if (!newComment.trim()) {      toast.error(t("commentEmpty"));
       return;
     }
     
     if (!user) {
-      toast.error("You must be logged in to comment");
+      toast.error(t("mustBeLoggedIn"));
       return;
     }
     
@@ -74,26 +73,24 @@ const TicketDetails = () => {
       userId: user.id,
       userName: userName,
       content: newComment
-    }, {
-      onSuccess: () => {
+    }, {      onSuccess: () => {
         setNewComment("");
-        toast.success("Comment added successfully");
+        toast.success(t("commentAdded"));
       },
       onError: (error) => {
         console.error("Error adding comment:", error);
-        toast.error("Failed to add comment. Please try again.");
+        toast.error(t("commentAddFailed"));
       }
     });
   };
-  
-  const handleStatusChange = (newStatus: Status) => {
+    const handleStatusChange = (newStatus: Status) => {
     updateStatus({ id: ticket.id, status: newStatus }, {
       onSuccess: () => {
-        toast.success(`Ticket status updated to ${newStatus}`);
+        toast.success(t('ticketUpdated'));
       },
       onError: (error) => {
         console.error("Error updating status:", error);
-        toast.error("Failed to update ticket status. Please try again.");
+        toast.error(t('pleaseTryAgain'));
       }
     });
   };
@@ -107,10 +104,9 @@ const TicketDetails = () => {
     setEditingCommentId(null);
     setEditedContent("");
   };
-
   const saveEditedComment = (commentId: string) => {
     if (!editedContent.trim()) {
-      toast.error("Comment cannot be empty");
+      toast.error(t("commentEmpty"));
       return;
     }
 
@@ -118,15 +114,14 @@ const TicketDetails = () => {
       id: commentId,
       content: editedContent,
       ticketId: ticket.id
-    }, {
-      onSuccess: () => {
+    }, {      onSuccess: () => {
         setEditingCommentId(null);
         setEditedContent("");
-        toast.success("Comment updated successfully");
+        toast.success(t("commentUpdated"));
       },
       onError: (error) => {
         console.error("Error updating comment:", error);
-        toast.error("Failed to update comment. Please try again.");
+        toast.error(t("commentUpdateFailed"));
       }
     });
   };
@@ -140,32 +135,29 @@ const TicketDetails = () => {
   
   // Función segura para formatear la fecha
   const formatDate = (dateString: string, pattern: string) => {
-    try {
-      if (!dateString) return "Unknown date";
+    try {      if (!dateString) return t('dateUnknown');
       return format(new Date(dateString), pattern);
     } catch (error) {
       console.error("Error formatting date:", error, dateString);
-      return "Invalid date";
+      return t('invalid');
     }
   };
-  
-  const handlePriorityChange = (newPriority: string) => {
+    const handlePriorityChange = (newPriority: string) => {
     updatePriority({ id: ticket.id, priority: newPriority }, {
       onSuccess: () => {
-        toast.success(`Ticket priority updated to ${newPriority}`);
+        toast.success(t('ticketUpdated'));
       },
       onError: (error) => {
         console.error("Error updating priority:", error);
-        toast.error("Failed to update ticket priority. Please try again.");
+        toast.error(t('pleaseTryAgain'));
       }
     });
   };
   
   return (
-    <div className="max-w-4xl mx-auto">
-      <Link to="/tickets" className="flex items-center text-gray-600 hover:text-gray-900 mb-6">
+    <div className="max-w-4xl mx-auto">      <Link to="/tickets" className="flex items-center text-gray-600 hover:text-gray-900 mb-6">
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Tickets
+        {t('tickets')}
       </Link>
       
       <Card className="mb-6">
@@ -180,34 +172,51 @@ const TicketDetails = () => {
               <CardTitle className="text-2xl">{ticket.title}</CardTitle>
             </div>
             
-            <Select
-              value={ticket.status as Status}
-              onValueChange={(value) => handleStatusChange(value as Status)}
-              disabled={isUpdatingStatus}
-            >
-              <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="Change Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="open">Open</SelectItem>
-                <SelectItem value="in_progress">In Progress</SelectItem>
-                <SelectItem value="resolved">Resolved</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2">              <Select
+                value={ticket.priority}
+                onValueChange={handlePriorityChange}
+                disabled={isUpdatingPriority}
+              >
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder={t('priority')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="toassign">{t('priority_toassign')}</SelectItem>
+                  <SelectItem value="low">{t('priority_low')}</SelectItem>
+                  <SelectItem value="medium">{t('priority_medium')}</SelectItem>
+                  <SelectItem value="high">{t('priority_high')}</SelectItem>
+                  <SelectItem value="critical">{t('priority_critical')}</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Select
+                value={ticket.status as Status}
+                onValueChange={(value) => handleStatusChange(value as Status)}
+                disabled={isUpdatingStatus}
+              >
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder={t('status')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="open">{t('status_open')}</SelectItem>
+                  <SelectItem value="in_progress">{t('status_in_progress')}</SelectItem>
+                  <SelectItem value="resolved">{t('status_resolved')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
-          <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2 text-sm">
-            <div className="flex items-center">
+          <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2 text-sm">            <div className="flex items-center">
               <Calendar className="mr-2 h-4 w-4" />
-              <span>Created: {formatDate(ticket.createdAt, 'MMM d, yyyy')}</span>
+              <span>{t('created')}: {formatDate(ticket.createdAt, 'MMM d, yyyy')}</span>
             </div>
             <div className="flex items-center">
               <FileText className="mr-2 h-4 w-4" />
-              <span>Category: {ticket.category.charAt(0).toUpperCase() + ticket.category.slice(1)}</span>
+              <span>{t('category')}: {t(`category_${ticket.category}`)}</span>
             </div>
             <div className="flex items-center">
               <User className="mr-2 h-4 w-4" />
-              <span>Submitted by: {ticket.submittedBy}</span>
+              <span>{t('submittedBy')}: {ticket.submittedBy}</span>
             </div>
             {assignedUser && (
               <div className="flex items-center">
@@ -217,7 +226,7 @@ const TicketDetails = () => {
             )}
           </div>
         </CardHeader>
-        <CardContent>          <h3 className="font-medium mb-2">Description</h3>
+        <CardContent>          <h3 className="font-medium mb-2">{t('description')}</h3>
           <p className="whitespace-pre-line">{ticket.description}</p>
           
           {/* Imágenes adjuntas */}
@@ -225,7 +234,7 @@ const TicketDetails = () => {
             <div className="mt-6">
               <h3 className="font-medium mb-3 flex items-center">
                 <ImageIcon className="mr-2 h-5 w-5" />
-                Attached Images
+                {t('attachedImages')}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {ticket.imageUrls.map((imageUrl, index) => (
@@ -254,7 +263,7 @@ const TicketDetails = () => {
             <CardTitle className="text-xl">
               <div className="flex items-center gap-2">
                 <MessageCircle className="h-5 w-5" />
-                <span>Comments {comments.length > 0 && `(${comments.length})`}</span>
+                <span>{t('comments')} {comments.length > 0 && `(${comments.length})`}</span>
               </div>
             </CardTitle>
           </div>
@@ -283,10 +292,9 @@ const TicketDetails = () => {
                                   <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                               </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => startEditingComment(comment)}>
+                              <DropdownMenuContent align="end">                                <DropdownMenuItem onClick={() => startEditingComment(comment)}>
                                   <Edit2 className="mr-2 h-4 w-4" />
-                                  Edit
+                                  {t('edit')}
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
@@ -307,10 +315,9 @@ const TicketDetails = () => {
                               size="sm" 
                               variant="outline" 
                               onClick={cancelEditingComment}
-                              disabled={isEditingComment}
-                            >
+                              disabled={isEditingComment}                            >
                               <X className="mr-1 h-3 w-3" />
-                              Cancel
+                              {t('cancel')}
                             </Button>
                             <Button 
                               size="sm" 
@@ -318,7 +325,7 @@ const TicketDetails = () => {
                               disabled={isEditingComment}
                             >
                               <Check className="mr-1 h-3 w-3" />
-                              Save
+                              {t('saveChanges')}
                             </Button>
                           </div>
                         </div>
@@ -332,16 +339,14 @@ const TicketDetails = () => {
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="text-center py-6 text-gray-500">
-              No comments yet. Be the first to comment.
+          ) : (            <div className="text-center py-6 text-gray-500">
+              {t('noComments')}
             </div>
           )}
         </CardContent>
-        <CardFooter className="border-t flex-col items-start pt-4">
-          <h4 className="font-medium mb-2">Add Comment</h4>
+        <CardFooter className="border-t flex-col items-start pt-4">          <h4 className="font-medium mb-2">{t('addComment')}</h4>
           <Textarea 
-            placeholder="Type your comment here..."
+            placeholder={t('typeCommentHere')}
             className="resize-none mb-3"
             rows={3}
             value={newComment}
@@ -353,7 +358,7 @@ const TicketDetails = () => {
               onClick={handleAddComment} 
               disabled={isAddingComment || !newComment.trim()}
             >
-              {isAddingComment ? 'Posting...' : 'Post Comment'}
+              {isAddingComment ? t('posting') : t('postComment')}
             </Button>
           </div>
         </CardFooter>
