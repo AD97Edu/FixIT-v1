@@ -353,7 +353,14 @@ const TicketDetails = () => {
             onChange={(e) => setNewComment(e.target.value)}
             disabled={isAddingComment}
           />
-          <div className="flex justify-end w-full">
+          <div className="flex justify-between w-full">
+            <Button 
+              onClick={() => handleStatusChange("resolved")}
+              disabled={isUpdatingStatus || ticket.status === "resolved"}
+            >
+              <Check className="mr-1 h-4 w-4" />
+              {t('resolveTicket')}
+            </Button>
             <Button 
               onClick={handleAddComment} 
               disabled={isAddingComment || !newComment.trim()}

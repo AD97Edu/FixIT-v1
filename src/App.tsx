@@ -5,6 +5,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { UserRoute } from "@/components/auth/UserRoute";
+import { AdminOnlyRoute } from "@/components/auth/AdminOnlyRoute";
+import { AdminOrAgentRoute } from "@/components/auth/AdminOrAgentRoute";
+import { UserTicketsRoute } from "@/components/auth/UserTicketsRoute";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -38,14 +42,15 @@ const App = () => {
             <div className="min-h-screen bg-background">
               <BrowserRouter>
                 <Routes>
-                  <Route path="/auth" element={<Auth />} />
-                  <Route
+                  <Route path="/auth" element={<Auth />} />                  <Route
                     path="/"
                     element={
                       <ProtectedRoute>
-                        <AppLayout>
-                          <Index />
-                        </AppLayout>
+                        <AdminOrAgentRoute>
+                          <AppLayout>
+                            <Index />
+                          </AppLayout>
+                        </AdminOrAgentRoute>
                       </ProtectedRoute>
                     }
                   />
@@ -58,8 +63,7 @@ const App = () => {
                         </AppLayout>
                       </ProtectedRoute>
                     }
-                  />
-                  <Route
+                  />                  <Route
                     path="/tickets/new"
                     element={
                       <ProtectedRoute>
@@ -68,14 +72,15 @@ const App = () => {
                         </AppLayout>
                       </ProtectedRoute>
                     }
-                  />
-                  <Route
+                  />                  <Route
                     path="/tickets/:id"
                     element={
                       <ProtectedRoute>
-                        <AppLayout>
-                          <TicketDetails />
-                        </AppLayout>
+                        <UserTicketsRoute>
+                          <AppLayout>
+                            <TicketDetails />
+                          </AppLayout>
+                        </UserTicketsRoute>
                       </ProtectedRoute>
                     }
                   />
@@ -86,6 +91,17 @@ const App = () => {
                         <AppLayout>
                           <Profile />
                         </AppLayout>
+                      </ProtectedRoute>
+                    }
+                  />                  <Route
+                    path="/search"
+                    element={
+                      <ProtectedRoute>
+                        <AdminOrAgentRoute>
+                          <AppLayout>
+                            <NotFound />
+                          </AppLayout>
+                        </AdminOrAgentRoute>
                       </ProtectedRoute>
                     }
                   />

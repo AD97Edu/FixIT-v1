@@ -1,6 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Ticket, Status } from "@/types";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { PostgrestError } from "@supabase/supabase-js";
 
 // Función para generar un identificador corto a partir del UUID
 const generateShortId = (id: string): string => {
@@ -28,33 +31,57 @@ const transformTicketData = (ticket: any): Ticket => {
 };
 
 export const useTickets = () => {
+  const { role } = useUserRole();
+  const { user } = useAuth();
+
   return useQuery({
-    queryKey: ['tickets'],
+    queryKey: ['tickets', role, user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('tickets')
-        .select('*')
-        .order('created_at', { ascending: false });
+      // Si el usuario es admin o agent, puede ver todos los tickets
+      // Si el usuario es normal, solo puede ver sus propios tickets
+      let query = supabase.from('tickets').select('*');
+      
+      // Si el usuario es normal (user), filtramos para que solo vea sus propios tickets
+      if (role === 'user' && user?.id) {
+        query = query.eq('submitted_by', user.id);
+      }
+      
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
       return data.map(transformTicketData) as Ticket[];
-    }
+    },
+    enabled: !!user // Solo ejecutar la consulta si hay un usuario autenticado
   });
 };
 
 export const useTicket = (id: string) => {
-  return useQuery({
-    queryKey: ['tickets', id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('tickets')
-        .select('*')
-        .eq('id', id)
-        .single();
+  const { role } = useUserRole();
+  const { user } = useAuth();
 
-      if (error) throw error;
+  return useQuery({
+    queryKey: ['tickets', id, role, user?.id],
+    queryFn: async () => {
+      let query = supabase.from('tickets').select('*').eq('id', id);
+      
+      // Si el usuario es normal (user), verificamos que el ticket le pertenezca
+      if (role === 'user' && user?.id) {
+        query = query.eq('submitted_by', user.id);
+      }
+      
+      const { data, error } = await query.single();
+
+      if (error) {
+        // Si no se encuentra el ticket o no tiene permisos para verlo
+        if (error.code === 'PGRST116') {
+          throw new Error('Ticket not found or you don\'t have permission to view it');
+        }
+        throw error;
+      }
+      
       return transformTicketData(data) as Ticket;
-    }
+    },
+    enabled: !!user && !!id
   });
 };
 
@@ -198,17 +225,26 @@ export const useUpdateTicketPriority = () => {
 };
 
 export const useRecentTickets = (limit: number = 6) => {
+  const { role } = useUserRole();
+  const { user } = useAuth();
+
   return useQuery({
-    queryKey: ['tickets', 'recent', limit],
+    queryKey: ['tickets', 'recent', limit, role, user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('tickets')
-        .select('*')
+      let query = supabase.from('tickets').select('*');
+      
+      // Si el usuario es normal (user), filtramos para que solo vea sus propios tickets
+      if (role === 'user' && user?.id) {
+        query = query.eq('submitted_by', user.id);
+      }
+      
+      const { data, error } = await query
         .order('created_at', { ascending: false })
         .limit(limit);
 
       if (error) throw error;
       return data.map(transformTicketData) as Ticket[];
-    }
+    },
+    enabled: !!user
   });
 };

@@ -11,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { LanguageSelector } from "@/components/ui/language-selector";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useFilteredNavigation } from "@/hooks/useFilteredNavigation";
 
 // Definimos los navItems pero usaremos las traducciones para los títulos
 const navItems = [
@@ -55,6 +56,8 @@ export function AppSidebar({
 	const navigate = useNavigate();
 	const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 	const { t } = useLanguage();
+	// Obtenemos los items de navegación filtrados según el rol del usuario
+	const filteredNavItems = useFilteredNavigation(navItems);
 
 	// Detectar cambios en el tamaño de pantalla
 	useEffect(() => {
@@ -72,8 +75,9 @@ export function AppSidebar({
 			if (error) throw error;
 			toast.success("Logged out successfully");
 			navigate("/auth");
-		} catch (error: any) {
-			toast.error(error.message);
+		} catch (error: unknown) {
+			const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+			toast.error(errorMessage);
 		}
 	};
 
@@ -236,7 +240,7 @@ export function AppSidebar({
 							{t("navigation")}
 						</div>
 					)}<nav className="space-y-2 flex-1 flex flex-col">
-						{navItems.map((item) => (
+						{filteredNavItems.map((item) => (
 							<NavItem key={item.path} item={item} />
 						))}
 						{/* Añadimos el selector de idioma antes del botón de logout */}
