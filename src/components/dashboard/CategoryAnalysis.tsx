@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Ticket, Category, Priority } from "@/types";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Layers } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface CategoryAnalysisProps {
   tickets: Ticket[];
@@ -40,7 +41,7 @@ const CategoryAnalysis = ({ tickets, title = "Category Analysis", className }: C
   };
   
   return (
-    <Card className={className}>
+    <Card className={cn("card-enhanced", className)}>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
           <Layers className="h-5 w-5 mr-2" />
@@ -67,7 +68,7 @@ const CategoryAnalysis = ({ tickets, title = "Category Analysis", className }: C
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <p className="text-sm text-gray-500 mt-2 text-center">
+        <p className="text-sm text-muted-foreground mt-2 text-center">
           Distribución de prioridades en cada categoría de tickets
         </p>
       </CardContent>
@@ -75,4 +76,4 @@ const CategoryAnalysis = ({ tickets, title = "Category Analysis", className }: C
   );
 };
 
-export default CategoryAnalysis; 
+export default CategoryAnalysis;

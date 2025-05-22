@@ -163,6 +163,9 @@ const translations = {
     "resolvedLastWeek": "Resolved Last Week",
     "oldestOpenTicket": "Oldest Open Ticket",
     "categoryDistribution": "Category Distribution",
+    // Theme Toggle
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
     // For categories, already present: category_technical, category_billing, category_account, category_other
   },  es: {
     // Navegación y menú lateral (existentes)
@@ -326,6 +329,9 @@ const translations = {
     "resolvedLastWeek": "Resueltos la Última Semana",
     "oldestOpenTicket": "Ticket Abierto Más Antiguo",
     "categoryDistribution": "Distribución por Categoría",
+    // Theme Toggle
+    "darkMode": "Modo Oscuro",
+    "lightMode": "Modo Claro",
     // For categories, already present: category_technical, category_billing, category_account, category_other
   }
 };

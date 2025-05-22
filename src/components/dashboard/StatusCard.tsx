@@ -13,9 +13,8 @@ interface StatusCardProps {
   };
 }
 
-const StatusCard = ({ title, value, icon, className, trend }: StatusCardProps) => {
-  return (
-    <Card className={cn("transition-all duration-300 hover:translate-y-[-4px]", className)}>
+const StatusCard = ({ title, value, icon, className, trend }: StatusCardProps) => {  return (
+    <Card className={cn("card-enhanced hover:translate-y-[-4px]", className)}>
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
         <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
         <div className="h-6 w-6 text-primary">{icon}</div>
@@ -25,7 +24,9 @@ const StatusCard = ({ title, value, icon, className, trend }: StatusCardProps) =
         {trend && (
           <p className={cn(
             "mt-1 text-xs flex items-center",
-            trend.positive ? "text-green-600" : "text-red-600"
+            trend.positive 
+              ? "text-green-600 dark:text-green-400" 
+              : "text-red-600 dark:text-red-400"
           )}>
             <span className="mr-1">
               {trend.positive ? '↑' : '↓'}

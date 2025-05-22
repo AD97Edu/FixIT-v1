@@ -106,45 +106,41 @@ const ProjectStats = ({ tickets, title = "Project Statistics", className }: Proj
       categoriesDistribution: categoryCounts
     };
   }, [tickets]);
-  
-  return (
-    <Card className={className}>
+    return (
+    <Card className={`card-enhanced ${className || ''}`}>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
           <Activity className="h-5 w-5 mr-2" />
           {t("projectStatistics")}
         </CardTitle>
-      </CardHeader>      <CardContent>
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+      </CardHeader><CardContent>
+        <div className="space-y-4">          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <div className="text-sm text-gray-500">{t("totalTickets")}</div>
+              <div className="text-sm text-muted-foreground">{t("totalTickets")}</div>
               <div className="text-2xl font-bold">{stats.total}</div>
             </div>
             <div className="space-y-2">
-              <div className="text-sm text-gray-500">{t("inProgressTickets")}</div>
+              <div className="text-sm text-muted-foreground">{t("inProgressTickets")}</div>
               <div className="text-2xl font-bold">{stats.inProgressCount}</div>
             </div>
           </div>
-          
-          <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <div className="text-sm text-gray-500">{t("averageResolutionTime")}</div>
+              <div className="text-sm text-muted-foreground">{t("averageResolutionTime")}</div>
               <div className="text-2xl font-bold">{stats.avgResolutionDays} {t("days")}</div>
             </div>
             <div className="space-y-2">
-              <div className="text-sm text-gray-500">{t("unresolvedTickets")}</div>
+              <div className="text-sm text-muted-foreground">{t("unresolvedTickets")}</div>
               <div className="text-2xl font-bold">{stats.openPercentage}%</div>
             </div>
           </div>
-          
-          <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <div className="text-sm text-gray-500">{t("resolvedLastWeek")}</div>
+              <div className="text-sm text-muted-foreground">{t("resolvedLastWeek")}</div>
               <div className="text-2xl font-bold">{stats.resolvedLastWeek}</div>
             </div>
             <div className="space-y-2">
-              <div className="text-sm text-gray-500">{t("oldestOpenTicket")}</div>
+              <div className="text-sm text-muted-foreground">{t("oldestOpenTicket")}</div>
               <div className="text-2xl font-bold">{stats.oldestOpenDays} {t("days")}</div>
             </div>
           </div>

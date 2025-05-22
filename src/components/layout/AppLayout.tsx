@@ -26,13 +26,12 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
   };
-
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar en desktop (plegable) */}
       <div 
         className={cn(
-          "border-r border-gray-200 bg-white transition-all duration-300 ease-in-out hidden md:flex flex-col",
+          "border-r border-sidebar-border bg-sidebar-background transition-all duration-300 ease-in-out hidden md:flex flex-col",
           sidebarCollapsed ? "w-[64px]" : "w-64"
         )}
       >
@@ -44,9 +43,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
           onClick={toggleSidebar}
         >
           {sidebarCollapsed ? (
-            <ArrowRightToLine className="h-5 w-5 text-gray-600" />
+            <ArrowRightToLine className="h-5 w-5 text-sidebar-foreground" />
           ) : (
-            <ArrowLeftToLine className="h-5 w-5 text-gray-600" />
+            <ArrowLeftToLine className="h-5 w-5 text-sidebar-foreground" />
           )}
         </Button>
 
@@ -56,15 +55,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
       </div>
       
       {/* Contenido principal */}
-      <div className="flex-1 flex flex-col overflow-auto bg-gradient-to-br from-blue-50/40 to-slate-50">
+      <div className="flex-1 flex flex-col overflow-auto bg-background">
         {/* Header con botón hamburguesa (visible en móvil y escritorio) */}
-        <header className={`sticky top-0 z-50 flex items-center p-4 border-b bg-white/80 backdrop-blur-sm transition-all duration-200 ${isScrolled ? 'opacity-70' : 'opacity-100'}`}>
+        <header className={`sticky top-0 z-50 flex items-center p-4 border-b border-border bg-background/80 backdrop-blur-sm transition-all duration-200 ${isScrolled ? 'opacity-70' : 'opacity-100'}`}>
           {/* Mobile burger menu */}
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Menu className="h-6 w-6 text-gray-700" />
+                  <Menu className="h-6 w-6 text-foreground" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="p-0 w-full max-w-[280px]">

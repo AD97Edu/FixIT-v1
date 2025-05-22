@@ -68,9 +68,8 @@ const TicketList = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-800">{t('tickets')}</h1>
+    <div className="space-y-6">      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-foreground">{t('tickets')}</h1>
         <Link to="/tickets/new">
           <Button className="gap-2">
             <Plus className="h-4 w-4" />
@@ -82,7 +81,7 @@ const TicketList = () => {
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-grow">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder={`${t('search')} ${t('tickets')}...`}
             className="pl-10"
@@ -146,25 +145,23 @@ const TicketList = () => {
           </Select>
         </div>
       </div>
-      
-      {/* Resultados y estadísticas */}
-      <div className="text-sm text-gray-500">
+        {/* Resultados y estadísticas */}
+      <div className="text-sm text-muted-foreground">
         {t('showing')} {filteredAndSortedTickets.length} {filteredAndSortedTickets.length !== 1 ? t('tickets').toLowerCase() : t('ticket')}
         {statusFilter !== 'all' && ` ${t('withStatus')} "${t(`status_${statusFilter}`)}" `}
         {priorityFilter !== 'all' && ` ${t('andPriority')} "${t(`priority_${priorityFilter}`)}"`}
       </div>
       
-      {/* Ticket List */}
-      {paginatedTickets.length > 0 ? (
+      {/* Ticket List */}      {paginatedTickets.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {paginatedTickets.map(ticket => (
             <TicketCard key={ticket.id} ticket={ticket} />
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-medium text-gray-900">{t('noTicketsFound')}</h3>
-          <p className="text-sm text-gray-600 mt-1">
+        <div className="text-center py-12 bg-muted/50 rounded-lg border border-border">
+          <h3 className="text-lg font-medium text-foreground">{t('noTicketsFound')}</h3>
+          <p className="text-sm text-muted-foreground mt-1">
             {t('adjustFilters')}
           </p>
           <Link to="/tickets/new">

@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { 
   LineChart,
   Line,
@@ -35,12 +36,11 @@ const ResolutionTrend = ({ tickets, days = 30, title = "Resolution Time Trend", 
     return daysInterval.map(day => {
       const dayString = format(day, 'MMM dd');
       
-      // Obtener tickets resueltos en este día
-      const resolvedTickets = tickets.filter(ticket => {
+      // Obtener tickets resueltos en este día      const resolvedTickets = tickets.filter(ticket => {
         try {
           const updatedDate = parseISO(ticket.updatedAt);
           return (
-            (ticket.status === 'resolved' || ticket.status === 'closed') &&
+            ticket.status === 'resolved' &&
             format(updatedDate, 'MMM dd') === dayString
           );
         } catch (e) {
@@ -81,7 +81,7 @@ const ResolutionTrend = ({ tickets, days = 30, title = "Resolution Time Trend", 
   }, [tickets, days]);
   
   return (
-    <Card className={className}>
+    <Card className={cn("card-enhanced", className)}>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
           <TrendingUp className="h-5 w-5 mr-2" />
@@ -99,37 +99,29 @@ const ResolutionTrend = ({ tickets, days = 30, title = "Resolution Time Trend", 
               <XAxis dataKey="date" />
               <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
               <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
-              <Tooltip 
-                formatter={(value, name) => {
-                  if (name === "avgTime") return [`${value} hours`, "Avg. Resolution Time"];
-                  return [`${value} tickets`, "Tickets Resolved"];
-                }} 
-              />
+              <Tooltip />
               <Legend />
-              <Line 
+              <Line
                 yAxisId="left"
-                type="monotone" 
-                dataKey="avgTime" 
-                name="Avg. Resolution Time" 
-                stroke="#8884d8" 
-                activeDot={{ r: 8 }} 
+                type="monotone"
+                dataKey="avgTime"
+                name="Avg. Resolution Time (hrs)"
+                stroke="#8884d8"
+                activeDot={{ r: 8 }}
               />
               <Line 
-                yAxisId="right"
+                yAxisId="right" 
                 type="monotone" 
                 dataKey="count" 
-                name="Tickets Resolved" 
+                name="Tickets Resolved"
                 stroke="#82ca9d" 
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
-        <p className="text-sm text-gray-500 mt-2 text-center">
-          Comparison between average resolution time and tickets resolved
-        </p>
       </CardContent>
     </Card>
   );
 };
 
-export default ResolutionTrend; 
+export default ResolutionTrend;

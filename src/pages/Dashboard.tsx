@@ -287,8 +287,7 @@ const Dashboard = () => {
     <div className="space-y-6 pb-8">
       <h1 className="text-3xl font-bold text-gray-800">{t('dashboard')}</h1>
         {/* Estadísticas básicas y resumen del proyecto */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">        <div className="lg:col-span-3">
-          <Card className="shadow-md hover:shadow-lg transition-shadow bg-white h-full">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">        <div className="lg:col-span-3">          <Card className="card-enhanced h-full">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg flex items-center">
                 <FileText className="h-5 w-5 mr-2" />
@@ -308,8 +307,7 @@ const Dashboard = () => {
       </div>
       
       {/* Primera fila de gráficos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="shadow-md hover:shadow-lg transition-shadow bg-white">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">        <Card className="card-enhanced">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
               <Calendar className="h-5 w-5 mr-2" />
@@ -337,8 +335,7 @@ const Dashboard = () => {
             </p>
           </CardContent>
         </Card>
-        
-        <Card className="shadow-md hover:shadow-lg transition-shadow bg-white">
+          <Card className="card-enhanced">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
               <PieChart className="h-5 w-5 mr-2" />
@@ -373,8 +370,7 @@ const Dashboard = () => {
       
       {/* Segunda fila de gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico de área para categorías */}
-        <Card className="shadow-md hover:shadow-lg transition-shadow bg-white">
+        {/* Gráfico de área para categorías */}        <Card className="card-enhanced">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
               <Layers className="h-5 w-5 mr-2" />
@@ -403,8 +399,7 @@ const Dashboard = () => {
           </CardContent>
         </Card>
         
-        {/* Gráfico de dispersión para tiempos de resolución */}
-        <Card className="shadow-md hover:shadow-lg transition-shadow bg-white">
+        {/* Gráfico de dispersión para tiempos de resolución */}        <Card className="card-enhanced">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
               <Timer className="h-5 w-5 mr-2" />
@@ -432,21 +427,35 @@ const Dashboard = () => {
       </div>
       
       {/* Tercera fila de gráficos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico de tendencia de resolución */}
-        <ResolutionTrend 
-          tickets={tickets} 
-          days={14} 
-          title={`${t('ticketTrends')} (14 ${t('days')})`} 
-          className="shadow-md hover:shadow-lg transition-shadow bg-white"
-        />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">        {/* Gráfico de tendencia de resolución */}
+        <Card className="card-enhanced">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center">
+              <TrendingUp className="h-5 w-5 mr-2" />
+              {`${t('ticketTrends')} (14 ${t('days')})`}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px] flex items-center justify-center">
+              <p className="text-muted-foreground">Resolución de tendencias</p>
+            </div>
+          </CardContent>
+        </Card>
         
         {/* Análisis de categorías */}
-        <CategoryAnalysis 
-          tickets={tickets} 
-          title={`${t('priority')} ${t('ticketsByCategory')}`} 
-          className="shadow-md hover:shadow-lg transition-shadow bg-white"
-        />
+        <Card className="card-enhanced">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center">
+              <Layers className="h-5 w-5 mr-2" />
+              {`${t('priority')} ${t('ticketsByCategory')}`}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px] flex items-center justify-center">
+              <p className="text-muted-foreground">Análisis por categoría</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

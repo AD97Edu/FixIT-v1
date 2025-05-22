@@ -61,7 +61,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 217.2 91.2% 59.8%;
+    --primary: 32.2 83.2% 53.3%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -81,7 +81,7 @@
     --ring: 224.3 76.3% 48%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 32.2 83.2% 53.3%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
@@ -100,9 +100,8 @@
   }
 }
 
-/* App Background */
+/* App Background - theme aware */
 body {
-  background: linear-gradient(to bottom right, #f7fafc, #edf2f7, #e2e8f0);
   min-height: 100vh;
 }
 
@@ -115,12 +114,23 @@ body {
 
 /* Card Enhancements */
 .card-enhanced {
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid hsl(var(--border));
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: box-shadow 0.2s, transform 0.2s;
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
 }
 
 .card-enhanced:hover {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   transform: translateY(-2px);
+}
+
+/* Dark mode card shadows */
+.dark .card-enhanced {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.18);
+}
+
+.dark .card-enhanced:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
 }
