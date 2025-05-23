@@ -31,9 +31,11 @@ const PriorityBadge = ({ priority }: PriorityBadgeProps) => {
   };
 
   return (
-    <Badge className={cn(getPriorityStyles())}>
-      {getPriorityLabel()}
-    </Badge>
+      <div className="mt-1">
+        <Badge className={cn(getPriorityStyles())}>
+          {getPriorityLabel()}
+        </Badge>
+      </div>
   );
 };
 
