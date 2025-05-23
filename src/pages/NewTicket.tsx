@@ -22,7 +22,7 @@ import { uploadTicketImage, moveTicketImages } from "@/services/storage";
 const formSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(100),
   description: z.string().min(10, "Please provide a more detailed description"),
-  category: z.enum(["technical", "billing", "account", "other"]),
+  category: z.enum(["hardware", "software", "network", "email", "access", "mobile", "security", "other"]),
 });
 
 const NewTicket = () => {
@@ -50,13 +50,12 @@ const NewTicket = () => {
     console.log("You can run window.tryCreateTicket() to test ticket creation");
     console.log("Or window.checkTicketsSchema() to check the database schema");
   }, []);
-  
-  const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       description: "",
-      category: "technical",
+      category: "hardware",
     },
   });
 
@@ -121,7 +120,7 @@ const NewTicket = () => {
         ...values,
         userId: user.id,
         status: "open",
-        priority: "info", // Por defecto, será asignado por un administrador
+        priority: "to_assign", // Por defecto, será asignado por un administrador
         imageUrls: uploadedImageUrls
       }, {
         onSuccess: (ticket) => {
@@ -201,11 +200,14 @@ const NewTicket = () => {
                           <SelectTrigger>
                             <SelectValue placeholder={t('selectCategory')} />
                           </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="technical">{t('category_technical')}</SelectItem>
-                          <SelectItem value="billing">{t('category_billing')}</SelectItem>
-                          <SelectItem value="account">{t('category_account')}</SelectItem>
+                        </FormControl>                        <SelectContent>
+                          <SelectItem value="hardware">{t('category_hardware')}</SelectItem>
+                          <SelectItem value="software">{t('category_software')}</SelectItem>
+                          <SelectItem value="network">{t('category_network')}</SelectItem>
+                          <SelectItem value="email">{t('category_email')}</SelectItem>
+                          <SelectItem value="access">{t('category_access')}</SelectItem>
+                          <SelectItem value="mobile">{t('category_mobile')}</SelectItem>
+                          <SelectItem value="security">{t('category_security')}</SelectItem>
                           <SelectItem value="other">{t('category_other')}</SelectItem>
                         </SelectContent>
                       </Select>

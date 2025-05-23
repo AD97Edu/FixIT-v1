@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { toast } from 'sonner';
 
-type UserRole = 'admin' | 'user' | null;
+export type UserRole = 'admin' | 'agent' | 'user' | null;
 
 /**
  * Hook para obtener el rol de un usuario desde la tabla usuario_rol

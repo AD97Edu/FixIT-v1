@@ -22,29 +22,27 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
       console.error("Error formatting date:", error, ticket.createdAt);
       return t('invalid');
     }
-  };
-
-  return (
-    <Card className="shadow-md hover:shadow-lg transition-all duration-300 bg-white border border-gray-100 hover:translate-y-[-4px]">
+  };  return (
+    <Card className="card-enhanced hover:translate-y-[-4px]">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <CardTitle className="text-xl truncate">{ticket.title}</CardTitle>
           <div className="flex items-center">
-            <span className="text-sm text-gray-500 mr-1">{t('priority')}:</span>
+            <span className="text-sm text-muted-foreground mr-1">{t('priority')}:</span>
             <PriorityBadge priority={ticket.priority} />
           </div>
         </div>
         <div className="flex justify-between items-center mt-1">
           <StatusBadge status={ticket.status} />
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-muted-foreground">
             #{ticket.shortId || 'N/A'}
           </span>
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-gray-600 line-clamp-2">{ticket.description}</p>
+        <p className="text-foreground/80 line-clamp-2">{ticket.description}</p>
       </CardContent>
-      <CardFooter className="border-t pt-2 flex justify-between text-xs text-gray-500">
+      <CardFooter className="border-t border-border pt-2 flex justify-between text-xs text-muted-foreground">
         <div>
           {t('created')} {formatCreationDate()}
         </div>

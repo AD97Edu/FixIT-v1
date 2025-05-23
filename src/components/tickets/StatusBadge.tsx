@@ -13,15 +13,13 @@ const StatusBadge = ({ status }: StatusBadgeProps) => {
   const getStatusStyles = () => {
     switch (status) {
       case "open":
-        return "bg-indigo-300 text-black";
+        return "bg-indigo-300 text-black dark:bg-indigo-500 dark:text-white";
       case "in_progress":
-        return "bg-yellow-500 text-white";
+        return "bg-yellow-500 text-black dark:bg-yellow-400 dark:text-black";
       case "resolved":
-        return "bg-green-500 text-white";
-      case "closed":
-        return "bg-gray-500 text-white";
+        return "bg-green-500 text-white dark:bg-green-400 dark:text-black";
       default:
-        return "bg-gray-300";
+        return "bg-gray-300 text-black dark:bg-gray-500 dark:text-white";
     }
   };
 

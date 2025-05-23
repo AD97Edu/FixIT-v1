@@ -1,13 +1,13 @@
 import React, { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, AlertTriangle, CheckCircle, Clock, BarChart3, PieChart, Calendar, Layers, Timer } from "lucide-react";
+import { FileText, AlertTriangle, CheckCircle, Clock, BarChart3, PieChart, Calendar, Layers, Timer, TrendingUp } from "lucide-react";
 import StatusCard from "@/components/dashboard/StatusCard";
 import TicketCard from "@/components/tickets/TicketCard";
 import ResolutionTrend from "@/components/dashboard/ResolutionTrend";
 import CategoryAnalysis from "@/components/dashboard/CategoryAnalysis";
 import ProjectStats from "@/components/dashboard/ProjectStats";
 import { Priority, Status, Category } from "@/types";
-import { useTickets } from "@/hooks/useTickets";
+import { useTickets, useRecentTickets } from "@/hooks/useTickets";
 import { useLanguage } from "@/hooks/useLanguage";
 import { 
   BarChart, 
@@ -38,9 +38,13 @@ const STATUS_COLORS: Record<Status, string> = {
 };
 
 const CATEGORY_COLORS: Record<Category, string> = {
-  technical: '#3b82f6', // blue-500
-  billing: '#f59e0b', // amber-500
-  account: '#10b981', // emerald-500
+  hardware: '#3b82f6', // blue-500
+  software: '#f59e0b', // amber-500
+  network: '#10b981', // emerald-500
+  email: '#8b5cf6', // violet-500
+  access: '#ec4899', // pink-500
+  mobile: '#14b8a6', // teal-500
+  security: '#ef4444', // red-500
   other: '#6b7280', // gray-500
 };
 
@@ -54,6 +58,7 @@ const PRIORITY_COLORS: Record<Priority, string> = {
 const Dashboard = () => {
   const { t } = useLanguage();
   const { data: tickets = [], isLoading } = useTickets();
+  const { data: recentTickets = [], isLoading: isLoadingRecent } = useRecentTickets(10);
   
   // Calculamos el inicio y fin de la semana actual
   const now = new Date();
@@ -79,13 +84,11 @@ const Dashboard = () => {
       } catch (e) {
         return false;
       }
-    });
-
-    // Preparar datos para gráfico de estado
+    });    // Preparar datos para gráfico de estado
     const statusData = [
-      { name: 'Open', value: openTickets, color: STATUS_COLORS.open },
-      { name: 'In Progress', value: inProgressTickets, color: STATUS_COLORS.in_progress },
-      { name: 'Resolved', value: resolvedTickets, color: STATUS_COLORS.resolved },
+      { name: t('status_open'), value: openTickets, color: STATUS_COLORS.open },
+      { name: t('status_in_progress'), value: inProgressTickets, color: STATUS_COLORS.in_progress },
+      { name: t('status_resolved'), value: resolvedTickets, color: STATUS_COLORS.resolved },
     ].filter(item => item.value > 0); // Solo mostramos estados con tickets
     
     // Preparar datos para gráfico de tickets diarios esta semana
@@ -114,17 +117,14 @@ const Dashboard = () => {
           return false;
         }
       });
-      
-      return {
+        return {
         name: day,
-        Created: ticketsCreatedOnDay.length,
-        Resolved: ticketsClosedOnDay.length
+        [t('Created')]: ticketsCreatedOnDay.length,
+        [t('Resolved')]: ticketsClosedOnDay.length
       };
-    });
-
-    // Obtener tickets recientes (6 en lugar de 3)
+    });    // Obtener tickets recientes (6 tickets más recientes por fecha de creación)
     const recentTickets = [...tickets]
-      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .slice(0, 6);
     
     // NUEVA VISUALIZACIÓN 1: Tickets por categoría a lo largo del tiempo (últimas 7 días)
@@ -136,30 +136,29 @@ const Dashboard = () => {
     
     const categoriesByDay = last7Days.map(day => {
       const dayString = format(day, 'MMM dd');
-      
-      // Filtrar tickets creados en este día agrupados por categoría
-      const technical = tickets.filter(ticket => {
+        // Filtrar tickets creados en este día agrupados por categoría
+      const hardware = tickets.filter(ticket => {
         try {
           const createdDate = parseISO(ticket.createdAt);
-          return format(createdDate, 'MMM dd') === dayString && ticket.category === 'technical';
+          return format(createdDate, 'MMM dd') === dayString && ticket.category === 'hardware';
         } catch (e) {
           return false;
         }
       }).length;
       
-      const billing = tickets.filter(ticket => {
+      const software = tickets.filter(ticket => {
         try {
           const createdDate = parseISO(ticket.createdAt);
-          return format(createdDate, 'MMM dd') === dayString && ticket.category === 'billing';
+          return format(createdDate, 'MMM dd') === dayString && ticket.category === 'software';
         } catch (e) {
           return false;
         }
       }).length;
       
-      const account = tickets.filter(ticket => {
+      const network = tickets.filter(ticket => {
         try {
           const createdDate = parseISO(ticket.createdAt);
-          return format(createdDate, 'MMM dd') === dayString && ticket.category === 'account';
+          return format(createdDate, 'MMM dd') === dayString && ticket.category === 'network';
         } catch (e) {
           return false;
         }
@@ -173,12 +172,11 @@ const Dashboard = () => {
           return false;
         }
       }).length;
-      
-      return {
+        return {
         name: dayString,
-        Technical: technical,
-        Billing: billing,
-        Account: account,
+        Hardware: hardware,
+        Software: software,
+        Network: network,
         Other: other
       };
     });
@@ -275,9 +273,8 @@ const Dashboard = () => {
       weeklyTicketsTrend,
       highPriorityTrend
     };
-  }, [tickets, startOfCurrentWeek, endOfCurrentWeek]);
-
-  if (isLoading) {
+  }, [tickets, startOfCurrentWeek, endOfCurrentWeek, t]);
+  if (isLoading || isLoadingRecent) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
         <div className="text-center">
@@ -287,51 +284,34 @@ const Dashboard = () => {
       </div>
     );
   }
-
   return (
     <div className="space-y-6 pb-8">
-      <h1 className="text-3xl font-bold text-gray-800">{t('dashboard')}</h1>
-      
-      {/* Estadísticas básicas y resumen del proyecto */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <StatusCard 
-            title={t('tickets')} 
-            value={tickets.length} 
-            icon={<FileText className="h-5 w-5" />} 
-            className="shadow-md hover:shadow-lg transition-shadow bg-white"
-            trend={{
-              value: dashboardData.weeklyTicketsTrend,
-              label: `${t('vs')} ${t('lastWeek')}`,
-              positive: dashboardData.weeklyTicketsTrend >= 0
-            }}
-          />
-          <StatusCard 
-            title={t('openTickets')} 
-            value={dashboardData.openTickets} 
-            icon={<Clock className="h-5 w-5" />} 
-            className="shadow-md hover:shadow-lg transition-shadow bg-white"
-          />
-          <StatusCard 
-            title={t('highPriorityTickets')} 
-            value={dashboardData.highPriorityTickets} 
-            icon={<AlertTriangle className="h-5 w-5" />}
-            className="shadow-md hover:shadow-lg transition-shadow bg-red-50"
-            trend={{
-              value: dashboardData.highPriorityTrend,
-              label: `${t('vs')} ${t('lastWeek')}`,
-              positive: dashboardData.highPriorityTrend <= 0
-            }}
-          />
-        </div>
-        <div className="lg:col-span-2">
-          <ProjectStats tickets={tickets} title={t('statistics')} className="shadow-md hover:shadow-lg transition-shadow bg-white" />
+      <h1 className="text-3xl font-bold">{t('dashboard')}</h1>
+        {/* Estadísticas básicas y resumen del proyecto */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">        
+        <div className="lg:col-span-3">         
+           <Card className="card-enhanced h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center">
+                <FileText className="h-5 w-5 mr-2" />
+                {t('recentTickets')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 overflow-y-auto max-h-[530px] pr-1">
+                {recentTickets.map((ticket) => (
+                  <TicketCard key={ticket.id} ticket={ticket} />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>        <div className="lg:col-span-2">
+          <ProjectStats tickets={tickets} title={t('statistics')} className="shadow-md hover:shadow-lg transition-shadow bg-white h-full" />
         </div>
       </div>
       
       {/* Primera fila de gráficos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="shadow-md hover:shadow-lg transition-shadow bg-white">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">        <Card className="card-enhanced">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
               <Calendar className="h-5 w-5 mr-2" />
@@ -347,11 +327,10 @@ const Dashboard = () => {
                 >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
+                  <YAxis />                  <Tooltip />
                   <Legend />
-                  <Bar dataKey="Created" fill="#3b82f6" />
-                  <Bar dataKey="Resolved" fill="#10b981" />
+                  <Bar dataKey={t('Created')} fill="#3b82f6" />
+                  <Bar dataKey={t('Resolved')} fill="#10b981" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -360,8 +339,7 @@ const Dashboard = () => {
             </p>
           </CardContent>
         </Card>
-        
-        <Card className="shadow-md hover:shadow-lg transition-shadow bg-white">
+          <Card className="card-enhanced">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
               <PieChart className="h-5 w-5 mr-2" />
@@ -396,8 +374,7 @@ const Dashboard = () => {
       
       {/* Segunda fila de gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico de área para categorías */}
-        <Card className="shadow-md hover:shadow-lg transition-shadow bg-white">
+        {/* Gráfico de área para categorías */}        <Card className="card-enhanced">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
               <Layers className="h-5 w-5 mr-2" />
@@ -414,11 +391,10 @@ const Dashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Area type="monotone" dataKey="Technical" stackId="1" stroke={CATEGORY_COLORS.technical} fill={CATEGORY_COLORS.technical} />
-                  <Area type="monotone" dataKey="Billing" stackId="1" stroke={CATEGORY_COLORS.billing} fill={CATEGORY_COLORS.billing} />
-                  <Area type="monotone" dataKey="Account" stackId="1" stroke={CATEGORY_COLORS.account} fill={CATEGORY_COLORS.account} />
+                  <Tooltip />                  <Legend />
+                  <Area type="monotone" dataKey="Hardware" stackId="1" stroke={CATEGORY_COLORS.hardware} fill={CATEGORY_COLORS.hardware} />
+                  <Area type="monotone" dataKey="Software" stackId="1" stroke={CATEGORY_COLORS.software} fill={CATEGORY_COLORS.software} />
+                  <Area type="monotone" dataKey="Network" stackId="1" stroke={CATEGORY_COLORS.network} fill={CATEGORY_COLORS.network} />
                   <Area type="monotone" dataKey="Other" stackId="1" stroke={CATEGORY_COLORS.other} fill={CATEGORY_COLORS.other} />
                 </AreaChart>
               </ResponsiveContainer>
@@ -426,8 +402,7 @@ const Dashboard = () => {
           </CardContent>
         </Card>
         
-        {/* Gráfico de dispersión para tiempos de resolución */}
-        <Card className="shadow-md hover:shadow-lg transition-shadow bg-white">
+        {/* Gráfico de dispersión para tiempos de resolución */}        <Card className="card-enhanced">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center">
               <Timer className="h-5 w-5 mr-2" />
@@ -456,19 +431,17 @@ const Dashboard = () => {
       
       {/* Tercera fila de gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico de tendencia de resolución */}
-        <ResolutionTrend 
+        {/* Gráfico de tendencia de resolución */}        <ResolutionTrend 
           tickets={tickets} 
           days={14} 
-          title={`${t('ticketTrends')} (14 ${t('days')})`} 
-          className="shadow-md hover:shadow-lg transition-shadow bg-white"
+          title={`${t('ticketTrends')} (14 ${t('days')})`}
+          className="h-full" 
         />
         
-        {/* Análisis de categorías */}
-        <CategoryAnalysis 
+        {/* Análisis de categorías */}        <CategoryAnalysis 
           tickets={tickets} 
-          title={`${t('priority')} ${t('ticketsByCategory')}`} 
-          className="shadow-md hover:shadow-lg transition-shadow bg-white"
+          title={`${t('priority')} ${t('ticketsByCategory')}`}
+          className="h-full" 
         />
       </div>
     </div>

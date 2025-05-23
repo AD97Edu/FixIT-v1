@@ -28,6 +28,7 @@ const translations = {
     "noData": "No data available",
     
     // Dashboard
+    "recentTickets": "Recently created tickets",
     "openTickets": "Open Tickets",
     "inProgressTickets": "In Progress",
     "resolvedTickets": "Resolved",
@@ -38,23 +39,26 @@ const translations = {
     "ticketsByCategory": "Tickets by Category",
     "statusDistribution": "Status Distribution",
     "ticketTrends": "Ticket Trends",
-    
-    // Status y Categorías
+      // Status y Categorías
     "status_open": "Open",
     "status_in_progress": "In Progress",
     "status_resolved": "Resolved",
     "status_closed": "Closed",
-    "category_technical": "Technical",
-    "category_billing": "Billing",
-    "category_account": "Account",
+    "category_hardware": "Hardware",
+    "category_software": "Software",
+    "category_network": "Network & Connectivity",
+    "category_email": "Email",
+    "category_access": "Access & Permissions",
+    "category_mobile": "Mobile Devices",
+    "category_security": "IT Security",
     "category_other": "Other",
-    
-    // Prioridades
+      // Prioridades
     "priority": "Priority",
+    "priority_toassign": "Priority not assigned",
     "priority_high": "High",
     "priority_medium": "Medium",
     "priority_low": "Low",
-    "priority_info": "Information",
+    "priority_critical": "Critical",
     
     // Tiempo
     "today": "Today",
@@ -78,10 +82,26 @@ const translations = {
     "category": "Category",
     "status": "Status",
     "assignedTo": "Assigned To",
+    "submittedBy": "Submitted by",
     "created": "Created",
     "updated": "Updated",
     "comments": "Comments",
+    "attachedImages": "Attached Images",
     "addComment": "Add Comment",
+    "typeCommentHere": "Type your comment here...",
+    "noComments": "No comments yet. Be the first to comment.",
+    
+    // Comment actions and messages
+    "commentEmpty": "Comment cannot be empty",
+    "mustBeLoggedIn": "You must be logged in to comment",
+    "commentAdded": "Comment added successfully",
+    "commentAddFailed": "Failed to add comment. Please try again.",
+    "commentUpdated": "Comment updated successfully",
+    "commentUpdateFailed": "Failed to update comment. Please try again.",
+    "posting": "Posting...",    
+    "postComment": "Post Comment",
+    "resolveTicket": "Close Ticket",
+    "edit": "Edit",
     "saveChanges": "Save Changes",
     "cancel": "Cancel",
     "submit": "Submit",
@@ -123,8 +143,10 @@ const translations = {
     "ticketUpdated": "Ticket updated successfully",
     "ticketDeleted": "Ticket deleted successfully",
     "loginSuccess": "Logged in successfully",
-    "logoutSuccess": "Logged out successfully",
-    "profileUpdated": "Profile updated successfully",
+    "logoutSuccess": "Logged out successfully",    "profileUpdated": "Profile updated successfully",
+    "assignToMe": "Assign to Me",
+    "noAdminAssigned": "No administrator assigned",
+    "ticketAssigned": "Ticket assigned successfully",
     
     // Listas y filtros
     "loading": "Loading tickets",
@@ -154,21 +176,28 @@ const translations = {
     "detailedDescription": "Detailed description of the issue...",
     "provideInformation": "Provide information about the issue you're experiencing",
     "provideRelevantInfo": "Please provide as much relevant information as possible",
-    "submitting": "Submitting...",
-
-    // ProjectStats keys
+    "submitting": "Submitting...",    // ProjectStats keys
     "projectStatistics": "Project Statistics",
+    "totalTickets": "Total Tickets",
     "averageResolutionTime": "Average Resolution Time",
     "unresolvedTickets": "Unresolved Tickets",
     "resolvedLastWeek": "Resolved Last Week",
     "oldestOpenTicket": "Oldest Open Ticket",
     "categoryDistribution": "Category Distribution",
+    // Theme Toggle
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
     // For categories, already present: category_technical, category_billing, category_account, category_other
-  },
-  es: {
+
+    // Error messages
+    "ticketNotFound": "Ticket Not Found",
+    "ticketNotFoundDesc": "The ticket you're looking for doesn't exist or has been removed.",
+    "returnToTickets": "Return to Tickets",
+  },  es: {
     // Navegación y menú lateral (existentes)
+    "recentTickets": "Tickets abiertos recientemente",
     "navigation": "Navegación",
-    "dashboard": "Panel",
+    "dashboard": "Panel de estadísticas",
     "tickets": "Tickets",
     "newTicket": "Nuevo Ticket",
     "search": "Buscar",
@@ -177,6 +206,8 @@ const translations = {
     "language": "Idioma",
     "en": "Inglés",
     "es": "Español",
+    "Created": "Creados",
+    "Resolved": "Resueltos",
     "quickIssueResolution": "Resolución Rápida de Incidencias",
     "version": "FixIT v1.0",
     
@@ -195,27 +226,31 @@ const translations = {
     "resolvedTickets": "Resueltos",
     "closedTickets": "Cerrados",
     "highPriorityTickets": "Alta Prioridad",
-    "ticketsThisWeek": "Tickets Esta Semana",
-    "resolutionTime": "Tiempo de Resolución",
+    "ticketsThisWeek": "Tickets creados/resueltos esta semana",
+    "resolutionTime": "Media de tiempo de resolución según prioridad",
     "ticketsByCategory": "Tickets por Categoría",
-    "statusDistribution": "Distribución por Estado",
+    "statusDistribution": "Distribución de tickets según su estado",
     "ticketTrends": "Tendencias de Tickets",
     
     // Status y Categorías
     "status_open": "Abierto",
     "status_in_progress": "En Progreso",
     "status_resolved": "Resuelto",
-    "status_closed": "Cerrado",
-    "category_technical": "Técnico",
-    "category_billing": "Facturación",
-    "category_account": "Cuenta",
-    "category_other": "Otro",
-    
-    // Prioridades
+    "status_closed": "Cerrado",    "category_hardware": "Hardware",
+    "category_software": "Software",
+    "category_network": "Redes y conectividad",
+    "category_email": "Correo electrónico",
+    "category_access": "Acceso y permisos",
+    "category_mobile": "Dispositivos móviles",
+    "category_security": "Seguridad informática",
+    "category_other": "Otros",
+      // Prioridades
     "priority": "Prioridad",
+    "priority_toassign": "Prioridad no asignada",
     "priority_high": "Alta",
     "priority_medium": "Media",
     "priority_low": "Baja",
+    "priority_critical": "Crítica",
     "priority_info": "Información",
     
     // Tiempo
@@ -240,18 +275,34 @@ const translations = {
     "category": "Categoría",
     "status": "Estado",
     "assignedTo": "Asignado a",
+    "submittedBy": "Enviado por",
     "created": "Creado",
     "updated": "Actualizado",
     "comments": "Comentarios",
-    "addComment": "Añadir Comentario",
-    "saveChanges": "Guardar Cambios",
+    "attachedImages": "Imágenes adjuntas",
+    "addComment": "Añadir comentario",
+    "typeCommentHere": "Escribe tu comentario aquí...",
+    "noComments": "Aún no hay comentarios. Sé el primero en comentar.",
+    
+    // Comment actions and messages
+    "commentEmpty": "El comentario no puede estar vacío",
+    "mustBeLoggedIn": "Debes iniciar sesión para comentar",
+    "commentAdded": "Comentario añadido con éxito",
+    "commentAddFailed": "Error al añadir el comentario. Por favor, inténtalo de nuevo.",
+    "commentUpdated": "Comentario actualizado con éxito",
+    "commentUpdateFailed": "Error al actualizar el comentario. Por favor, inténtalo de nuevo.",
+    "posting": "Publicando...",
+    "postComment": "Publicar comentario",
+    "resolveTicket": "Resolver ticket",
+    "edit": "Editar",
+    "saveChanges": "Guardar cambios",
     "cancel": "Cancelar",
     "submit": "Enviar",
     
     // Perfil
     "profileSettings": "Configuración de Perfil",
-    "personalInfo": "Información Personal",
-    "accountSettings": "Configuración de Cuenta",
+    "personalInfo": "Información personal",
+    "accountSettings": "Configuración de cuenta",
     "name": "Nombre",
     "email": "Correo Electrónico",
     "role": "Rol",
@@ -285,8 +336,10 @@ const translations = {
     "ticketUpdated": "Ticket actualizado con éxito",
     "ticketDeleted": "Ticket eliminado con éxito",
     "loginSuccess": "Inicio de sesión exitoso",
-    "logoutSuccess": "Sesión cerrada con éxito",
-    "profileUpdated": "Perfil actualizado con éxito",
+    "logoutSuccess": "Sesión cerrada con éxito",    "profileUpdated": "Perfil actualizado con éxito",
+    "assignToMe": "Asignarme",
+    "noAdminAssigned": "Sin administrador asignado",
+    "ticketAssigned": "Ticket asignado con éxito",
     
     // Listas y filtros
     "loading": "Cargando tickets",
@@ -316,16 +369,23 @@ const translations = {
     "detailedDescription": "Descripción detallada del problema...",
     "provideInformation": "Proporcione información sobre el problema que está experimentando",
     "provideRelevantInfo": "Por favor proporcione toda la información relevante posible",
-    "submitting": "Enviando...",
-
-    // ProjectStats keys
+    "submitting": "Enviando...",    // ProjectStats keys
     "projectStatistics": "Estadísticas del Proyecto",
+    "totalTickets": "Total de Tickets",
     "averageResolutionTime": "Tiempo Medio de Resolución",
     "unresolvedTickets": "Tickets Sin Resolver",
     "resolvedLastWeek": "Resueltos la Última Semana",
     "oldestOpenTicket": "Ticket Abierto Más Antiguo",
     "categoryDistribution": "Distribución por Categoría",
+    // Theme Toggle
+    "darkMode": "Modo Oscuro",
+    "lightMode": "Modo Claro",
     // For categories, already present: category_technical, category_billing, category_account, category_other
+
+    // Error messages
+    "ticketNotFound": "Ticket No Encontrado",
+    "ticketNotFoundDesc": "El ticket que buscas no existe o ha sido eliminado.",
+    "returnToTickets": "Volver a Tickets",
   }
 };
 

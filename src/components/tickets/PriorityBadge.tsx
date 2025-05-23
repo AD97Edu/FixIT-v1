@@ -8,19 +8,21 @@ interface PriorityBadgeProps {
 }
 
 const PriorityBadge = ({ priority }: PriorityBadgeProps) => {
-  const { t } = useLanguage();
-  
-  const getPriorityStyles = () => {
+  const { t } = useLanguage();    const getPriorityStyles = () => {
     switch (priority) {
+      case "critical":
+        return "bg-red-600 text-white dark:bg-red-500 dark:text-white";
       case "high":
-        return "bg-ticket-high text-white";
+        return "bg-orange-400 text-white dark:bg-orange-400 dark:text-white";
       case "medium":
-        return "bg-ticket-medium text-white";
+        return "bg-amber-500 text-white dark:bg-amber-400 dark:text-black";
       case "low":
-        return "bg-ticket-low text-white";
+        return "bg-green-600 text-white dark:bg-green-500 dark:text-white";
+      case "toassign":
+        return "bg-gray-500 text-white dark:bg-gray-600 dark:text-white";
       case "info":
       default:
-        return "bg-ticket-info text-white";
+        return "bg-blue-600 text-white dark:bg-blue-400 dark:text-black";
     }
   };
 

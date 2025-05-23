@@ -1,6 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Ticket, Status } from "@/types";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { PostgrestError } from "@supabase/supabase-js";
 
 // Función para generar un identificador corto a partir del UUID
 const generateShortId = (id: string): string => {
@@ -23,38 +26,135 @@ const transformTicketData = (ticket: any): Ticket => {
     updatedAt: ticket.updated_at,
     assignedTo: ticket.assigned_to,
     submittedBy: ticket.submitted_by,
+    // Añadimos los campos de nombre si existen
+    submitterName: ticket.submitter_name,
+    assigneeName: ticket.assignee_name,
     imageUrls: Array.isArray(ticket.image_urls) ? ticket.image_urls : [] // Garantiza que siempre es un array
   };
 };
 
 export const useTickets = () => {
+  const { role } = useUserRole();
+  const { user } = useAuth();
+
   return useQuery({
-    queryKey: ['tickets'],
+    queryKey: ['tickets', role, user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('tickets')
-        .select('*')
-        .order('created_at', { ascending: false });
+      // Si el usuario es admin o agent, puede ver todos los tickets
+      // Si el usuario es normal, solo puede ver sus propios tickets
+      let query = supabase.from('tickets').select('*');
+      
+      // Si el usuario es normal (user), filtramos para que solo vea sus propios tickets
+      if (role === 'user' && user?.id) {
+        query = query.eq('submitted_by', user.id);
+      }
+      
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data.map(transformTicketData) as Ticket[];
-    }
+      
+      // Transformar los tickets básicos
+      const tickets = data.map(transformTicketData) as Ticket[];
+      
+      // Obtener todos los IDs únicos de usuarios
+      const userIds = new Set<string>();
+      tickets.forEach(ticket => {
+        if (ticket.submittedBy) userIds.add(ticket.submittedBy);
+        if (ticket.assignedTo) userIds.add(ticket.assignedTo);
+      });
+      
+      // Cargar los datos de todos los usuarios en una sola consulta
+      if (userIds.size > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', Array.from(userIds));
+        
+        if (profilesData && profilesData.length > 0) {
+          // Crear un mapa de ID a nombre
+          const userMap = new Map<string, string>();
+          profilesData.forEach(profile => {
+            userMap.set(profile.id, profile.full_name || 'No Name');
+          });
+          
+          // Asignar nombres a cada ticket
+          tickets.forEach(ticket => {
+            if (ticket.submittedBy) {
+              ticket.submitterName = userMap.get(ticket.submittedBy) || 'Unknown';
+            }
+            if (ticket.assignedTo) {
+              ticket.assigneeName = userMap.get(ticket.assignedTo) || 'Unknown';
+            }
+          });
+        }
+      }
+      
+      return tickets;
+    },
+    enabled: !!user // Solo ejecutar la consulta si hay un usuario autenticado
   });
 };
 
 export const useTicket = (id: string) => {
-  return useQuery({
-    queryKey: ['tickets', id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('tickets')
-        .select('*')
-        .eq('id', id)
-        .single();
+  const { role } = useUserRole();
+  const { user } = useAuth();
 
-      if (error) throw error;
-      return transformTicketData(data) as Ticket;
-    }
+  return useQuery({
+    queryKey: ['tickets', id, role, user?.id],
+    queryFn: async () => {
+      // Primero obtenemos el ticket
+      let query = supabase.from('tickets')
+        .select('*')
+        .eq('id', id);
+      
+      // Si el usuario es normal (user), verificamos que el ticket le pertenezca
+      if (role === 'user' && user?.id) {
+        query = query.eq('submitted_by', user.id);
+      }
+      
+      const { data, error } = await query.single();
+
+      if (error) {
+        // Si no se encuentra el ticket o no tiene permisos para verlo
+        if (error.code === 'PGRST116') {
+          throw new Error('Ticket not found or you don\'t have permission to view it');
+        }
+        throw error;
+      }
+      
+      // Transformamos el ticket a nuestro formato
+      const ticket = transformTicketData(data) as Ticket;
+      
+      // Obtenemos los nombres de los usuarios
+      // Para el usuario que lo ha enviado
+      if (ticket.submittedBy) {
+        const { data: submitterData } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', ticket.submittedBy)
+          .single();
+        
+        if (submitterData) {
+          ticket.submitterName = submitterData.full_name || 'No Name';
+        }
+      }
+      
+      // Para el usuario asignado, si existe
+      if (ticket.assignedTo) {
+        const { data: assigneeData } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', ticket.assignedTo)
+          .single();
+        
+        if (assigneeData) {
+          ticket.assigneeName = assigneeData.full_name || 'No Name';
+        }
+      }
+      
+      return ticket;
+    },
+    enabled: !!user && !!id
   });
 };
 
@@ -84,7 +184,7 @@ export const useCreateTicket = () => {
         
         // Asegurarnos de que los valores enviados sean permitidos en la base de datos
         // Verificar que priority sea uno de los valores permitidos
-        const validPriorities = ['low', 'medium', 'high', 'critical', 'por asignar'];
+        const validPriorities = ['low', 'medium', 'high', 'critical', 'toassign'];
         const priority = validPriorities.includes(ticketData.priority) 
           ? ticketData.priority 
           : 'low';
@@ -193,6 +293,101 @@ export const useUpdateTicketPriority = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
       queryClient.invalidateQueries({ queryKey: ['tickets', variables.id] });
+    }
+  });
+};
+
+export const useRecentTickets = (limit: number = 6) => {
+  const { role } = useUserRole();
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ['tickets', 'recent', limit, role, user?.id],
+    queryFn: async () => {
+      let query = supabase.from('tickets').select('*');
+      
+      // Si el usuario es normal (user), filtramos para que solo vea sus propios tickets
+      if (role === 'user' && user?.id) {
+        query = query.eq('submitted_by', user.id);
+      }
+      
+      const { data, error } = await query
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (error) throw error;
+      
+      // Transformar los tickets básicos
+      const tickets = data.map(transformTicketData) as Ticket[];
+      
+      // Obtener todos los IDs únicos de usuarios
+      const userIds = new Set<string>();
+      tickets.forEach(ticket => {
+        if (ticket.submittedBy) userIds.add(ticket.submittedBy);
+        if (ticket.assignedTo) userIds.add(ticket.assignedTo);
+      });
+      
+      // Cargar los datos de todos los usuarios en una sola consulta
+      if (userIds.size > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', Array.from(userIds));
+        
+        if (profilesData && profilesData.length > 0) {
+          // Crear un mapa de ID a nombre
+          const userMap = new Map<string, string>();
+          profilesData.forEach(profile => {
+            userMap.set(profile.id, profile.full_name || 'No Name');
+          });
+          
+          // Asignar nombres a cada ticket
+          tickets.forEach(ticket => {
+            if (ticket.submittedBy) {
+              ticket.submitterName = userMap.get(ticket.submittedBy) || 'Unknown';
+            }
+            if (ticket.assignedTo) {
+              ticket.assigneeName = userMap.get(ticket.assignedTo) || 'Unknown';
+            }
+          });
+        }
+      }
+      
+      return tickets;
+    },
+    enabled: !!user
+  });
+};
+
+export const useAssignTicket = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ id, userId }: { id: string; userId: string | null }) => {
+      const { data, error } = await supabase
+        .from('tickets')
+        .update({ assigned_to: userId, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return transformTicketData(data);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      queryClient.invalidateQueries({ queryKey: ['tickets', variables.id] });
+    },
+    onError: (error: any) => {
+      console.error("Mutation error details:", {
+        message: error?.message,
+        details: error?.details,
+        hint: error?.hint,
+        code: error?.code
+      });
+      if (error?.code === "42501") {
+        console.error("This appears to be a permissions error. Check Supabase RLS policies.");
+      }
     }
   });
 };
