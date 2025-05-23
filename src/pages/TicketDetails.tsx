@@ -129,12 +129,10 @@ const TicketDetails = () => {
   const canEditComment = (comment: Comment) => {
     return user && comment.userId === user.id;
   };
-    // Determinar si el ticket tiene asignado un admin
+  // Determinar si el ticket tiene asignado un admin
   const hasAssignedAdmin = !!ticket?.assignedTo;
-  // Determinar si el admin actual está viendo el ticket
-  const isCurrentUserAdmin = role === 'admin';
-  // Lógica para mostrar el botón de asignación
-  const showAssignButton = isCurrentUserAdmin && !hasAssignedAdmin;
+  // Lógica para mostrar el botón de asignación (visible para todos los admins, incluso si ya hay uno asignado)
+  const showAssignButton = isAdmin;
   
   // Gestionar la asignación del ticket al admin actual
   const handleAssignToMe = () => {
@@ -193,11 +191,10 @@ const TicketDetails = () => {
               </div>
               <CardTitle className="text-2xl">{ticket.title}</CardTitle>
             </div>
-            
-            <div className="flex gap-2">              <Select
+              <div className="flex gap-2">              <Select
                 value={ticket.priority}
                 onValueChange={handlePriorityChange}
-                disabled={isUpdatingPriority}
+                disabled={isUpdatingPriority || (!isAdmin && ticket.submittedBy !== user?.id)}
               >
                 <SelectTrigger className="w-[140px]">
                   <SelectValue placeholder={t('priority')} />
@@ -214,7 +211,7 @@ const TicketDetails = () => {
               <Select
                 value={ticket.status as Status}
                 onValueChange={(value) => handleStatusChange(value as Status)}
-                disabled={isUpdatingStatus}
+                disabled={isUpdatingStatus || (!isAdmin && ticket.submittedBy !== user?.id)}
               >
                 <SelectTrigger className="w-[140px]">
                   <SelectValue placeholder={t('status')} />
@@ -246,8 +243,7 @@ const TicketDetails = () => {
               <span>{t('assignedTo')}: </span>
               <span className="ml-1 font-medium">
                 {ticket.assignedTo ? (ticket.assigneeName || t('unnamed')) : t('noAdminAssigned')}
-              </span>
-              {showAssignButton && (
+              </span>              {showAssignButton && (
                 <Button 
                   size="sm" 
                   variant="outline" 
@@ -255,7 +251,8 @@ const TicketDetails = () => {
                   onClick={handleAssignToMe}
                   disabled={isAssigningTicket}
                 >
-                  {isAssigningTicket ? "..." : t('assignToMe')}
+                  {isAssigningTicket ? "..." : 
+                   (hasAssignedAdmin ? t('reassignToMe') : t('assignToMe'))}
                 </Button>
               )}
             </div>
