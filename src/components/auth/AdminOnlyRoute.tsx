@@ -12,14 +12,7 @@ interface AdminOnlyRouteProps {
  */
 export function AdminOnlyRoute({ children }: AdminOnlyRouteProps) {
   const { role, loading } = useUserRole();
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    if (!loading) {
-      setIsAdmin(role === 'admin');
-    }
-  }, [role, loading]);
-
+  
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -28,7 +21,8 @@ export function AdminOnlyRoute({ children }: AdminOnlyRouteProps) {
     );
   }
 
-  if (!isAdmin) {
+  if (role !== 'admin') {
+    console.log('AdminOnlyRoute - Acceso denegado. Rol:', role);
     toast.error("Acceso denegado: Se requieren permisos de administrador");
     return <Navigate to="/tickets" replace />;
   }

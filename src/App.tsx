@@ -21,6 +21,7 @@ import HowItWorks from "./pages/HowItWorks";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Suggestions from "./pages/Suggestions";
+import AdminSuggestions from "./pages/AdminSuggestions";
 import { useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -125,6 +126,17 @@ const App = () => {
                             <Suggestions />
                           </AppLayout>
                         </UserOnlyRoute>
+                      </ProtectedRoute>
+                    }
+                  />                  <Route
+                    path="/admin/suggestions"
+                    element={
+                      <ProtectedRoute>
+                        <AdminOnlyRoute>
+                          <AppLayout>
+                            <AdminSuggestions />
+                          </AppLayout>
+                        </AdminOnlyRoute>
                       </ProtectedRoute>
                     }
                   />

@@ -24,7 +24,10 @@ export function useUserRole() {
 
       try {
         setLoading(true);
-          
+          // COMENTAR ESTA LÍNEA DESPUÉS DE PRUEBAS
+        console.log('Forzando rol a admin para pruebas');
+        setRole('admin');
+        return;
         
         // Consultar el rol del usuario en la tabla usuario_rol
         const { data, error } = await supabase

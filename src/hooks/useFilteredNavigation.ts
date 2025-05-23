@@ -11,17 +11,35 @@ export function useFilteredNavigation(items: any[]) {
   if (loading || !role) {
     return [];
   }
-    // Los usuarios normales solo pueden acceder a tickets, nueva ticket, sugerencias, perfil, ayuda y language
+  
+  // Los usuarios normales solo pueden acceder a tickets, nueva ticket, sugerencias, perfil, ayuda y language
   if (role === 'user') {
     return items.filter(item => {
       // Filtrar para mostrar solo Tickets, NewTicket, Suggestions, Profile, HowItWorks y Language
-      // Excluir dashboard y search
-      return !['dashboard', 'search'].includes(item.titleKey);
+      // Excluir dashboard, search y adminSuggestions
+      return !['dashboard', 'search', 'adminSuggestions'].includes(item.titleKey);
     });
   }
+
+  // Los agentes pueden acceder a todo excepto "How it Works", "Suggestions" y "adminSuggestions"
+  if (role === 'agent') {
+    return items.filter(item => !['howItWorks', 'suggestions', 'adminSuggestions'].includes(item.titleKey));
+  }
   
-  // Los administradores y agentes pueden acceder a todo excepto "How it Works" y "Suggestions"
-  return items.filter(item => !['howItWorks', 'suggestions'].includes(item.titleKey));
+  // Los administradores pueden acceder a todo excepto "How it Works" y "Suggestions" (pero sí a adminSuggestions)
+  return items.filter(item => {
+    // No mostrar elementos específicos para usuarios
+    if (['howItWorks', 'suggestions'].includes(item.titleKey)) {
+      return false;
+    }
+    
+    // Solo mostrar elementos exclusivos para admin si el usuario es admin
+    if (item.adminOnly === true && role !== 'admin') {
+      return false;
+    }
+    
+    return true;
+  });
 }
 
 export default useFilteredNavigation;

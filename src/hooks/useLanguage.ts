@@ -3,14 +3,15 @@ import { useState, useEffect } from 'react';
 
 // Objeto con las traducciones
 const translations = {
-  en: {
-    // Navegación y menú lateral (existentes)
+  en: {    // Navegación y menú lateral (existentes)
     "navigation": "Navigation",
     "dashboard": "Dashboard",
     "tickets": "Tickets",
     "newTicket": "New Ticket",
     "search": "Search",
     "profile": "Profile",
+    "suggestions": "Suggestions",
+    "adminSuggestions": "Manage Suggestions",
     "logout": "Logout",
     "language": "Language",
     "en": "English",
@@ -250,13 +251,14 @@ const translations = {
     "clickToUpload": "Click to upload images",
   },  es: {
     // Navegación y menú lateral (existentes)
-    "recentTickets": "Tickets abiertos recientemente",
-    "navigation": "Navegación",
+    "recentTickets": "Tickets abiertos recientemente",    "navigation": "Navegación",
     "dashboard": "Panel de estadísticas",
     "tickets": "Tickets",
     "newTicket": "Nuevo Ticket",
     "search": "Buscar",
     "profile": "Perfil",
+    "suggestions": "Sugerencias",
+    "adminSuggestions": "Gestionar Sugerencias",
     "logout": "Cerrar Sesión",
     "language": "Idioma",
     "en": "Inglés",
