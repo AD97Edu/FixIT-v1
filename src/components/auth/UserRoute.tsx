@@ -14,11 +14,10 @@ interface UserRouteProps {
 export function UserRoute({ children }: UserRouteProps) {
   const { role, loading } = useUserRole();
   const [canAccess, setCanAccess] = useState<boolean | null>(null);
-
   useEffect(() => {
     if (!loading) {
-      // Los admin también pueden acceder a las rutas de usuario
-      setCanAccess(role === 'user' || role === 'admin');
+      // Solo los usuarios comunes pueden acceder a estas rutas
+      setCanAccess(role === 'user');
     }
   }, [role, loading]);
 

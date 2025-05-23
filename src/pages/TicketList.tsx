@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import TicketCard from "@/components/tickets/TicketCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 import { ArrowDownAZ, ArrowUpAZ, Plus, Search, SortAsc, SortDesc } from "lucide-react";
 import { useTickets } from "@/hooks/useTickets";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useUserRole } from "@/hooks/useUserRole";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 // Opciones de ordenamiento
@@ -15,14 +17,32 @@ type SortOption = "newest" | "oldest";
 
 const TicketList = () => {
   const { t } = useLanguage();
-  const { data: tickets = [], isLoading } = useTickets();
+  const { role, loading: roleLoading } = useUserRole();
+  const { data: tickets = [], isLoading: ticketsLoading } = useTickets();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<Status | "all">("open"); // Por defecto: "open"
   const [priorityFilter, setPriorityFilter] = useState<Priority | "all">("all");
   const [sortBy, setSortBy] = useState<SortOption>("newest"); // Por defecto: ordenar por más recientes
   const [currentPage, setCurrentPage] = useState(1);
+  const [dataReady, setDataReady] = useState(false);
   const TICKETS_PER_PAGE = 18;
   
+  // Efecto para controlar el estado de "listo para mostrar datos"
+  useEffect(() => {
+    // Si el rol aún se está cargando o los tickets aún se están cargando, no estamos listos
+    if (roleLoading || ticketsLoading) {
+      setDataReady(false);
+      return;
+    }
+    
+    // Añadimos un pequeño delay para asegurarnos de que los datos han sido filtrados correctamente
+    const timer = setTimeout(() => {
+      setDataReady(true);
+    }, 300); // 300ms de delay para asegurar que los datos están listos
+    
+    return () => clearTimeout(timer);
+  }, [roleLoading, ticketsLoading, role]);
+
   // Aplicar filtros y ordenar
   const filteredAndSortedTickets = useMemo(() => {
     // Primero filtramos
@@ -63,8 +83,17 @@ const TicketList = () => {
     setCurrentPage(page);
   };
 
-  if (isLoading) {
-    return <div className="text-center py-12">{t('loading')}...</div>;
+  // Mostrar pantalla de carga si los datos no están listos aún
+  if (ticketsLoading || roleLoading || !dataReady) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <LoadingSpinner 
+          size="large" 
+          text={t('preparingTickets')}
+          className="p-8" 
+        />
+      </div>
+    );
   }
 
   return (

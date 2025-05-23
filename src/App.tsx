@@ -16,6 +16,7 @@ import AppLayout from "./components/layout/AppLayout";
 import TicketList from "./pages/TicketList";
 import NewTicket from "./pages/NewTicket";
 import TicketDetails from "./pages/TicketDetails";
+import HowItWorks from "./pages/HowItWorks";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import { useEffect } from "react";
@@ -83,8 +84,7 @@ const App = () => {
                         </UserTicketsRoute>
                       </ProtectedRoute>
                     }
-                  />
-                  <Route
+                  />                  <Route
                     path="/profile"
                     element={
                       <ProtectedRoute>
@@ -94,6 +94,15 @@ const App = () => {
                       </ProtectedRoute>
                     }
                   />                  <Route
+                    path="/how-it-works"
+                    element={
+                      <ProtectedRoute>
+                        <AppLayout>
+                          <HowItWorks />
+                        </AppLayout>
+                      </ProtectedRoute>
+                    }
+                  /><Route
                     path="/search"
                     element={
                       <ProtectedRoute>

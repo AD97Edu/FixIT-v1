@@ -19,6 +19,15 @@ CREATE TABLE public.usuario_rol (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Suggestions table
+CREATE TABLE public.suggestions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  title text NOT NULL,
+  description text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
 -- Tickets table
 CREATE TABLE public.tickets (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

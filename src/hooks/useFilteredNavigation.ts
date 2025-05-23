@@ -12,17 +12,17 @@ export function useFilteredNavigation(items: any[]) {
   if (loading || !role) {
     return [];
   }
-  // Los usuarios normales solo pueden acceder a tickets, nueva ticket, perfil y language
+    // Los usuarios normales solo pueden acceder a tickets, nueva ticket, perfil, ayuda y language
   if (role === 'user') {
     return items.filter(item => {
-      // Filtrar para mostrar solo Tickets, NewTicket, Profile y Language
+      // Filtrar para mostrar solo Tickets, NewTicket, Profile, HowItWorks y Language
       // Excluir dashboard y search
       return !['dashboard', 'search'].includes(item.titleKey);
     });
   }
-
-  // Los administradores pueden acceder a todo
-  return items;
+  
+  // Los administradores y agentes pueden acceder a todo excepto "How it Works"
+  return items.filter(item => item.titleKey !== 'howItWorks');
 }
 
 export default useFilteredNavigation;

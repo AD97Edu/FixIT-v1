@@ -26,7 +26,10 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
     <Card className="card-enhanced hover:translate-y-[-4px]">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
+          <Link to={`/tickets/${ticket.id}`}>
           <CardTitle className="text-xl truncate">{ticket.title}</CardTitle>
+          </Link>
+
           <div className="flex items-center">
             <span className="text-sm text-muted-foreground mr-1">{t('priority')}:</span>
             <PriorityBadge priority={ticket.priority} />
