@@ -2,7 +2,7 @@ export type Priority = "toassign" | "low" | "medium" | "high" | "critical" | "in
 
 export type Status = "open" | "in_progress" | "resolved";
 
-export type Category = "technical" | "billing" | "account" | "other";
+export type Category = "hardware" | "software" | "network" | "email" | "access" | "mobile" | "security" | "other";
 
 export interface Ticket {
   id: string;

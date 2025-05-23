@@ -38,9 +38,13 @@ const STATUS_COLORS: Record<Status, string> = {
 };
 
 const CATEGORY_COLORS: Record<Category, string> = {
-  technical: '#3b82f6', // blue-500
-  billing: '#f59e0b', // amber-500
-  account: '#10b981', // emerald-500
+  hardware: '#3b82f6', // blue-500
+  software: '#f59e0b', // amber-500
+  network: '#10b981', // emerald-500
+  email: '#8b5cf6', // violet-500
+  access: '#ec4899', // pink-500
+  mobile: '#14b8a6', // teal-500
+  security: '#ef4444', // red-500
   other: '#6b7280', // gray-500
 };
 
@@ -132,30 +136,29 @@ const Dashboard = () => {
     
     const categoriesByDay = last7Days.map(day => {
       const dayString = format(day, 'MMM dd');
-      
-      // Filtrar tickets creados en este día agrupados por categoría
-      const technical = tickets.filter(ticket => {
+        // Filtrar tickets creados en este día agrupados por categoría
+      const hardware = tickets.filter(ticket => {
         try {
           const createdDate = parseISO(ticket.createdAt);
-          return format(createdDate, 'MMM dd') === dayString && ticket.category === 'technical';
+          return format(createdDate, 'MMM dd') === dayString && ticket.category === 'hardware';
         } catch (e) {
           return false;
         }
       }).length;
       
-      const billing = tickets.filter(ticket => {
+      const software = tickets.filter(ticket => {
         try {
           const createdDate = parseISO(ticket.createdAt);
-          return format(createdDate, 'MMM dd') === dayString && ticket.category === 'billing';
+          return format(createdDate, 'MMM dd') === dayString && ticket.category === 'software';
         } catch (e) {
           return false;
         }
       }).length;
       
-      const account = tickets.filter(ticket => {
+      const network = tickets.filter(ticket => {
         try {
           const createdDate = parseISO(ticket.createdAt);
-          return format(createdDate, 'MMM dd') === dayString && ticket.category === 'account';
+          return format(createdDate, 'MMM dd') === dayString && ticket.category === 'network';
         } catch (e) {
           return false;
         }
@@ -169,12 +172,11 @@ const Dashboard = () => {
           return false;
         }
       }).length;
-      
-      return {
+        return {
         name: dayString,
-        Technical: technical,
-        Billing: billing,
-        Account: account,
+        Hardware: hardware,
+        Software: software,
+        Network: network,
         Other: other
       };
     });
@@ -386,11 +388,10 @@ const Dashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Area type="monotone" dataKey="Technical" stackId="1" stroke={CATEGORY_COLORS.technical} fill={CATEGORY_COLORS.technical} />
-                  <Area type="monotone" dataKey="Billing" stackId="1" stroke={CATEGORY_COLORS.billing} fill={CATEGORY_COLORS.billing} />
-                  <Area type="monotone" dataKey="Account" stackId="1" stroke={CATEGORY_COLORS.account} fill={CATEGORY_COLORS.account} />
+                  <Tooltip />                  <Legend />
+                  <Area type="monotone" dataKey="Hardware" stackId="1" stroke={CATEGORY_COLORS.hardware} fill={CATEGORY_COLORS.hardware} />
+                  <Area type="monotone" dataKey="Software" stackId="1" stroke={CATEGORY_COLORS.software} fill={CATEGORY_COLORS.software} />
+                  <Area type="monotone" dataKey="Network" stackId="1" stroke={CATEGORY_COLORS.network} fill={CATEGORY_COLORS.network} />
                   <Area type="monotone" dataKey="Other" stackId="1" stroke={CATEGORY_COLORS.other} fill={CATEGORY_COLORS.other} />
                 </AreaChart>
               </ResponsiveContainer>

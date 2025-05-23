@@ -84,9 +84,8 @@ const ProjectStats = ({ tickets, title = "Project Statistics", className }: Proj
         oldestOpenDays = Math.max(0, differenceInDays(today, parseISO(oldestTicket.createdAt)));
       }
     }
-    
-    // Distribución por categorías
-    const categories = ['technical', 'billing', 'account', 'other'];
+      // Distribución por categorías
+    const categories = ['hardware', 'software', 'network', 'email', 'access', 'mobile', 'security', 'other'];
     const categoryCounts = categories.map(category => {
       const count = tickets.filter(t => t.category === category).length;
       return {

@@ -12,9 +12,8 @@ interface CategoryAnalysisProps {
 }
 
 const CategoryAnalysis = ({ tickets, title = "Category Analysis", className }: CategoryAnalysisProps) => {
-  const categoryPriorityData = useMemo(() => {
-    // Obtener todas las categorías únicas
-    const categories = ['technical', 'billing', 'account', 'other'] as Category[];
+  const categoryPriorityData = useMemo(() => {    // Obtener todas las categorías únicas
+    const categories = ['hardware', 'software', 'network', 'email', 'access', 'mobile', 'security', 'other'] as Category[];
     
     // Para cada categoría, contar tickets por prioridad
     return categories.map(category => {
