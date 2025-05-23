@@ -9,7 +9,7 @@ interface AdminOrAgentRouteProps {
 }
 
 /**
- * Componente que protege rutas para que solo accedan usuarios con rol 'admin' o 'agent'
+ * Componente que protege rutas para que solo accedan usuarios con rol 'admin'
  * Los usuarios normales ('user') serán redirigidos a su vista de tickets
  */
 export function AdminOrAgentRoute({ children }: AdminOrAgentRouteProps) {
@@ -18,12 +18,15 @@ export function AdminOrAgentRoute({ children }: AdminOrAgentRouteProps) {
 
   useEffect(() => {
     if (!loading) {
-      // Sólo admin y agent pueden acceder a estas rutas
-      setCanAccess(role === 'admin' || role === 'agent');
+      console.log('AdminOrAgentRoute - Rol actual:', role);
+      // Sólo admin puede acceder a estas rutas
+      setCanAccess(role === 'admin');
+      console.log('AdminOrAgentRoute - ¿Tiene acceso?:', role === 'admin');
     }
   }, [role, loading]);
 
   if (loading) {
+    console.log('AdminOrAgentRoute - Cargando...');
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -31,9 +34,10 @@ export function AdminOrAgentRoute({ children }: AdminOrAgentRouteProps) {
     );
   }
   if (!canAccess) {
+    console.log('AdminOrAgentRoute - Acceso denegado. Rol:', role);
     // Solo mostramos el mensaje de error si el usuario tiene un rol definido
     // pero no tiene permiso (por ejemplo, si es 'user')
-    if (role && role !== 'admin' && role !== 'agent') {
+    if (role && role !== 'admin') {
       toast.error("No tienes permisos para acceder a esta página");
     }
     // Redirigir al usuario a su página correspondiente según su rol

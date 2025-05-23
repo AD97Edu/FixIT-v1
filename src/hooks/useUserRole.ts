@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { toast } from 'sonner';
 
-export type UserRole = 'admin' | 'agent' | 'user' | null;
+export type UserRole = 'admin' | 'user' | null;
 
 /**
  * Hook para obtener el rol de un usuario desde la tabla usuario_rol
@@ -13,7 +13,6 @@ export function useUserRole() {
   const { user } = useAuth();
   const [role, setRole] = useState<UserRole>(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchUserRole = async () => {
       if (!user) {
@@ -24,7 +23,6 @@ export function useUserRole() {
 
       try {
         setLoading(true);
-        
         // Consultar el rol del usuario en la tabla usuario_rol
         const { data, error } = await supabase
           .from('usuario_rol')
@@ -35,20 +33,26 @@ export function useUserRole() {
         if (error) {
           // Si no hay resultados, asumimos que el rol es 'user'
           if (error.code === 'PGRST116') {
+            console.log('No se encontró rol, asignando rol por defecto: user');
             setRole('user');
           } else {
             console.error('Error fetching user role:', error);
-            toast.error('Error al obtener el rol de usuario');
-            setRole(null);
+            // No mostramos toast de error al usuario para mejorar experiencia
+            console.log('Error al obtener el rol, asignando rol por defecto: user');
+            setRole('user'); // Cambiamos a 'user' como valor por defecto en caso de error
           }
         } else if (data) {
+          console.log('Rol obtenido de la base de datos:', data.rol);
           setRole(data.rol as UserRole);
         } else {
+          console.log('No hay datos de rol, asignando rol por defecto: user');
           setRole('user'); // Rol por defecto
         }
       } catch (error) {
         console.error('Error in useUserRole hook:', error);
-        setRole(null);
+        // En caso de error, establecemos el rol como 'user' por defecto
+        console.log('Error en useUserRole, asignando rol por defecto: user');
+        setRole('user');
       } finally {
         setLoading(false);
       }
