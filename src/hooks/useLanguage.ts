@@ -149,6 +149,7 @@ const translations = {
     "ticketAssigned": "Ticket assigned successfully",
     
     // Listas y filtros
+    "preparingTickets": "Preparing tickets",
     "loading": "Loading tickets",
     "sortBy": "Sort by",
     "newestFirst": "Newest first",
@@ -391,7 +392,8 @@ const translations = {
     "ticketAssigned": "Ticket asignado con éxito",
     
     // Listas y filtros
-    "loading": "Cargando tickets",
+    "preparingTickets": "Cargando tickets...",
+    "loading": "Cargando tickets...",
     "sortBy": "Ordenar por",
     "newestFirst": "Más recientes primero",
     "oldestFirst": "Más antiguos primero",
@@ -399,7 +401,7 @@ const translations = {
     "ticket": "ticket",
     "withStatus": "con estado",
     "andPriority": "y prioridad",
-    "noTicketsFound": "No se encontraron tickets",
+    "noTicketsFound": "No se encontraron tickets.",
     "adjustFilters": "Intente ajustar su búsqueda o filtros, o cree un nuevo ticket",
     "all": "Todos",
     "dateUnknown": "Fecha desconocida",
