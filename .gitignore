@@ -10,7 +10,8 @@ lerna-debug.log*
 supabase
 supabase_schema.sql
 docs
-
+src/supabase
+src/supabase_schema.sql
 node_modules
 dist
 dist-ssr
