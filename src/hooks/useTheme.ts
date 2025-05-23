@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark';
 
-export function useTheme() {
-  // Inicializa el tema desde localStorage o usa las preferencias del sistema
+export function useTheme() {  // Inicializa el tema desde localStorage o usa modo oscuro por defecto
   const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem('theme') as Theme) || 
-          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    () => (localStorage.getItem('theme') as Theme) || 'dark'
   );
 
   // Aplica el tema al elemento HTML cuando cambia
