@@ -51,7 +51,7 @@ const translations = {
     "category_other": "Other",
       // Prioridades
     "priority": "Priority",
-    "priority_toassign": "To Assign",
+    "priority_toassign": "Priority not assigned",
     "priority_high": "High",
     "priority_medium": "Medium",
     "priority_low": "Low",
@@ -140,8 +140,10 @@ const translations = {
     "ticketUpdated": "Ticket updated successfully",
     "ticketDeleted": "Ticket deleted successfully",
     "loginSuccess": "Logged in successfully",
-    "logoutSuccess": "Logged out successfully",
-    "profileUpdated": "Profile updated successfully",
+    "logoutSuccess": "Logged out successfully",    "profileUpdated": "Profile updated successfully",
+    "assignToMe": "Assign to Me",
+    "noAdminAssigned": "No administrator assigned",
+    "ticketAssigned": "Ticket assigned successfully",
     
     // Listas y filtros
     "loading": "Loading tickets",
@@ -238,7 +240,7 @@ const translations = {
     "category_other": "Otro",
       // Prioridades
     "priority": "Prioridad",
-    "priority_toassign": "Por asignar",
+    "priority_toassign": "Prioridad no asignada",
     "priority_high": "Alta",
     "priority_medium": "Media",
     "priority_low": "Baja",
@@ -328,8 +330,10 @@ const translations = {
     "ticketUpdated": "Ticket actualizado con éxito",
     "ticketDeleted": "Ticket eliminado con éxito",
     "loginSuccess": "Inicio de sesión exitoso",
-    "logoutSuccess": "Sesión cerrada con éxito",
-    "profileUpdated": "Perfil actualizado con éxito",
+    "logoutSuccess": "Sesión cerrada con éxito",    "profileUpdated": "Perfil actualizado con éxito",
+    "assignToMe": "Asignarme",
+    "noAdminAssigned": "Sin administrador asignado",
+    "ticketAssigned": "Ticket asignado con éxito",
     
     // Listas y filtros
     "loading": "Cargando tickets",

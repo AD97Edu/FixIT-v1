@@ -13,9 +13,10 @@ import StatusBadge from "@/components/tickets/StatusBadge";
 import PriorityBadge from "@/components/tickets/PriorityBadge";
 import { AlertTriangle, ArrowLeft, Calendar, Check, Edit2, FileText, Image as ImageIcon, MessageCircle, MoreHorizontal, User, X } from "lucide-react";
 import { toast } from "sonner";
-import { useTicket, useUpdateTicketStatus, useUpdateTicketPriority } from "@/hooks/useTickets";
+import { useTicket, useUpdateTicketStatus, useUpdateTicketPriority, useAssignTicket } from "@/hooks/useTickets";
 import { useComments, useAddComment, useEditComment } from "@/hooks/useComments";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { useUserRole } from "@/hooks/useUserRole";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -25,16 +26,16 @@ import {
 
 const TicketDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const { user } = useAuth();
+  const navigate = useNavigate();  const { user } = useAuth();
+  const { role, isAdmin } = useUserRole();
   const { t } = useLanguage();
   
   const { data: ticket, isLoading: isLoadingTicket } = useTicket(id!);
-  const { data: comments = [], isLoading: isLoadingComments } = useComments(id!);
-  const { mutate: updateStatus, isLoading: isUpdatingStatus } = useUpdateTicketStatus();
-  const { mutate: addComment, isLoading: isAddingComment } = useAddComment();
-  const { mutate: editComment, isLoading: isEditingComment } = useEditComment();
-  const { mutate: updatePriority, isLoading: isUpdatingPriority } = useUpdateTicketPriority();
+  const { data: comments = [], isLoading: isLoadingComments } = useComments(id!);  const { mutate: updateStatus, isPending: isUpdatingStatus } = useUpdateTicketStatus();
+  const { mutate: addComment, isPending: isAddingComment } = useAddComment();
+  const { mutate: editComment, isPending: isEditingComment } = useEditComment();
+  const { mutate: updatePriority, isPending: isUpdatingPriority } = useUpdateTicketPriority();
+  const { mutate: assignTicket, isPending: isAssigningTicket } = useAssignTicket();
   
   const [newComment, setNewComment] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
@@ -125,14 +126,35 @@ const TicketDetails = () => {
       }
     });
   };
-
   const canEditComment = (comment: Comment) => {
     return user && comment.userId === user.id;
   };
-
-  const assignedUser = null;
-  const submitter = null;
+    // Determinar si el ticket tiene asignado un admin
+  const hasAssignedAdmin = !!ticket?.assignedTo;
+  // Determinar si el admin actual está viendo el ticket
+  const isCurrentUserAdmin = role === 'admin';
+  // Lógica para mostrar el botón de asignación
+  const showAssignButton = isCurrentUserAdmin && !hasAssignedAdmin;
   
+  // Gestionar la asignación del ticket al admin actual
+  const handleAssignToMe = () => {
+    if (!user) return;
+    
+    assignTicket({ id: ticket.id, userId: user.id }, {
+      onSuccess: () => {
+        toast.success(t('ticketAssigned'));
+      },
+      onError: (error) => {
+        console.error("Error al asignar ticket:", error);
+        toast.error(t('pleaseTryAgain'));
+      }
+    });
+  };
+  
+  // En una aplicación real, aquí se obtendría información detallada sobre el usuario asignado
+  // mediante una consulta adicional a la API/base de datos
+  const assignedUser = ticket?.assignedTo || null; // Disponible para expansión futura
+  const submitter = null;
   // Función segura para formatear la fecha
   const formatDate = (dateString: string, pattern: string) => {
     try {      if (!dateString) return t('dateUnknown');
@@ -213,17 +235,27 @@ const TicketDetails = () => {
             <div className="flex items-center">
               <FileText className="mr-2 h-4 w-4" />
               <span>{t('category')}: {t(`category_${ticket.category}`)}</span>
-            </div>
-            <div className="flex items-center">
+            </div>            <div className="flex items-center">
               <User className="mr-2 h-4 w-4" />
               <span>{t('submittedBy')}: {ticket.submittedBy}</span>
+            </div>            <div className="flex items-center">
+              <User className="mr-2 h-4 w-4" />
+              <span>{t('assignedTo')}: </span>
+              <span className="ml-1 font-medium">
+                {ticket.assignedTo ? ticket.assignedTo : t('noAdminAssigned')}
+              </span>
+              {showAssignButton && (
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="ml-2"
+                  onClick={handleAssignToMe}
+                  disabled={isAssigningTicket}
+                >
+                  {isAssigningTicket ? "..." : t('assignToMe')}
+                </Button>
+              )}
             </div>
-            {assignedUser && (
-              <div className="flex items-center">
-                <User className="mr-2 h-4 w-4" />
-                <span>Assigned to: {assignedUser.name}</span>
-              </div>
-            )}
           </div>
         </CardHeader>
         <CardContent>          <h3 className="font-medium mb-2">{t('description')}</h3>

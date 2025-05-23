@@ -248,3 +248,36 @@ export const useRecentTickets = (limit: number = 6) => {
     enabled: !!user
   });
 };
+
+export const useAssignTicket = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ id, userId }: { id: string; userId: string | null }) => {
+      const { data, error } = await supabase
+        .from('tickets')
+        .update({ assigned_to: userId, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return transformTicketData(data);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      queryClient.invalidateQueries({ queryKey: ['tickets', variables.id] });
+    },
+    onError: (error: any) => {
+      console.error("Mutation error details:", {
+        message: error?.message,
+        details: error?.details,
+        hint: error?.hint,
+        code: error?.code
+      });
+      if (error?.code === "42501") {
+        console.error("This appears to be a permissions error. Check Supabase RLS policies.");
+      }
+    }
+  });
+};
