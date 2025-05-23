@@ -288,14 +288,17 @@ const Dashboard = () => {
     <div className="space-y-6 pb-8">
       <h1 className="text-3xl font-bold">{t('dashboard')}</h1>
         {/* Estadísticas básicas y resumen del proyecto */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">        <div className="lg:col-span-3">          <Card className="card-enhanced h-full">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">        
+        <div className="lg:col-span-3">         
+           <Card className="card-enhanced h-full">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg flex items-center">
                 <FileText className="h-5 w-5 mr-2" />
                 {t('recentTickets')}
               </CardTitle>
             </CardHeader>
-            <CardContent>              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 overflow-y-auto max-h-[350px] pr-1">
+            <CardContent>              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 overflow-y-auto max-h-[530px] pr-1">
                 {recentTickets.map((ticket) => (
                   <TicketCard key={ticket.id} ticket={ticket} />
                 ))}
