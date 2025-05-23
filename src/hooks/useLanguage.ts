@@ -97,7 +97,7 @@ const translations = {
     "commentAdded": "Comment added successfully",
     "commentAddFailed": "Failed to add comment. Please try again.",
     "commentUpdated": "Comment updated successfully",
-    "commentUpdateFailed": "Failed to update comment. Please try again.",
+    "commentUpdateFailed": "Failed to update comment. Please try again",
     "posting": "Posting...",    
     "postComment": "Post Comment",
     "resolveTicket": "Close Ticket",
