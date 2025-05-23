@@ -129,12 +129,10 @@ const TicketDetails = () => {
   const canEditComment = (comment: Comment) => {
     return user && comment.userId === user.id;
   };
-    // Determinar si el ticket tiene asignado un admin
+  // Determinar si el ticket tiene asignado un admin
   const hasAssignedAdmin = !!ticket?.assignedTo;
-  // Determinar si el admin actual está viendo el ticket
-  const isCurrentUserAdmin = role === 'admin';
-  // Lógica para mostrar el botón de asignación
-  const showAssignButton = isCurrentUserAdmin && !hasAssignedAdmin;
+  // Lógica para mostrar el botón de asignación (visible para todos los admins, incluso si ya hay uno asignado)
+  const showAssignButton = isAdmin;
   
   // Gestionar la asignación del ticket al admin actual
   const handleAssignToMe = () => {
@@ -192,40 +190,41 @@ const TicketDetails = () => {
                 <span className="text-sm text-gray-500">#{ticket.shortId || 'N/A'}</span>
               </div>
               <CardTitle className="text-2xl">{ticket.title}</CardTitle>
-            </div>
-            
-            <div className="flex gap-2">              <Select
-                value={ticket.priority}
-                onValueChange={handlePriorityChange}
-                disabled={isUpdatingPriority}
-              >
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder={t('priority')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="toassign">{t('priority_toassign')}</SelectItem>
-                  <SelectItem value="low">{t('priority_low')}</SelectItem>
-                  <SelectItem value="medium">{t('priority_medium')}</SelectItem>
-                  <SelectItem value="high">{t('priority_high')}</SelectItem>
-                  <SelectItem value="critical">{t('priority_critical')}</SelectItem>
-                </SelectContent>
-              </Select>
-              
-              <Select
-                value={ticket.status as Status}
-                onValueChange={(value) => handleStatusChange(value as Status)}
-                disabled={isUpdatingStatus}
-              >
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder={t('status')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="open">{t('status_open')}</SelectItem>
-                  <SelectItem value="in_progress">{t('status_in_progress')}</SelectItem>
-                  <SelectItem value="resolved">{t('status_resolved')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            </div>              {isAdmin && (
+                <div className="flex gap-2">
+                  <Select
+                    value={ticket.priority}
+                    onValueChange={handlePriorityChange}
+                    disabled={isUpdatingPriority}
+                  >
+                    <SelectTrigger className="w-[140px]">
+                      <SelectValue placeholder={t('priority')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="toassign">{t('priority_toassign')}</SelectItem>
+                      <SelectItem value="low">{t('priority_low')}</SelectItem>
+                      <SelectItem value="medium">{t('priority_medium')}</SelectItem>
+                      <SelectItem value="high">{t('priority_high')}</SelectItem>
+                      <SelectItem value="critical">{t('priority_critical')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select
+                    value={ticket.status as Status}
+                    onValueChange={(value) => handleStatusChange(value as Status)}
+                    disabled={isUpdatingStatus}
+                  >
+                    <SelectTrigger className="w-[140px]">
+                      <SelectValue placeholder={t('status')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="open">{t('status_open')}</SelectItem>
+                      <SelectItem value="in_progress">{t('status_in_progress')}</SelectItem>
+                      <SelectItem value="resolved">{t('status_resolved')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
           </div>
           
           <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2 text-sm">            <div className="flex items-center">
@@ -246,8 +245,7 @@ const TicketDetails = () => {
               <span>{t('assignedTo')}: </span>
               <span className="ml-1 font-medium">
                 {ticket.assignedTo ? (ticket.assigneeName || t('unnamed')) : t('noAdminAssigned')}
-              </span>
-              {showAssignButton && (
+              </span>              {showAssignButton && (
                 <Button 
                   size="sm" 
                   variant="outline" 
@@ -255,7 +253,8 @@ const TicketDetails = () => {
                   onClick={handleAssignToMe}
                   disabled={isAssigningTicket}
                 >
-                  {isAssigningTicket ? "..." : t('assignToMe')}
+                  {isAssigningTicket ? "..." : 
+                   (hasAssignedAdmin ? t('reassignToMe') : t('assignToMe'))}
                 </Button>
               )}
             </div>
@@ -387,18 +386,20 @@ const TicketDetails = () => {
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             disabled={isAddingComment}
-          />
-          <div className="flex justify-between w-full">
-            <Button 
-              onClick={() => handleStatusChange("resolved")}
-              disabled={isUpdatingStatus || ticket.status === "resolved"}
-            >
-              <Check className="mr-1 h-4 w-4" />
-              {t('resolveTicket')}
-            </Button>
+          />          <div className="flex justify-between w-full">
+            {isAdmin && (
+              <Button 
+                onClick={() => handleStatusChange("resolved")}
+                disabled={isUpdatingStatus || ticket.status === "resolved"}
+              >
+                <Check className="mr-1 h-4 w-4" />
+                {t('resolveTicket')}
+              </Button>
+            )}
             <Button 
               onClick={handleAddComment} 
               disabled={isAddingComment || !newComment.trim()}
+              className={isAdmin ? "" : "ml-auto"}
             >
               {isAddingComment ? t('posting') : t('postComment')}
             </Button>

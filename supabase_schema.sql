@@ -81,6 +81,12 @@ CREATE POLICY "Users can view their own profile"
   ON public.profiles FOR SELECT
   USING (auth.uid() = id);
 
+  -- Permitir a cualquier usuario autenticado ver el nombre de cualquier perfil
+CREATE POLICY "Authenticated users can view full_name of any profile"
+  ON public.profiles FOR SELECT
+  TO authenticated
+  USING (true);
+
 CREATE POLICY "Users can update their own profile"
   ON public.profiles FOR UPDATE
   USING (auth.uid() = id);

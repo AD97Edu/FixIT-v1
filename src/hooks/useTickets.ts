@@ -245,17 +245,41 @@ export const useCreateTicket = () => {
   });
 };
 
-export const useUpdateTicketStatus = () => {
+// Modificación de useUpdateTicketPriority
+export const useUpdateTicketPriority = () => {
   const queryClient = useQueryClient();
+  const { role } = useUserRole();
+  const { user } = useAuth();
+  
   return useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: Status }) => {
-      const { error } = await supabase
+    mutationFn: async ({ id, priority }: { id: string; priority: string }) => {
+      // Comprobamos si es admin/agent antes de la actualización
+      if (role !== 'admin' && role !== 'agent') {
+        // Verifica si el ticket pertenece al usuario actual antes de permitir la actualización
+        const { data: ticketCheck, error: ticketCheckError } = await supabase
+          .from('tickets')
+          .select('submitted_by')
+          .eq('id', id)
+          .single();
+          
+        if (ticketCheckError) throw ticketCheckError;
+        
+        // Si el ticket no pertenece al usuario actual, lanzamos un error de permiso
+        if (ticketCheck.submitted_by !== user?.id) {
+          throw { code: '42501', message: 'Permission denied' };
+        }
+      }
+      
+      // Si es admin/agent o el ticket le pertenece, procedemos con la actualización
+      const { data, error } = await supabase
         .from('tickets')
-        .update({ status, updated_at: new Date().toISOString() })
-        .eq('id', id);
+        .update({ priority, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single();
+
       if (error) throw error;
-      // No devolvemos datos, solo invalidamos queries
-      return { id, status };
+      return transformTicketData(data);
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
@@ -275,24 +299,56 @@ export const useUpdateTicketStatus = () => {
   });
 };
 
-export const useUpdateTicketPriority = () => {
+// Modificación similar para useUpdateTicketStatus
+export const useUpdateTicketStatus = () => {
   const queryClient = useQueryClient();
+  const { role } = useUserRole();
+  const { user } = useAuth();
   
   return useMutation({
-    mutationFn: async ({ id, priority }: { id: string; priority: string }) => {
-      const { data, error } = await supabase
+    mutationFn: async ({ id, status }: { id: string; status: Status }) => {
+      // Comprobamos si es admin/agent antes de la actualización
+      if (role !== 'admin' && role !== 'agent') {
+        // Verifica si el ticket pertenece al usuario actual antes de permitir la actualización
+        const { data: ticketCheck, error: ticketCheckError } = await supabase
+          .from('tickets')
+          .select('submitted_by')
+          .eq('id', id)
+          .single();
+          
+        if (ticketCheckError) throw ticketCheckError;
+        
+        // Si el ticket no pertenece al usuario actual, lanzamos un error de permiso
+        if (ticketCheck.submitted_by !== user?.id) {
+          throw { code: '42501', message: 'Permission denied' };
+        }
+      }
+      
+      // Si es admin/agent o el ticket le pertenece, procedemos con la actualización
+      const { error } = await supabase
         .from('tickets')
-        .update({ priority, updated_at: new Date().toISOString() })
+        .update({ status, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select()
-        .single();
-
+        .select();
+        
       if (error) throw error;
-      return transformTicketData(data);
+      // No devolvemos datos, solo invalidamos queries
+      return { id, status };
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
       queryClient.invalidateQueries({ queryKey: ['tickets', variables.id] });
+    },
+    onError: (error: any) => {
+      console.error("Mutation error details:", {
+        message: error?.message,
+        details: error?.details,
+        hint: error?.hint,
+        code: error?.code
+      });
+      if (error?.code === "42501") {
+        console.error("This appears to be a permissions error. Check Supabase RLS policies.");
+      }
     }
   });
 };

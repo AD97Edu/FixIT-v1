@@ -5,6 +5,7 @@ import PriorityBadge from "./PriorityBadge";
 import StatusBadge from "./StatusBadge";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TicketCardProps {
   ticket: Ticket;
@@ -12,6 +13,7 @@ interface TicketCardProps {
 
 const TicketCard = ({ ticket }: TicketCardProps) => {
   const { t } = useLanguage();
+  const isMobile = useIsMobile();
   
   // Función segura para formatear la fecha
   const formatCreationDate = () => {
@@ -25,21 +27,31 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
   };  return (
     <Card className="card-enhanced hover:translate-y-[-4px]">
       <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <Link to={`/tickets/${ticket.id}`}>
-          <CardTitle className="text-xl truncate">{ticket.title}</CardTitle>
-          </Link>
-
-          <div className="flex items-center">
-            <span className="text-sm text-muted-foreground mr-1">{t('priority')}:</span>
-            <PriorityBadge priority={ticket.priority} />
+        <div className="flex flex-col gap-2">
+          {/* Responsive: On mobile, stack title and status/priority vertically; on desktop, keep them in a row */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
+            <Link to={`/tickets/${ticket.id}`} className="flex-1 min-w-0">
+              <CardTitle className="text-xl truncate max-w-full" title={ticket.title}>{ticket.title}</CardTitle>
+            </Link>
+            {/* On mobile, show status and priority below title; on desktop, right of title */}
+            <div className={`flex flex-col sm:flex-row flex-shrink-0 mt-1 sm:mt-0 ml-0 sm:ml-2 gap-1 sm:gap-2 w-full sm:w-auto`}>
+              {/* Estado y badge */}
+              <div className="flex items-center">
+                <span className="text-sm text-muted-foreground mr-1 whitespace-nowrap">{t('status')}:</span>
+                <StatusBadge status={ticket.status} />
+              </div>
+              {/* Prioridad y badge */}
+              <div className="flex items-center">
+                <span className="text-sm text-muted-foreground mr-1 whitespace-nowrap">{t('priority')}:</span>
+                <PriorityBadge priority={ticket.priority} />
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="flex justify-between items-center mt-1">
-          <StatusBadge status={ticket.status} />
-          <span className="text-xs text-muted-foreground">
-            #{ticket.shortId || 'N/A'}
-          </span>
+          {/* Identificador corto debajo en móvil, a la derecha en desktop */}
+          <div className="flex justify-between items-center mt-1">
+            <span className="text-xs text-muted-foreground">#{ticket.shortId || 'N/A'}</span>
+            {/* Espacio reservado para otros elementos si se desea */}
+          </div>
         </div>
       </CardHeader>
       <CardContent>
