@@ -25,21 +25,20 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
   };  return (
     <Card className="card-enhanced hover:translate-y-[-4px]">
       <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <Link to={`/tickets/${ticket.id}`}>
-          <CardTitle className="text-xl truncate">{ticket.title}</CardTitle>
-          </Link>
-
-          <div className="flex items-center">
-            <span className="text-sm text-muted-foreground mr-1">{t('priority')}:</span>
-            <PriorityBadge priority={ticket.priority} />
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-start gap-2">
+            <Link to={`/tickets/${ticket.id}`} className="flex-1 min-w-0">
+              <CardTitle className="text-xl truncate max-w-full" title={ticket.title}>{ticket.title}</CardTitle>
+            </Link>
+            <div className="flex items-center flex-shrink-0 ml-2">
+              <span className="text-sm text-muted-foreground mr-1 whitespace-nowrap">{t('priority')}:</span>
+              <PriorityBadge priority={ticket.priority} />
+            </div>
           </div>
-        </div>
-        <div className="flex justify-between items-center mt-1">
-          <StatusBadge status={ticket.status} />
-          <span className="text-xs text-muted-foreground">
-            #{ticket.shortId || 'N/A'}
-          </span>
+          <div className="flex justify-between items-center mt-1">
+            <StatusBadge status={ticket.status} />
+            <span className="text-xs text-muted-foreground">#{ticket.shortId || 'N/A'}</span>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
