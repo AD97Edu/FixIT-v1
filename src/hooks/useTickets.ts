@@ -26,6 +26,9 @@ const transformTicketData = (ticket: any): Ticket => {
     updatedAt: ticket.updated_at,
     assignedTo: ticket.assigned_to,
     submittedBy: ticket.submitted_by,
+    // Añadimos los campos de nombre si existen
+    submitterName: ticket.submitter_name,
+    assigneeName: ticket.assignee_name,
     imageUrls: Array.isArray(ticket.image_urls) ? ticket.image_urls : [] // Garantiza que siempre es un array
   };
 };
@@ -49,7 +52,44 @@ export const useTickets = () => {
       const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data.map(transformTicketData) as Ticket[];
+      
+      // Transformar los tickets básicos
+      const tickets = data.map(transformTicketData) as Ticket[];
+      
+      // Obtener todos los IDs únicos de usuarios
+      const userIds = new Set<string>();
+      tickets.forEach(ticket => {
+        if (ticket.submittedBy) userIds.add(ticket.submittedBy);
+        if (ticket.assignedTo) userIds.add(ticket.assignedTo);
+      });
+      
+      // Cargar los datos de todos los usuarios en una sola consulta
+      if (userIds.size > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', Array.from(userIds));
+        
+        if (profilesData && profilesData.length > 0) {
+          // Crear un mapa de ID a nombre
+          const userMap = new Map<string, string>();
+          profilesData.forEach(profile => {
+            userMap.set(profile.id, profile.full_name || 'No Name');
+          });
+          
+          // Asignar nombres a cada ticket
+          tickets.forEach(ticket => {
+            if (ticket.submittedBy) {
+              ticket.submitterName = userMap.get(ticket.submittedBy) || 'Unknown';
+            }
+            if (ticket.assignedTo) {
+              ticket.assigneeName = userMap.get(ticket.assignedTo) || 'Unknown';
+            }
+          });
+        }
+      }
+      
+      return tickets;
     },
     enabled: !!user // Solo ejecutar la consulta si hay un usuario autenticado
   });
@@ -62,7 +102,10 @@ export const useTicket = (id: string) => {
   return useQuery({
     queryKey: ['tickets', id, role, user?.id],
     queryFn: async () => {
-      let query = supabase.from('tickets').select('*').eq('id', id);
+      // Primero obtenemos el ticket
+      let query = supabase.from('tickets')
+        .select('*')
+        .eq('id', id);
       
       // Si el usuario es normal (user), verificamos que el ticket le pertenezca
       if (role === 'user' && user?.id) {
@@ -79,7 +122,37 @@ export const useTicket = (id: string) => {
         throw error;
       }
       
-      return transformTicketData(data) as Ticket;
+      // Transformamos el ticket a nuestro formato
+      const ticket = transformTicketData(data) as Ticket;
+      
+      // Obtenemos los nombres de los usuarios
+      // Para el usuario que lo ha enviado
+      if (ticket.submittedBy) {
+        const { data: submitterData } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', ticket.submittedBy)
+          .single();
+        
+        if (submitterData) {
+          ticket.submitterName = submitterData.full_name || 'No Name';
+        }
+      }
+      
+      // Para el usuario asignado, si existe
+      if (ticket.assignedTo) {
+        const { data: assigneeData } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', ticket.assignedTo)
+          .single();
+        
+        if (assigneeData) {
+          ticket.assigneeName = assigneeData.full_name || 'No Name';
+        }
+      }
+      
+      return ticket;
     },
     enabled: !!user && !!id
   });
@@ -243,7 +316,44 @@ export const useRecentTickets = (limit: number = 6) => {
         .limit(limit);
 
       if (error) throw error;
-      return data.map(transformTicketData) as Ticket[];
+      
+      // Transformar los tickets básicos
+      const tickets = data.map(transformTicketData) as Ticket[];
+      
+      // Obtener todos los IDs únicos de usuarios
+      const userIds = new Set<string>();
+      tickets.forEach(ticket => {
+        if (ticket.submittedBy) userIds.add(ticket.submittedBy);
+        if (ticket.assignedTo) userIds.add(ticket.assignedTo);
+      });
+      
+      // Cargar los datos de todos los usuarios en una sola consulta
+      if (userIds.size > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', Array.from(userIds));
+        
+        if (profilesData && profilesData.length > 0) {
+          // Crear un mapa de ID a nombre
+          const userMap = new Map<string, string>();
+          profilesData.forEach(profile => {
+            userMap.set(profile.id, profile.full_name || 'No Name');
+          });
+          
+          // Asignar nombres a cada ticket
+          tickets.forEach(ticket => {
+            if (ticket.submittedBy) {
+              ticket.submitterName = userMap.get(ticket.submittedBy) || 'Unknown';
+            }
+            if (ticket.assignedTo) {
+              ticket.assigneeName = userMap.get(ticket.assignedTo) || 'Unknown';
+            }
+          });
+        }
+      }
+      
+      return tickets;
     },
     enabled: !!user
   });

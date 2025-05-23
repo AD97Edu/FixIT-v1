@@ -237,12 +237,15 @@ const TicketDetails = () => {
               <span>{t('category')}: {t(`category_${ticket.category}`)}</span>
             </div>            <div className="flex items-center">
               <User className="mr-2 h-4 w-4" />
-              <span>{t('submittedBy')}: {ticket.submittedBy}</span>
+              <span>{t('submittedBy')}: </span>
+              <span className="ml-1 font-medium">
+                {ticket.submitterName || t('unnamed')}
+              </span>
             </div>            <div className="flex items-center">
               <User className="mr-2 h-4 w-4" />
               <span>{t('assignedTo')}: </span>
               <span className="ml-1 font-medium">
-                {ticket.assignedTo ? ticket.assignedTo : t('noAdminAssigned')}
+                {ticket.assignedTo ? (ticket.assigneeName || t('unnamed')) : t('noAdminAssigned')}
               </span>
               {showAssignButton && (
                 <Button 

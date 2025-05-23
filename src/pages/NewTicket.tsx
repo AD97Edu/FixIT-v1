@@ -121,7 +121,7 @@ const NewTicket = () => {
         ...values,
         userId: user.id,
         status: "open",
-        priority: "info", // Por defecto, será asignado por un administrador
+        priority: "to_assign", // Por defecto, será asignado por un administrador
         imageUrls: uploadedImageUrls
       }, {
         onSuccess: (ticket) => {
