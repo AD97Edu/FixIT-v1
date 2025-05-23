@@ -242,7 +242,12 @@ const translations = {
     "suggestionStep3": "Describe your suggestion in detail, explaining the benefits.",
     "suggestionStep4": "Submit your suggestion and our technical team will review it.",
     "viewFeedbackGuidelines": "View feedback guidelines",
-    "feedbackDesc": "Submit your feedback directly to our technical department to help us improve."
+    "feedbackDesc": "Submit your feedback directly to our technical department to help us improve.",
+
+    //Image attach
+    "attachImages": "Attach Images",
+    "uploadImagesDesc": "Upload images related to your issue. You can attach multiple images.",
+    "clickToUpload": "Click to upload images",
   },  es: {
     // Navegación y menú lateral (existentes)
     "recentTickets": "Tickets abiertos recientemente",
@@ -486,7 +491,12 @@ const translations = {
     "suggestionStep3": "Describe tu sugerencia en detalle, explicando los beneficios.",
     "suggestionStep4": "Envía tu sugerencia y nuestro equipo técnico la revisará.",
     "viewFeedbackGuidelines": "Ver pautas para sugerencias",
-    "feedbackDesc": "Envía tus comentarios directamente a nuestro departamento técnico para ayudarnos a mejorar."
+    "feedbackDesc": "Envía tus comentarios directamente a nuestro departamento técnico para ayudarnos a mejorar.",
+  
+    //Image attach
+    "attachImages": "Adjuntar Imágenes",
+    "uploadImagesDesc": "Sube imágenes relacionadas con tu problema. Puedes adjuntar varias imágenes.",
+    "clickToUpload": "Haz clic para subir imágenes",
   }
 };
 

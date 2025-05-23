@@ -4,8 +4,7 @@ import './index.css'
 
 // Set the initial theme before rendering the app
 const setInitialTheme = () => {
-  const theme = localStorage.getItem('theme') || 
-    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const theme = localStorage.getItem('theme') || 'dark';
   
   document.documentElement.classList.add(theme);
 };

@@ -16,6 +16,11 @@ import { useFilteredNavigation } from "@/hooks/useFilteredNavigation";
 // Definimos los navItems pero usaremos las traducciones para los títulos
 const navItems = [
 	{
+		titleKey: "howItWorks",
+		icon: HelpCircle,
+		path: "/how-it-works",
+	},
+	{
 		titleKey: "dashboard",
 		icon: Home,
 		path: "/",
@@ -34,11 +39,6 @@ const navItems = [
 		titleKey: "search",
 		icon: Search,
 		path: "/search",
-	},
-	{
-		titleKey: "howItWorks",
-		icon: HelpCircle,
-		path: "/how-it-works",
 	},
 	{
 		titleKey: "profile",

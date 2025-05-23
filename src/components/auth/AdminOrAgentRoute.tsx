@@ -30,9 +30,12 @@ export function AdminOrAgentRoute({ children }: AdminOrAgentRouteProps) {
       </div>
     );
   }
-
   if (!canAccess) {
-    toast.error("No tienes permisos para acceder a esta página");
+    // Solo mostramos el mensaje de error si el usuario tiene un rol definido
+    // pero no tiene permiso (por ejemplo, si es 'user')
+    if (role && role !== 'admin' && role !== 'agent') {
+      toast.error("No tienes permisos para acceder a esta página");
+    }
     // Redirigir al usuario a su página correspondiente según su rol
     return <Navigate to={getHomeRouteForRole(role)} replace />;
   }

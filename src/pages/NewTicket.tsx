@@ -138,10 +138,9 @@ const NewTicket = () => {
       toast.error("An error occurred while submitting the form");
     }
   };
-
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">{t('createTicket')}</h1>
+      <h1 className="text-3xl font-bold mb-6">{t('createTicket')}</h1>
       
       {showDiagnosticHelp && (
         <Alert variant="destructive" className="mb-6">
