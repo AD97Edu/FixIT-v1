@@ -1,5 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
+import type { PostgrestFilterBuilder } from '@supabase/postgrest-js';
+
+declare module '@supabase/supabase-js' {
+  interface SupabaseClient {
+    rpc<T extends Record<string, unknown> = any>(
+      fn: 'delete_user_with_related_data' | 'is_admin' | 'get_suggestions_with_profiles' | 'delete_suggestion_alternative' | 'get_table_schema',
+      params?: object
+    ): PostgrestFilterBuilder<any, T, T, any, any>;
+  }
+}
 
 // Temporalmente usando las claves directamente hasta que las variables de entorno funcionen
 const SUPABASE_URL = "https://mjkvqcqtvbtmpjkexjdi.supabase.co";

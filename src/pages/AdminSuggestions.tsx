@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSuggestions } from '@/hooks/useSuggestions';
-import { Suggestion } from '@/types';
+import { SuggestionWithProfile } from '@/types';
 import { toast } from 'sonner';
 import {
   Table,
@@ -31,10 +31,10 @@ import { useLanguage } from '@/hooks/useLanguage';
 export default function AdminSuggestions() {
   const { t } = useLanguage();
   const { getAllSuggestions, deleteSuggestion, loading } = useSuggestions();
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [suggestions, setSuggestions] = useState<SuggestionWithProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [suggestionToDelete, setSuggestionToDelete] = useState<Suggestion | null>(null);
+  const [suggestionToDelete, setSuggestionToDelete] = useState<SuggestionWithProfile | null>(null);
 
   useEffect(() => {
     loadSuggestions();
@@ -55,7 +55,7 @@ export default function AdminSuggestions() {
     }
   };
 
-  const handleDelete = (suggestion: Suggestion) => {
+  const handleDelete = (suggestion: SuggestionWithProfile) => {
     setSuggestionToDelete(suggestion);
     setDeleteDialogOpen(true);
   };
@@ -121,7 +121,7 @@ export default function AdminSuggestions() {
                           {suggestion.description}
                         </div>
                       </TableCell>
-                      <TableCell>{suggestion.user_name}</TableCell>
+                      <TableCell>{suggestion.profiles?.full_name || 'Sin nombre'}</TableCell>
                       <TableCell>{formatDate(suggestion.created_at)}</TableCell>
                       <TableCell className="text-right">
                         <Button 
@@ -151,7 +151,7 @@ export default function AdminSuggestions() {
           <AlertDialogHeader>
             <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción eliminará permanentemente la sugerencia de {suggestionToDelete?.user_name}: "{suggestionToDelete?.title}".
+              Esta acción eliminará permanentemente la sugerencia de {suggestionToDelete?.profiles?.full_name || 'Sin nombre'}: "{suggestionToDelete?.title}".
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

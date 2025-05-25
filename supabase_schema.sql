@@ -63,6 +63,7 @@ ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.usuario_rol ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tickets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.suggestions ENABLE ROW LEVEL SECURITY;
 
 -- Create function to check if user is admin
 CREATE OR REPLACE FUNCTION public.is_admin(user_id UUID)
@@ -140,6 +141,25 @@ CREATE POLICY "Users can update their own comments"
 
 CREATE POLICY "Admins can update any comment"
   ON public.comments FOR UPDATE
+  USING (public.is_admin(auth.uid()));
+
+-- Suggestions policies
+CREATE POLICY "Users can view all suggestions"
+  ON public.suggestions FOR SELECT
+  TO authenticated
+  USING (true);
+
+CREATE POLICY "Users can create suggestions"
+  ON public.suggestions FOR INSERT
+  TO authenticated
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own suggestions"
+  ON public.suggestions FOR DELETE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Admins can manage suggestions"
+  ON public.suggestions FOR ALL
   USING (public.is_admin(auth.uid()));
 
 -- Create triggers for updated_at timestamp
@@ -227,3 +247,80 @@ CREATE TRIGGER on_auth_user_created
 AFTER INSERT ON auth.users
 FOR EACH ROW
 EXECUTE FUNCTION public.handle_new_user();
+
+-- ========= DELETE SUGGESTION RPC & POLICIES =========
+
+-- Replace ambiguous delete_suggestion_alternative RPC
+CREATE OR REPLACE FUNCTION public.delete_suggestion_alternative(suggestion_id UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+  suggestion_user_id UUID;
+  is_user_admin BOOLEAN;
+BEGIN
+  -- fetch the owner of the suggestion
+  SELECT s.user_id INTO suggestion_user_id
+    FROM public.suggestions s
+   WHERE s.id = suggestion_id;
+  IF NOT FOUND THEN
+    RETURN FALSE;
+  END IF;
+
+  -- check if current user is admin
+  SELECT public.is_admin(auth.uid()) INTO is_user_admin;
+
+  -- allow deletion if admin or owner
+  IF is_user_admin OR auth.uid() = suggestion_user_id THEN
+    DELETE FROM public.suggestions WHERE id = suggestion_id;
+    RETURN TRUE;
+  END IF;
+
+  RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- ensure RLS on suggestions
+ALTER TABLE public.suggestions ENABLE ROW LEVEL SECURITY;
+
+DO $$
+BEGIN
+  -- select policy
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+     WHERE tablename='suggestions' AND policyname='Users can view all suggestions'
+  ) THEN
+    CREATE POLICY "Users can view all suggestions"
+      ON public.suggestions FOR SELECT
+      TO authenticated USING (true);
+  END IF;
+
+  -- insert policy
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+     WHERE tablename='suggestions' AND policyname='Users can create suggestions'
+  ) THEN
+    CREATE POLICY "Users can create suggestions"
+      ON public.suggestions FOR INSERT
+      TO authenticated WITH CHECK (auth.uid() = user_id);
+  END IF;
+
+  -- delete own suggestions policy
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+     WHERE tablename='suggestions' AND policyname='Users can delete own suggestions'
+  ) THEN
+    CREATE POLICY "Users can delete own suggestions"
+      ON public.suggestions FOR DELETE
+      USING (auth.uid() = user_id);
+  END IF;
+
+  -- admin full access policy
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+     WHERE tablename='suggestions' AND policyname='Admins can manage suggestions'
+  ) THEN
+    CREATE POLICY "Admins can manage suggestions"
+      ON public.suggestions FOR ALL
+      USING (public.is_admin(auth.uid()));
+  END IF;
+END
+$$;

@@ -89,20 +89,16 @@ export function useSuggestions() {
     } finally {
       setLoading(false);
     }
-  };
-
-  /**
+  };  /**
    * Obtiene todas las sugerencias (para administradores)
    * @returns Lista de todas las sugerencias con información del usuario o null si ocurrió un error
-   */  const getAllSuggestions = async (): Promise<Suggestion[] | null> => {
+   */  const getAllSuggestions = async (): Promise<SuggestionWithProfile[] | null> => {
     try {
       setLoading(true);
       
-      // Primero obtenemos todas las sugerencias
-      const { data: suggestions, error: suggestionsError } = await supabase
-        .from('suggestions')
-        .select('*')
-        .order('created_at', { ascending: false });
+      // Utilizamos la función SQL que hemos creado en Supabase
+      const { data: suggestionsData, error: suggestionsError } = await supabase
+        .rpc('get_suggestions_with_profiles');
       
       if (suggestionsError) {
         console.error('Error fetching all suggestions:', suggestionsError);
@@ -110,38 +106,24 @@ export function useSuggestions() {
         return null;
       }
 
-      if (!suggestions) {
+      if (!suggestionsData || suggestionsData.length === 0) {
         return [];
       }
-
-      // Obtener los IDs únicos de usuarios
-      const userIds = [...new Set(suggestions.map(s => s.user_id))];
       
-      // Obtener los perfiles de los usuarios
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', userIds);
-        
-      if (profilesError) {
-        console.error('Error fetching user profiles:', profilesError);
-      }
-      
-      // Crear un mapa de id -> nombre para búsqueda rápida
-      const userNameMap = new Map();
-      if (profiles) {
-        profiles.forEach(profile => {
-          userNameMap.set(profile.id, profile.full_name || 'Sin nombre');
-        });
-      }
-
-      // Transformar las sugerencias para incluir los nombres de usuario
-      const suggestionsWithNames = suggestions.map(suggestion => ({
+      // Transformamos los datos al formato esperado por la interfaz SuggestionWithProfile
+      const suggestionsWithProfiles = suggestionsData.map(suggestion => ({
         ...suggestion,
-        user_name: userNameMap.get(suggestion.user_id) || 'Usuario desconocido'
+        profiles: {
+          full_name: suggestion.full_name
+        }
       }));
       
-      return suggestionsWithNames;
+      // Eliminamos la propiedad full_name que ya no necesitamos
+      suggestionsWithProfiles.forEach(suggestion => {
+        delete suggestion.full_name;
+      });
+      
+      return suggestionsWithProfiles as SuggestionWithProfile[];
     } catch (error) {
       console.error('Error in getAllSuggestions:', error);
       toast.error('Error al obtener las sugerencias');
@@ -150,37 +132,42 @@ export function useSuggestions() {
       setLoading(false);
     }
   };
-
   /**
-   * Elimina una sugerencia
-   * @param id ID de la sugerencia a eliminar
-   * @returns true si se eliminó correctamente, false en caso contrario
-   */
-  const deleteSuggestion = async (id: string): Promise<boolean> => {
-    try {
-      setLoading(true);
-      
-      const { error } = await supabase
-        .from('suggestions')
-        .delete()
-        .eq('id', id);
-      
-      if (error) {
-        console.error('Error deleting suggestion:', error);
-        toast.error('Error al eliminar la sugerencia');
-        return false;
-      }
-      
-      toast.success('Sugerencia eliminada correctamente');
-      return true;
-    } catch (error) {
-      console.error('Error in deleteSuggestion:', error);
+ * Elimina una sugerencia usando la función RPC alternativa
+ * @param id ID de la sugerencia a eliminar
+ * @returns true si se eliminó correctamente, false en caso contrario
+ */
+const deleteSuggestion = async (id: string): Promise<boolean> => {
+  try {
+    setLoading(true);
+    
+    // Utilizamos la función RPC alternativa
+    const { data, error } = await supabase
+      .rpc('delete_suggestion_alternative', { 
+      target_suggestion_id: id 
+      });
+    
+    if (error) {
+      console.error('Error deleting suggestion:', error);
       toast.error('Error al eliminar la sugerencia');
       return false;
-    } finally {
-      setLoading(false);
     }
-  };
+    
+    if (data === true) {
+      toast.success('Sugerencia eliminada correctamente');
+      return true;
+    } else {
+      toast.error('No tienes permiso para eliminar esta sugerencia');
+      return false;
+    }
+  } catch (error) {
+    console.error('Error in deleteSuggestion:', error);
+    toast.error('Error al eliminar la sugerencia');
+    return false;
+  } finally {
+    setLoading(false);
+  }
+};
 
   return {
     createSuggestion,
