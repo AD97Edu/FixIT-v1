@@ -80,13 +80,6 @@ const HowItWorks = () => {
               <li>{t('tipProvideSteps')}</li>
             </ul>
           </div>
-
-          <div className="flex justify-end">
-            <div className="flex items-center gap-2 text-primary cursor-pointer">
-              <span>{t('learnMoreTickets')}</span>
-              <MoveRight size={16} />
-            </div>
-          </div>
         </TabsContent>
 
         <TabsContent value="manage" className="space-y-4 pt-4">
