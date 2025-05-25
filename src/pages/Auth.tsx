@@ -19,17 +19,27 @@ const Auth = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    try {
+    setIsLoading(true);    try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error, data } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         if (error) throw error;
+        
+        // Obtener rol del usuario desde la tabla usuario_rol
+        const { data: roleData } = await supabase
+          .from('usuario_rol')
+          .select('rol')
+          .eq('user_id', data.user.id)
+          .single();
+          
+        const userRole = roleData?.rol || 'user';
+        
         toast.success("Logged in successfully!");
-        navigate("/");
+        // Usar getHomeRouteForRole para redirigir según el rol
+        const homeRoute = userRole === 'admin' ? '/' : '/how-it-works';
+        navigate(homeRoute);
       } else {
         const { error } = await supabase.auth.signUp({
           email,

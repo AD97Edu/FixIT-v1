@@ -115,7 +115,7 @@ const HowItWorks = () => {
             <p className="text-center text-muted-foreground">{t('startCreatingTicket')}</p>
             <Button 
               size="lg" 
-              onClick={() => navigate('/tickets')}
+              onClick={() => navigate('/tickets/new')}
               className="flex items-center gap-2"
             >
               <Plus size={18} />
