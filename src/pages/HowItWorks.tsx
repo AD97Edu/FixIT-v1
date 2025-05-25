@@ -115,7 +115,7 @@ const HowItWorks = () => {
             <p className="text-center text-muted-foreground">{t('startCreatingTicket')}</p>
             <Button 
               size="lg" 
-              onClick={() => navigate('/ticket')}
+              onClick={() => navigate('/tickets')}
               className="flex items-center gap-2"
             >
               <Plus size={18} />
@@ -123,12 +123,6 @@ const HowItWorks = () => {
             </Button>
           </div>
 
-          <div className="flex justify-end mt-4">
-            <div className="flex items-center gap-2 text-primary cursor-pointer">
-              <span>{t('learnMoreTickets')}</span>
-              <MoveRight size={16} />
-            </div>
-          </div>
         </TabsContent>
 
         <TabsContent value="manage" className="space-y-4 pt-4">
