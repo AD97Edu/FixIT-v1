@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "sonner";
+import { getHomeRouteForRole } from "@/utils/roleRedirects";
 
 interface AdminOnlyRouteProps {
   children: ReactNode;
@@ -23,7 +24,7 @@ export function AdminOnlyRoute({ children }: AdminOnlyRouteProps) {
 
   if (role !== 'admin') {
     toast.error("Acceso denegado: Se requieren permisos de administrador");
-    return <Navigate to="/tickets" replace />;
+    return <Navigate to={getHomeRouteForRole(role)} replace />;
   }
 
   return <>{children}</>;

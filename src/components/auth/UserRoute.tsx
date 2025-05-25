@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "sonner";
+import { getHomeRouteForRole } from "@/utils/roleRedirects";
 
 interface UserRouteProps {
   children: ReactNode;
@@ -31,7 +32,7 @@ export function UserRoute({ children }: UserRouteProps) {
 
   if (!canAccess) {
     toast.error("No tienes permisos para acceder a esta página");
-    return <Navigate to="/tickets" replace />;
+    return <Navigate to={getHomeRouteForRole(role)} replace />;
   }
 
   return <>{children}</>;
