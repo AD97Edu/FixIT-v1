@@ -5,11 +5,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import { UserRoute } from "@/components/auth/UserRoute";
+import { AuthenticatedRoute } from "@/components/auth/AuthenticatedRoute";
 import { AdminOnlyRoute } from "@/components/auth/AdminOnlyRoute";
 import { AdminOrAgentRoute } from "@/components/auth/AdminOrAgentRoute";
 import { UserTicketsRoute } from "@/components/auth/UserTicketsRoute";
 import { UserOnlyRoute } from "@/components/auth/UserOnlyRoute";
+import { UserRoute } from "@/components/auth/UserRoute";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -100,12 +101,14 @@ const App = () => {
                     path="/how-it-works"
                     element={
                       <ProtectedRoute>
-                        <AppLayout>
-                          <HowItWorks />
-                        </AppLayout>
+                        <UserRoute>
+                          <AppLayout>
+                            <HowItWorks />
+                          </AppLayout>
+                        </UserRoute>
                       </ProtectedRoute>
                     }
-                  />                  <Route
+                  /><Route
                     path="/search"
                     element={
                       <ProtectedRoute>

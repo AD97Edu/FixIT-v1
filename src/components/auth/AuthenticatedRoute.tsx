@@ -4,7 +4,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "sonner";
 import { getHomeRouteForRole } from "@/utils/roleRedirects";
 
-interface UserRouteProps {
+interface AuthenticatedRouteProps {
   children: ReactNode;
 }
 
@@ -12,7 +12,7 @@ interface UserRouteProps {
  * Componente que protege rutas para usuarios con cualquier rol válido.
  * Todos los usuarios autenticados (admin, agent, user) pueden acceder.
  */
-export function UserRoute({ children }: UserRouteProps) {
+export function AuthenticatedRoute({ children }: AuthenticatedRouteProps) {
   const { role, loading } = useUserRole();
 
   if (loading) {
@@ -34,4 +34,4 @@ export function UserRoute({ children }: UserRouteProps) {
   return <>{children}</>;
 }
 
-export default UserRoute;
+export default AuthenticatedRoute;
