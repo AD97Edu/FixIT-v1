@@ -24,6 +24,7 @@ export function useUserRole() {
 
       try {
         setLoading(true);
+          
         
         // Consultar el rol del usuario en la tabla usuario_rol
         const { data, error } = await supabase
@@ -38,8 +39,7 @@ export function useUserRole() {
             setRole('user');
           } else {
             console.error('Error fetching user role:', error);
-            toast.error('Error al obtener el rol de usuario');
-            setRole(null);
+            setRole('user');
           }
         } else if (data) {
           setRole(data.rol as UserRole);
@@ -48,7 +48,7 @@ export function useUserRole() {
         }
       } catch (error) {
         console.error('Error in useUserRole hook:', error);
-        setRole(null);
+        setRole('user');
       } finally {
         setLoading(false);
       }
@@ -58,4 +58,6 @@ export function useUserRole() {
   }, [user]);
 
   return { role, loading, isAdmin: role === 'admin' };
-} 
+}
+
+export default useUserRole;

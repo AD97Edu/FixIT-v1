@@ -35,7 +35,6 @@ export const useAddComment = () => {
   
   return useMutation({
     mutationFn: async (comment: Omit<Comment, 'id' | 'createdAt'>) => {
-      console.log("Adding comment:", comment); // Para depuración
       
       const commentData = {
         ticket_id: comment.ticketId,
@@ -43,8 +42,6 @@ export const useAddComment = () => {
         user_name: comment.userName,
         content: comment.content
       };
-      
-      console.log("Transformed comment data:", commentData); // Para depuración
       
       const { data, error } = await supabase
         .from('comments')
@@ -56,16 +53,14 @@ export const useAddComment = () => {
         console.error("Supabase error:", error); // Para depuración
         throw error;
       }
-      
-      console.log("Comment added successfully:", data); // Para depuración
+
       return transformCommentData(data);
     },
     onSuccess: (_, variables) => {
-      console.log("Invalidating queries for ticketId:", variables.ticketId); // Para depuración
       queryClient.invalidateQueries({ queryKey: ['comments', variables.ticketId] });
     },
     onError: (error) => {
-      console.error("Error in mutation:", error); // Para depuración
+      console.error("Error in mutation:", error);
     }
   });
 };
@@ -75,7 +70,6 @@ export const useEditComment = () => {
   
   return useMutation({
     mutationFn: async ({ id, content, ticketId }: { id: string; content: string; ticketId: string }) => {
-      console.log("Editing comment:", { id, content }); // Para depuración
       
       const { data, error } = await supabase
         .from('comments')
@@ -85,19 +79,17 @@ export const useEditComment = () => {
         .single();
 
       if (error) {
-        console.error("Supabase error on edit:", error); // Para depuración
+        console.error("Supabase error on edit:", error);
         throw error;
       }
       
-      console.log("Comment edited successfully:", data); // Para depuración
       return transformCommentData(data);
     },
     onSuccess: (_, variables) => {
-      console.log("Invalidating queries after edit for ticketId:", variables.ticketId); // Para depuración
       queryClient.invalidateQueries({ queryKey: ['comments', variables.ticketId] });
     },
     onError: (error) => {
-      console.error("Error in edit mutation:", error); // Para depuración
+      console.error("Error in edit mutation:", error);
     }
   });
 };

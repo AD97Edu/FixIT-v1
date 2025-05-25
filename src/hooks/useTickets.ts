@@ -171,12 +171,10 @@ export const useCreateTicket = () => {
       userId: string;
       imageUrls?: string[]; // Añadimos campo para URLs de imágenes
     }) => {
-      console.log("Creating ticket with data:", ticketData); // Para depuración
       
       try {
         // Primero, verificamos si podemos obtener el perfil del usuario
         const { data: authData } = await supabase.auth.getSession();
-        console.log("Auth session data:", authData);
         
         if (!authData.session?.user?.id) {
           throw new Error("No authenticated user found");
@@ -220,7 +218,6 @@ export const useCreateTicket = () => {
           throw error;
         }
         
-        console.log("Ticket created successfully:", data);
         return transformTicketData(data);
       } catch (error: any) {
         console.error("Full error object:", JSON.stringify(error, null, 2));

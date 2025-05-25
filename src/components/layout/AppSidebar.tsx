@@ -36,6 +36,17 @@ const navItems = [
 		path: "/tickets/new",
 	},
 	{
+		titleKey: "suggestions",
+		icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-lightbulb"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>,
+		path: "/suggestions",
+	},
+	{
+		titleKey: "adminSuggestions",
+		icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-lightbulb"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>,
+		path: "/admin/suggestions",
+		adminOnly: true,
+	},
+	{
 		titleKey: "search",
 		icon: Search,
 		path: "/search",
@@ -59,7 +70,7 @@ export function AppSidebar({
 	collapsed = false,
 }: AppSidebarProps) {
 	const navigate = useNavigate();
-	const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+	const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
 	const { t } = useLanguage();
 	// Obtenemos los items de navegación filtrados según el rol del usuario
 	const filteredNavItems = useFilteredNavigation(navItems);
@@ -67,7 +78,7 @@ export function AppSidebar({
 	// Detectar cambios en el tamaño de pantalla
 	useEffect(() => {
 		const handleResize = () => {
-			setIsMobile(window.innerWidth < 768);
+			setIsMobile(window.innerWidth < 1000);
 		};
 
 		window.addEventListener("resize", handleResize);

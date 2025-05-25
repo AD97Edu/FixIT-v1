@@ -151,8 +151,6 @@ const Admin = () => {
         throw new Error("No se pudo conectar a Supabase");
       }
       
-      console.log("Obteniendo usuarios mediante el servicio...");
-      
       // Utilizamos el servicio para obtener los usuarios
       const userList = await UserService.getAllUsers();
       
@@ -182,7 +180,6 @@ const Admin = () => {
       
       // Intentar obtener usuarios de respaldo
       try {
-        console.log("Intentando obtener usuarios de respaldo...");
         const fallbackUsers = await UserService.getFallbackUsers();
         
         if (fallbackUsers.length > 0) {
@@ -440,10 +437,8 @@ const Admin = () => {
       }
       
       if (profiles && profiles.length > 0) {
-        console.log("Conexión directa exitosa, perfiles obtenidos:", profiles.length);
         toast.success(`Conexión directa exitosa: ${profiles.length} perfiles obtenidos`);
       } else {
-        console.log("Conexión directa exitosa, pero no hay perfiles");
         toast.success("Conexión directa exitosa, pero no hay perfiles");
       }
       

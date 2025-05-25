@@ -9,6 +9,7 @@ import { UserRoute } from "@/components/auth/UserRoute";
 import { AdminOnlyRoute } from "@/components/auth/AdminOnlyRoute";
 import { AdminOrAgentRoute } from "@/components/auth/AdminOrAgentRoute";
 import { UserTicketsRoute } from "@/components/auth/UserTicketsRoute";
+import { UserOnlyRoute } from "@/components/auth/UserOnlyRoute";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -19,6 +20,8 @@ import TicketDetails from "./pages/TicketDetails";
 import HowItWorks from "./pages/HowItWorks";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import Suggestions from "./pages/Suggestions";
+import AdminSuggestions from "./pages/AdminSuggestions";
 import { useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -102,7 +105,7 @@ const App = () => {
                         </AppLayout>
                       </ProtectedRoute>
                     }
-                  /><Route
+                  />                  <Route
                     path="/search"
                     element={
                       <ProtectedRoute>
@@ -111,6 +114,29 @@ const App = () => {
                             <NotFound />
                           </AppLayout>
                         </AdminOrAgentRoute>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/suggestions"
+                    element={
+                      <ProtectedRoute>
+                        <UserOnlyRoute>
+                          <AppLayout>
+                            <Suggestions />
+                          </AppLayout>
+                        </UserOnlyRoute>
+                      </ProtectedRoute>
+                    }
+                  />                  <Route
+                    path="/admin/suggestions"
+                    element={
+                      <ProtectedRoute>
+                        <AdminOnlyRoute>
+                          <AppLayout>
+                            <AdminSuggestions />
+                          </AppLayout>
+                        </AdminOnlyRoute>
                       </ProtectedRoute>
                     }
                   />

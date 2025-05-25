@@ -36,3 +36,25 @@ export interface Comment {
   content: string;
   createdAt: string;
 }
+
+export interface Profile {
+  full_name: string;
+}
+
+export interface SuggestionWithProfile {
+  id: string;
+  user_id: string;
+  title: string;
+  description: string;
+  created_at: string;
+  profiles: Profile;
+}
+
+export interface Suggestion {
+  id: string;
+  user_id: string;
+  title: string;
+  description: string;
+  created_at: string;
+  user_name?: string; // Para mostrar el nombre del usuario en la vista de admin
+}
