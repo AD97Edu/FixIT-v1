@@ -4,6 +4,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getHomeRouteForRole } from "@/utils/roleRedirects";
 
 interface UserTicketsRouteProps {
   children: ReactNode;
@@ -69,10 +70,9 @@ export function UserTicketsRoute({ children }: UserTicketsRouteProps) {
       </div>
     );
   }
-
   if (!canAccess) {
     toast.error("No tienes permiso para ver este ticket");
-    return <Navigate to="/tickets" replace />;
+    return <Navigate to={getHomeRouteForRole(role)} replace />;
   }
 
   return <>{children}</>;

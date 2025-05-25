@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { 
   FileText, 
@@ -9,10 +9,13 @@ import {
   MessageSquare, 
   CheckCircle2, 
   MoveRight,
-  Lightbulb
+  Lightbulb,
+  Plus
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const FeatureCard = ({ 
   icon: Icon, 
@@ -40,6 +43,12 @@ const FeatureCard = ({
 
 const HowItWorks = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("create");
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+  };
 
   return (
     <div className="container py-8 max-w-4xl">
@@ -48,12 +57,32 @@ const HowItWorks = () => {
         {t('howItWorksIntro')}
       </p>
 
-      <Tabs defaultValue="create" className="w-full">
-        <TabsList className="grid grid-cols-4 mb-8">
-          <TabsTrigger value="create">{t('createTickets')}</TabsTrigger>
-          <TabsTrigger value="manage">{t('manageTickets')}</TabsTrigger>
-          <TabsTrigger value="customize">{t('customizeExperience')}</TabsTrigger>
-          <TabsTrigger value="suggestions">{t('sendFeedback')}</TabsTrigger>
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+        <TabsList className="grid grid-cols-1 gap-3 mb-12">
+          <TabsTrigger 
+            value="create" 
+            className="p-3 text-base border border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+          >
+            {t('createTickets')}
+          </TabsTrigger>
+          <TabsTrigger 
+            value="manage" 
+            className="p-3 text-base border border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+          >
+            {t('manageTickets')}
+          </TabsTrigger>
+          <TabsTrigger 
+            value="customize" 
+            className="p-3 text-base border border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+          >
+            {t('customizeExperience')}
+          </TabsTrigger>
+          <TabsTrigger 
+            value="suggestions" 
+            className="p-3 text-base border border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+          >
+            {t('sendFeedback')}
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="create" className="space-y-4 pt-4">
@@ -81,12 +110,19 @@ const HowItWorks = () => {
             </ul>
           </div>
 
-          <div className="flex justify-end">
-            <div className="flex items-center gap-2 text-primary cursor-pointer">
-              <span>{t('learnMoreTickets')}</span>
-              <MoveRight size={16} />
-            </div>
+          <div className="flex flex-col items-center gap-4 mt-8 bg-primary/5 p-6 rounded-lg border border-primary/20">
+            <h3 className="text-xl font-medium">{t('readyToCreateTicket')}</h3>
+            <p className="text-center text-muted-foreground">{t('startCreatingTicket')}</p>
+            <Button 
+              size="lg" 
+              onClick={() => navigate('/tickets')}
+              className="flex items-center gap-2"
+            >
+              <Plus size={18} />
+              {t('createNewTicketNow')}
+            </Button>
           </div>
+
         </TabsContent>
 
         <TabsContent value="manage" className="space-y-4 pt-4">

@@ -10,6 +10,6 @@ export function getHomeRouteForRole(role: UserRole | null | undefined): string {
       return '/'; // Los administradores van al dashboard
     case 'user':
     default:
-      return '/tickets'; // Los usuarios normales van a la lista de tickets
+      return '/how-it-works'; // Los usuarios normales van a la página "Cómo funciona"
   }
 }
