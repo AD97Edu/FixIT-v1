@@ -218,7 +218,7 @@ const translations = {
     "viewFeedbackGuidelines": "View feedback guidelines",
     "feedbackDesc": "Submit your feedback directly to our technical department to help us improve.",
     "suggestionDeleted": "Suggestion deleted successfully",
-    "helpImproveSystem": "Help us improve our system by sharing your ideas and suggestions.",
+    "helpImproveSystem": "Help us improve our system by sharing your ideas and suggestions",
     "newSuggestion": "New suggestion",
     "mySuggestions": "My suggestions",
     "createNewSuggestion": "Create new suggestion",
@@ -232,7 +232,12 @@ const translations = {
     "submittedOn": "Submitted on",
     "attachImages": "Attach images",
     "uploadImagesDesc": "Upload images related to your issue. You can attach multiple images.",
-    "clickToUpload": "Click to upload images"
+    "clickToUpload": "Click to upload images",
+    
+    // New translations for Call-to-Action
+    "readyToCreateTicket": "Ready to create a ticket?",
+    "startCreatingTicket": "Get started by creating a new support ticket",
+    "createNewTicketNow": "Create a new ticket now"
   },
   es: {
     // Navegación y menú lateral (existentes)
@@ -494,6 +499,11 @@ const translations = {
     "suggestionHistory": "Historial de sugerencias que has enviado",
     "noSuggestionsYet": "Aún no has enviado ninguna sugerencia.",
     "submittedOn": "Enviado el",
+    
+    // Nuevas traducciones para Call-to-Action
+    "readyToCreateTicket": "¿Listo para crear un ticket?",
+    "startCreatingTicket": "Comienza creando un nuevo ticket de soporte",
+    "createNewTicketNow": "Crear un nuevo ticket ahora"
   }
 };
 
