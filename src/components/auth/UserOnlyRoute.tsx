@@ -19,7 +19,6 @@ export function UserOnlyRoute({ children }: UserOnlyRouteProps) {
   // y evaluamos directamente si el usuario tiene acceso basado en su rol
   
   if (loading) {
-    console.log('UserOnlyRoute - Cargando...');
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -28,11 +27,8 @@ export function UserOnlyRoute({ children }: UserOnlyRouteProps) {
   }
 
   const hasAccess = role === 'user';
-  console.log('UserOnlyRoute - Rol actual:', role);
-  console.log('UserOnlyRoute - ¿Tiene acceso?:', hasAccess);
 
   if (!hasAccess) {
-    console.log('UserOnlyRoute - Acceso denegado. Rol:', role);
     toast.error("Esta sección es exclusiva para usuarios");
     // Redirigir al admin o agent a su página principal
     return <Navigate to={getHomeRouteForRole(role)} replace />;

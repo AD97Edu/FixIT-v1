@@ -44,7 +44,6 @@ export function useUserRole() {
             setRole('user');
           }
         } else if (data) {
-          console.log('Rol obtenido de la base de datos:', data.rol);
           setRole(data.rol as UserRole);
         } else {
           console.log('No hay datos de rol, asignando rol por defecto: user');

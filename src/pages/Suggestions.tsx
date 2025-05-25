@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useSuggestions, Suggestion, NewSuggestion } from '@/hooks/useSuggestions';
+import { useSuggestions, NewSuggestion } from '@/hooks/useSuggestions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,10 +10,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { Suggestion } from '@/types';
 
 export default function Suggestions() {
   const { t } = useLanguage();
-  const { createSuggestion, getUserSuggestions, loading } = useSuggestions();
+  const { createSuggestion, getUserSuggestions, deleteSuggestion, loading } = useSuggestions();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -59,6 +62,19 @@ export default function Suggestions() {
     }
   };
 
+  const handleDelete = async (suggestionId: string) => {
+    try {
+      const success = await deleteSuggestion(suggestionId);
+      if (success) {
+        setSuggestions((prev) => prev.filter((s) => s.id !== suggestionId));
+        toast.success(t('suggestionDeleted'));
+      }
+    } catch (error) {
+      console.error('Error deleting suggestion:', error);
+      toast.error(t('errorDeletingSuggestion'));
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return format(date, 'dd/MM/yyyy HH:mm', { locale: es });
@@ -66,42 +82,40 @@ export default function Suggestions() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Sugerencias</h1>
+      <h1 className="text-3xl font-bold mb-6">{t('suggestions')}</h1>
       <p className="text-muted-foreground mb-8">
-        Ayúdanos a mejorar nuestro sistema compartiendo tus ideas y sugerencias.
+        {t('helpImproveSystem')}
       </p>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="mb-6">
-          <TabsTrigger value="new">Nueva sugerencia</TabsTrigger>
-          <TabsTrigger value="my-suggestions">Mis sugerencias</TabsTrigger>
+          <TabsTrigger value="new">{t('newSuggestion')}</TabsTrigger>
+          <TabsTrigger value="my-suggestions">{t('mySuggestions')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="new">
           <Card>
             <form onSubmit={handleSubmit}>
               <CardHeader>
-                <CardTitle>Crear nueva sugerencia</CardTitle>
-                <CardDescription>
-                  Comparte tu idea para mejorar nuestro servicio
-                </CardDescription>
+                <CardTitle>{t('createNewSuggestion')}</CardTitle>
+                <CardDescription>{t('shareYourIdea')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="title">Título</Label>
+                  <Label htmlFor="title">{t('title')}</Label>
                   <Input
                     id="title"
-                    placeholder="Título de tu sugerencia"
+                    placeholder={t('suggestionTitlePlaceholder')}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="description">Descripción</Label>
+                  <Label htmlFor="description">{t('description')}</Label>
                   <Textarea
                     id="description"
-                    placeholder="Describe tu sugerencia con más detalle..."
+                    placeholder={t('suggestionDescriptionPlaceholder')}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="min-h-[200px]"
@@ -110,7 +124,7 @@ export default function Suggestions() {
               </CardContent>
               <CardFooter>
                 <Button type="submit" disabled={loading || !title.trim()}>
-                  {loading ? 'Enviando...' : 'Enviar sugerencia'}
+                  {loading ? t('sending') : t('sendSuggestion')}
                 </Button>
               </CardFooter>
             </form>
@@ -120,10 +134,8 @@ export default function Suggestions() {
         <TabsContent value="my-suggestions">
           <Card>
             <CardHeader>
-              <CardTitle>Mis sugerencias</CardTitle>
-              <CardDescription>
-                Historial de sugerencias que has enviado
-              </CardDescription>
+              <CardTitle>{t('mySuggestions')}</CardTitle>
+              <CardDescription>{t('suggestionHistory')}</CardDescription>
             </CardHeader>
             <CardContent>
               {loadingSuggestions ? (
@@ -138,27 +150,32 @@ export default function Suggestions() {
                         <CardHeader>
                           <CardTitle className="text-lg">{suggestion.title}</CardTitle>
                           <CardDescription>
-                            Enviada el {formatDate(suggestion.created_at)}
+                            {t('submittedOn')} {formatDate(suggestion.created_at)}
                           </CardDescription>
                         </CardHeader>
                         <CardContent>
                           <p className="whitespace-pre-wrap">{suggestion.description}</p>
                         </CardContent>
+                        <CardFooter className="flex justify-end">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-destructive hover:bg-destructive/10"
+                            onClick={() => handleDelete(suggestion.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </CardFooter>
                       </Card>
                     ))}
                   </div>
                 </ScrollArea>
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
-                  No has enviado ninguna sugerencia aún.
+                  {t('noSuggestionsYet')}
                 </div>
               )}
             </CardContent>
-            <CardFooter>
-              <Button variant="outline" onClick={() => setActiveTab('new')}>
-                Crear nueva sugerencia
-              </Button>
-            </CardFooter>
           </Card>
         </TabsContent>
       </Tabs>
