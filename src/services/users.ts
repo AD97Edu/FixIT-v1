@@ -20,7 +20,6 @@ export class UserService {
    */
   static async getAllUsers(): Promise<User[]> {
     try {
-      console.log("Iniciando getAllUsers");
       
       // Obtenemos la sesión actual para el token de autenticación
       const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
@@ -37,7 +36,6 @@ export class UserService {
       
       // Obtenemos el token de acceso
       const accessToken = sessionData.session.access_token;
-      console.log("Token obtenido, llamando a la función Edge get-users");
       
       // Llamamos a la función Edge de Supabase para obtener usuarios
       const { data, error } = await supabase.functions.invoke<UserResponse>('get-users', {
@@ -68,7 +66,6 @@ export class UserService {
         throw new Error("Formato de datos incorrecto");
       }
       
-      console.log("Datos de usuarios recibidos correctamente:", data.users.length);
       
       // Formateamos los usuarios al formato esperado por nuestra aplicación
       return data.users.map(user => ({

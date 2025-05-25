@@ -18,15 +18,12 @@ export function AdminOrAgentRoute({ children }: AdminOrAgentRouteProps) {
 
   useEffect(() => {
     if (!loading) {
-      console.log('AdminOrAgentRoute - Rol actual:', role);
       // Sólo admin puede acceder a estas rutas
       setCanAccess(role === 'admin');
-      console.log('AdminOrAgentRoute - ¿Tiene acceso?:', role === 'admin');
     }
   }, [role, loading]);
 
   if (loading) {
-    console.log('AdminOrAgentRoute - Cargando...');
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -34,7 +31,6 @@ export function AdminOrAgentRoute({ children }: AdminOrAgentRouteProps) {
     );
   }
   if (!canAccess) {
-    console.log('AdminOrAgentRoute - Acceso denegado. Rol:', role);
     // Solo mostramos el mensaje de error si el usuario tiene un rol definido
     // pero no tiene permiso (por ejemplo, si es 'user')
     if (role && role !== 'admin') {

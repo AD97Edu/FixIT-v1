@@ -36,22 +36,18 @@ export function useUserRole() {
         if (error) {
           // Si no hay resultados, asumimos que el rol es 'user'
           if (error.code === 'PGRST116') {
-            console.log('No se encontró rol, asignando rol por defecto: user');
             setRole('user');
           } else {
             console.error('Error fetching user role:', error);
-            console.log('Error al obtener el rol, asignando rol por defecto: user');
             setRole('user');
           }
         } else if (data) {
           setRole(data.rol as UserRole);
         } else {
-          console.log('No hay datos de rol, asignando rol por defecto: user');
           setRole('user'); // Rol por defecto
         }
       } catch (error) {
         console.error('Error in useUserRole hook:', error);
-        console.log('Error en useUserRole, asignando rol por defecto: user');
         setRole('user');
       } finally {
         setLoading(false);

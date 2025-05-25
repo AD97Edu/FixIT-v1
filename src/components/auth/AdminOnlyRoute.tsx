@@ -22,7 +22,6 @@ export function AdminOnlyRoute({ children }: AdminOnlyRouteProps) {
   }
 
   if (role !== 'admin') {
-    console.log('AdminOnlyRoute - Acceso denegado. Rol:', role);
     toast.error("Acceso denegado: Se requieren permisos de administrador");
     return <Navigate to="/tickets" replace />;
   }

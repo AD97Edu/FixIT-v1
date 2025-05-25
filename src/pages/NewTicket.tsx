@@ -45,10 +45,7 @@ const NewTicket = () => {
       (window as any).tryCreateTicket = tryCreateTicket;
       (window as any).checkTicketsSchema = checkTicketsSchema;
     }
-    
-    console.log("Component mounted, diagnostics available in console");
-    console.log("You can run window.tryCreateTicket() to test ticket creation");
-    console.log("Or window.checkTicketsSchema() to check the database schema");
+
   }, []);
     const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

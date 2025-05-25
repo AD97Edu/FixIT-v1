@@ -49,10 +49,12 @@ const translations = {
     "category_security": "IT security",
     "category_other": "Other",
     "priority": "Priority",
-    "priority_toassign": "Priority not assigned",
-    "priority_high": "High",
+    "priority_toassign": "Priority not assigned",    "priority_high": "High",
     "priority_medium": "Medium",
     "priority_low": "Low",
+    "selectPriority": "Select priority",
+    "selectPriorityDesc": "Please select the priority for this ticket before assigning it to yourself.",
+    "confirm": "Confirm",
     "priority_critical": "Critical",
     "today": "Today",
     "yesterday": "Yesterday",
@@ -226,6 +228,7 @@ const translations = {
     "sending": "Sending...",
     "sendSuggestion": "Send suggestion",
     "suggestionHistory": "History of suggestions you have sent",
+    "noSuggestionsYet": "You haven't sent any suggestions yet.",
     "submittedOn": "Submitted on",
     "attachImages": "Attach images",
     "uploadImagesDesc": "Upload images related to your issue. You can attach multiple images.",
@@ -285,11 +288,13 @@ const translations = {
     "category_other": "Otros",
       // Prioridades
     "priority": "Prioridad",
-    "priority_toassign": "Prioridad no asignada",
-    "priority_high": "Alta",
+    "priority_toassign": "Prioridad no asignada",    "priority_high": "Alta",
     "priority_medium": "Media",
     "priority_low": "Baja",
     "priority_critical": "Crítica",
+    "selectPriority": "Seleccionar prioridad",
+    "selectPriorityDesc": "Por favor selecciona la prioridad para este ticket antes de asignártelo.",
+    "confirm": "Confirmar",
     "priority_info": "Información",
     
     // Tiempo
@@ -487,6 +492,7 @@ const translations = {
     "sending": "Enviando...",
     "sendSuggestion": "Enviar sugerencia",
     "suggestionHistory": "Historial de sugerencias que has enviado",
+    "noSuggestionsYet": "Aún no has enviado ninguna sugerencia.",
     "submittedOn": "Enviado el",
   }
 };
@@ -500,8 +506,6 @@ export function useLanguage() {
     }
     // Si no hay idioma guardado, intentar detectar el del navegador
     const browserLang = navigator.language.split('-')[0];
-    console.log("El idioma del navegador es:")
-    console.log(browserLang);
     return browserLang === 'es' ? 'es' : 'en'; // Valores por defecto
   };
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { Comment, Status } from "@/types";
+import { Comment, Status, Priority } from "@/types";
 import { format } from "date-fns";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,15 +23,25 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 const TicketDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();  const { user } = useAuth();
+  const navigate = useNavigate();  
+  const { user } = useAuth();
   const { role, isAdmin } = useUserRole();
   const { t } = useLanguage();
   
   const { data: ticket, isLoading: isLoadingTicket } = useTicket(id!);
-  const { data: comments = [], isLoading: isLoadingComments } = useComments(id!);  const { mutate: updateStatus, isPending: isUpdatingStatus } = useUpdateTicketStatus();
+  const { data: comments = [], isLoading: isLoadingComments } = useComments(id!);  
+  const { mutate: updateStatus, isPending: isUpdatingStatus } = useUpdateTicketStatus();
   const { mutate: addComment, isPending: isAddingComment } = useAddComment();
   const { mutate: editComment, isPending: isEditingComment } = useEditComment();
   const { mutate: updatePriority, isPending: isUpdatingPriority } = useUpdateTicketPriority();
@@ -40,7 +50,11 @@ const TicketDetails = () => {
   const [newComment, setNewComment] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState("");
-    if (isLoadingTicket || isLoadingComments) {
+  // Estado para el modal de selección de prioridad
+  const [isPriorityModalOpen, setIsPriorityModalOpen] = useState(false);
+  const [selectedPriority, setSelectedPriority] = useState<Priority>("medium");
+  
+  if (isLoadingTicket || isLoadingComments) {
     return <div className="text-center py-12">{t('loading')}...</div>;
   }
   
@@ -133,20 +147,55 @@ const TicketDetails = () => {
   const hasAssignedAdmin = !!ticket?.assignedTo;
   // Lógica para mostrar el botón de asignación (visible para todos los admins, incluso si ya hay uno asignado)
   const showAssignButton = isAdmin;
-  
   // Gestionar la asignación del ticket al admin actual
   const handleAssignToMe = () => {
     if (!user) return;
     
+    // En lugar de asignar directamente, abrimos el modal para seleccionar prioridad
+    setSelectedPriority(ticket?.priority || "medium");
+    setIsPriorityModalOpen(true);
+  };
+  
+  // Función que se ejecutará cuando se confirme la prioridad
+  const handleConfirmAssignment = () => {
+    if (!user) return;
+    
+    // Primero asignamos el ticket al admin actual
     assignTicket({ id: ticket.id, userId: user.id }, {
       onSuccess: () => {
         toast.success(t('ticketAssigned'));
+        
+        // Actualizamos la prioridad seleccionada
+        updatePriority({ id: ticket.id, priority: selectedPriority }, {
+          onSuccess: () => {
+            // Después de asignar con éxito, cambiamos el estado a "en progreso"
+            // solo si el estado actual no es "resolved"
+            if (ticket.status !== "resolved") {
+              updateStatus({ id: ticket.id, status: "in_progress" }, {
+                onSuccess: () => {
+                  toast.success(t('statusUpdated'));
+                },
+                onError: (error) => {
+                  console.error("Error updating status:", error);
+                  toast.error(t('pleaseTryAgain'));
+                }
+              });
+            }
+          },
+          onError: (error) => {
+            console.error("Error updating priority:", error);
+            toast.error(t('pleaseTryAgain'));
+          }
+        });
       },
       onError: (error) => {
         console.error("Error al asignar ticket:", error);
         toast.error(t('pleaseTryAgain'));
       }
     });
+    
+    // Cerramos el modal
+    setIsPriorityModalOpen(false);
   };
   
   // En una aplicación real, aquí se obtendría información detallada sobre el usuario asignado
@@ -182,49 +231,50 @@ const TicketDetails = () => {
       
       <Card className="mb-6">
         <CardHeader>
-          <div className="flex justify-between items-start">
+          
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <StatusBadge status={ticket.status as Status} />
-                <PriorityBadge priority={ticket.priority} />
-                <span className="text-sm text-gray-500">#{ticket.shortId || 'N/A'}</span>
-              </div>
-              <CardTitle className="text-2xl">{ticket.title}</CardTitle>
-            </div>              {isAdmin && (
-                <div className="flex gap-2">
-                  <Select
-                    value={ticket.priority}
-                    onValueChange={handlePriorityChange}
-                    disabled={isUpdatingPriority}
-                  >
-                    <SelectTrigger className="w-[140px]">
-                      <SelectValue placeholder={t('priority')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="toassign">{t('priority_toassign')}</SelectItem>
-                      <SelectItem value="low">{t('priority_low')}</SelectItem>
-                      <SelectItem value="medium">{t('priority_medium')}</SelectItem>
-                      <SelectItem value="high">{t('priority_high')}</SelectItem>
-                      <SelectItem value="critical">{t('priority_critical')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  
-                  <Select
-                    value={ticket.status as Status}
-                    onValueChange={(value) => handleStatusChange(value as Status)}
-                    disabled={isUpdatingStatus}
-                  >
-                    <SelectTrigger className="w-[140px]">
-                      <SelectValue placeholder={t('status')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="open">{t('status_open')}</SelectItem>
-                      <SelectItem value="in_progress">{t('status_in_progress')}</SelectItem>
-                      <SelectItem value="resolved">{t('status_resolved')}</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="flex flex-wrap gap-2 mb-2">
+                <div className="flex items-center gap-2">
+                  <StatusBadge status={ticket.status as Status} />
+                  <PriorityBadge priority={ticket.priority} />
+                  <span className="text-sm text-gray-500">#{ticket.shortId || 'N/A'}</span>
                 </div>
-              )}
+                {isAdmin && (
+                  <div className="flex gap-2 w-full mt-2">
+                    <Select
+                      value={ticket.priority}
+                      onValueChange={handlePriorityChange}
+                      disabled={isUpdatingPriority}
+                    >
+                      <SelectTrigger className="w-[140px]">
+                        <SelectValue placeholder={t('priority')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="toassign">{t('priority_toassign')}</SelectItem>
+                        <SelectItem value="low">{t('priority_low')}</SelectItem>
+                        <SelectItem value="medium">{t('priority_medium')}</SelectItem>
+                        <SelectItem value="high">{t('priority_high')}</SelectItem>
+                        <SelectItem value="critical">{t('priority_critical')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    <Select
+                      value={ticket.status as Status}
+                      onValueChange={(value) => handleStatusChange(value as Status)}
+                      disabled={isUpdatingStatus}
+                    >
+                      <SelectTrigger className="w-[140px]">
+                        <SelectValue placeholder={t('status')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="open">{t('status_open')}</SelectItem>
+                        <SelectItem value="in_progress">{t('status_in_progress')}</SelectItem>
+                        <SelectItem value="resolved">{t('status_resolved')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+            </div>             
           </div>
           
           <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2 text-sm">            <div className="flex items-center">
@@ -406,6 +456,62 @@ const TicketDetails = () => {
           </div>
         </CardFooter>
       </Card>
+      
+      {/* Modal para selección de prioridad */}
+      <Dialog open={isPriorityModalOpen} onOpenChange={setIsPriorityModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{t('selectPriority')}</DialogTitle>
+            <DialogDescription>
+              {t('selectPriorityDesc')}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-2 gap-4 my-4">
+            <Button 
+              variant={selectedPriority === "low" ? "default" : "outline"} 
+              onClick={() => setSelectedPriority("low")}
+              className="flex-1"
+            >
+              {t('priority_low')}
+            </Button>
+            <Button 
+              variant={selectedPriority === "medium" ? "default" : "outline"} 
+              onClick={() => setSelectedPriority("medium")}
+              className="flex-1"
+            >
+              {t('priority_medium')}
+            </Button>
+            <Button 
+              variant={selectedPriority === "high" ? "default" : "outline"} 
+              onClick={() => setSelectedPriority("high")}
+              className="flex-1"
+            >
+              {t('priority_high')}
+            </Button>
+            <Button 
+              variant={selectedPriority === "critical" ? "default" : "outline"} 
+              onClick={() => setSelectedPriority("critical")}
+              className="flex-1"
+            >
+              {t('priority_critical')}
+            </Button>
+          </div>
+          
+          <DialogFooter className="flex justify-between">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsPriorityModalOpen(false)}
+            >
+              {t('cancel')}
+            </Button>            <Button 
+              onClick={handleConfirmAssignment}
+            >
+              {t('confirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
