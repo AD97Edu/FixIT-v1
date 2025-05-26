@@ -126,6 +126,6 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más 
 
 ---
 
-Desarrollado con ❤️ para facilitar la gestión de incidencias técnicas.
+Desarrollado con ❤️ por el equipo de FixIT para facilitar la gestión de incidencias técnicas.
 
 
