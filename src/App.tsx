@@ -19,6 +19,7 @@ import TicketList from "./pages/TicketList";
 import NewTicket from "./pages/NewTicket";
 import TicketDetails from "./pages/TicketDetails";
 import HowItWorks from "./pages/HowItWorks";
+import AdminHowItWorks from "./pages/AdminHowItWorks";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Suggestions from "./pages/Suggestions";
@@ -108,17 +109,6 @@ const App = () => {
                         </UserRoute>
                       </ProtectedRoute>
                     }
-                  /><Route
-                    path="/search"
-                    element={
-                      <ProtectedRoute>
-                        <AdminOrAgentRoute>
-                          <AppLayout>
-                            <NotFound />
-                          </AppLayout>
-                        </AdminOrAgentRoute>
-                      </ProtectedRoute>
-                    }
                   />
                   <Route
                     path="/suggestions"
@@ -138,6 +128,18 @@ const App = () => {
                         <AdminOnlyRoute>
                           <AppLayout>
                             <AdminSuggestions />
+                          </AppLayout>
+                        </AdminOnlyRoute>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/how-it-works"
+                    element={
+                      <ProtectedRoute>
+                        <AdminOnlyRoute>
+                          <AppLayout>
+                            <AdminHowItWorks />
                           </AppLayout>
                         </AdminOnlyRoute>
                       </ProtectedRoute>

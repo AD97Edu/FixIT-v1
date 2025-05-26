@@ -16,20 +16,25 @@ export function useFilteredNavigation(items: any[]) {
   if (role === 'user') {
     return items.filter(item => {
       // Filtrar para mostrar solo Tickets, NewTicket, Suggestions, Profile, HowItWorks y Language
-      // Excluir dashboard, search y adminSuggestions
-      return !['dashboard', 'search', 'adminSuggestions'].includes(item.titleKey);
+      // Excluir dashboard, search, adminSuggestions y adminHowItWorks
+      return !['dashboard', 'search', 'adminSuggestions', 'adminHowItWorks'].includes(item.titleKey);
     });
   }
 
-  // Los agentes pueden acceder a todo excepto "How it Works", "Suggestions" y "adminSuggestions"
+  // Los agentes pueden acceder a todo excepto "How it Works", "Suggestions", "adminSuggestions" y "adminHowItWorks"
   if (role === 'agent') {
-    return items.filter(item => !['howItWorks', 'suggestions', 'adminSuggestions'].includes(item.titleKey));
+    return items.filter(item => !['howItWorks', 'suggestions', 'adminSuggestions', 'adminHowItWorks'].includes(item.titleKey));
   }
   
-  // Los administradores pueden acceder a todo excepto "How it Works" y "Suggestions" (pero sí a adminSuggestions)
+  // Los administradores pueden acceder a todo excepto "How it Works" y "Suggestions" (pero sí a adminSuggestions y adminHowItWorks)
   return items.filter(item => {
-    // No mostrar elementos específicos para usuarios
-    if (['howItWorks', 'suggestions'].includes(item.titleKey)) {
+    // No mostrar la vista de "How it Works" para usuarios normales, mostrar la vista de admin
+    if (item.titleKey === 'howItWorks') {
+      return false;
+    }
+    
+    // No mostrar sugerencias de usuarios normales
+    if (item.titleKey === 'suggestions') {
       return false;
     }
     
