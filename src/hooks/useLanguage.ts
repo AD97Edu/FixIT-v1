@@ -139,6 +139,7 @@ const translations = {
     "logoutSuccess": "Logged out successfully",
     "profileUpdated": "Profile updated successfully",
     "assignToMe": "Assign to me",
+    "reassignToMe": "Reassign to me",
     "noAdminAssigned": "No administrator assigned",
     "ticketAssigned": "Ticket assigned successfully",
     "preparingTickets": "Preparing tickets",
