@@ -236,7 +236,6 @@ export default function Profile() {
                         name="email"
                         value={formData.email}
                         disabled
-                        className="bg-gray-50"
                       />
                       <p className="text-sm text-muted-foreground">
                         Email cannot be changed
@@ -250,7 +249,6 @@ export default function Profile() {
                         name="role"
                         value={role || "user"}
                         disabled
-                        className="bg-gray-50"
                       />
                       <p className="text-sm text-muted-foreground">
                         {role === 'admin' 
