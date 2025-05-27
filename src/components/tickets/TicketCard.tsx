@@ -6,7 +6,7 @@ import StatusBadge from "./StatusBadge";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useIsMobile } from "@/hooks/use-mobile";
-
+import { useNavigate } from "react-router-dom";
 interface TicketCardProps {
   ticket: Ticket;
 }
@@ -15,6 +15,11 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
   const { t } = useLanguage();
   const isMobile = useIsMobile();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/tickets/${ticket.id}`); // Redirige a la página de detalles del ticket
+  };
   
   // Función segura para formatear la fecha
   const formatCreationDate = () => {
@@ -32,7 +37,9 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
     from: location.pathname,
     search: location.search
   };return (
-    <Card className="card-enhanced hover:translate-y-[-4px]">
+    <Card 
+    onClick={handleClick}
+    className="card-enhanced hover:translate-y-[-4px] hover:cursor-pointer transition-transform duration-200 ease-in-out">
       <CardHeader className="pb-2">
   <div className="flex flex-col gap-2">    {/* Título del ticket */}
     <Link to={`/tickets/${ticket.id}`} state={navigationState} className="flex-1 min-w-0">
