@@ -7,7 +7,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
 
 // Configuración CORS
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'http://localhost:8080',
+  'Access-Control-Allow-Origin': '*', // Permitir solicitudes desde cualquier origen en desarrollo
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
 };
@@ -156,4 +156,4 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     )
   }
-}) 
+})

@@ -15,4 +15,16 @@ declare module '@supabase/supabase-js' {
 const SUPABASE_URL = "https://mjkvqcqtvbtmpjkexjdi.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qa3ZxY3F0dmJ0bXBqa2V4amRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNTQ0ODAsImV4cCI6MjA2MTkzMDQ4MH0.szIli_T2MK9ed1cgxIGKtVyrFURNpRRGLCHlpar04Mg";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+// Clave pública de HCaptcha
+export const HCAPTCHA_SITEKEY = "8e68d8de-c742-420c-b42e-42eac09060d2";
+
+// Crear cliente de Supabase con configuración para HCaptcha
+export const supabase = createClient<Database>(
+  SUPABASE_URL, 
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      flowType: 'pkce',
+    }
+  }
+);
