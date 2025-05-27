@@ -66,7 +66,7 @@ const Auth = () => {
       <div className="absolute inset-0 bg-black/40 z-0" />
       <Card className="w-full max-w-md z-10">
         <div className="flex justify-center pt-6">
-          <img src="/Fixit-LOGO.png" alt="Fixit Logo" className="h-20" />
+          <img src="https://i.postimg.cc/Rhzr3Jb3/Fix-IT-LOGO-png.png" alt="Fixit Logo" className="h-20" />
         </div>
         <CardHeader>
           <CardTitle>{isLogin ? "Inicio de sesión" : "Registro de cuenta"}</CardTitle>
@@ -83,7 +83,7 @@ const Auth = () => {
                 <Label htmlFor="fullName">Nombre completo</Label>
                 <Input
                   id="fullName"
-                  placeholder="John Doe"
+                  placeholder="Ingresa tu nombre completo"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required={!isLogin}

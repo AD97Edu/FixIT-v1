@@ -222,7 +222,7 @@ export function AppSidebar({
 					<div className="p-4 border-b border-sidebar-border">
 						<div className="flex items-center justify-between md:justify-center">
 							<img
-								src="https://i.postimg.cc/W4bh4T86/Fixit-LOGO.png"
+								src="https://i.postimg.cc/Rhzr3Jb3/Fix-IT-LOGO-png.png"
 								alt="Logo FixIT"
 								width={150}
 								style={{ display: "block" }}
