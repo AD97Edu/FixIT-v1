@@ -44,6 +44,7 @@ FixIT es una aplicación web moderna para la gestión rápida y eficiente de inc
 
 ## 🔒 Características de seguridad
 
+- Captcha para inicio de sesión y registro de usuarios
 - Autenticación segura mediante JWT
 - Autorización basada en roles
 - Protección contra vulnerabilidades comunes (XSS, CSRF)
