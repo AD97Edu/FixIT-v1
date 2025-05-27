@@ -21,12 +21,6 @@ const navItems = [
 		path: "/how-it-works",
 	},
 	{
-		titleKey: "adminHowItWorks",
-		icon: HelpCircle,
-		path: "/admin/how-it-works",
-		adminOnly: true,
-	},
-	{
 		titleKey: "dashboard",
 		icon: Home,
 		path: "/",
@@ -61,6 +55,12 @@ const navItems = [
 		titleKey: "profile",
 		icon: User,
 		path: "/profile",
+	},
+	{
+		titleKey: "adminHowItWorks",
+		icon: HelpCircle,
+		path: "/admin/how-it-works",
+		adminOnly: true,
 	},
 ];
 

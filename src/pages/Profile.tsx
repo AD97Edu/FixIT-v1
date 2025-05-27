@@ -14,8 +14,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Save, User as UserIcon, Camera } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function Profile() {
+  const { t } = useLanguage();
   const { user } = useAuth();
   const { role, loading: roleLoading } = useUserRole();
   const [loading, setLoading] = useState(true);
@@ -203,23 +205,23 @@ export default function Profile() {
         <div className="md:w-2/3">
           <Tabs defaultValue="settings">
             <TabsList className="w-full mb-6">
-              <TabsTrigger value="settings" className="flex-1">Settings</TabsTrigger>
-              <TabsTrigger value="security" className="flex-1">Security</TabsTrigger>
+              <TabsTrigger value="settings" className="flex-1">{t('settings')}</TabsTrigger>
+              <TabsTrigger value="security" className="flex-1">{t('security')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="settings">
               <Card>
                 <CardHeader>
-                  <CardTitle>Profile Settings</CardTitle>
+                  <CardTitle>{t('profileSettings')}</CardTitle>
                   <CardDescription>
-                    Update your personal information
+                    {t('updateYourInfo')}
                   </CardDescription>
                 </CardHeader>
                 
                 <form onSubmit={handleSubmit}>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Full Name</Label>
+                      <Label htmlFor="name">{t('fullName')}</Label>
                       <Input
                         id="name"
                         name="name"
@@ -230,7 +232,7 @@ export default function Profile() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
+                      <Label htmlFor="email">{t('email')}</Label>
                       <Input
                         id="email"
                         name="email"
@@ -238,12 +240,12 @@ export default function Profile() {
                         disabled
                       />
                       <p className="text-sm text-muted-foreground">
-                        Email cannot be changed
+                        {t('emailCannotBeChanged')}
                       </p>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="role">Role</Label>
+                      <Label htmlFor="role">{t('role')}</Label>
                       <Input
                         id="role"
                         name="role"
