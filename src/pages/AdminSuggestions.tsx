@@ -27,6 +27,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Trash2 } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 export default function AdminSuggestions() {
   const { t } = useLanguage();
@@ -148,6 +149,9 @@ export default function AdminSuggestions() {
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
+          <DialogTitle className="text-lg font-semibold">
+           ""
+          </DialogTitle>
           <AlertDialogHeader>
             <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
             <AlertDialogDescription>

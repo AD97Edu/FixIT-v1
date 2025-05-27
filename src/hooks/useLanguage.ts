@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 // Objeto con las traducciones
 const translations = {
   en: {
+    "titleIncident": "Incident Title",
+    "descrpitionIncident": "Description of the incident",
+    "title": "Title:",
     "attachImages": "Attach images",
     "uploadImagesDesc": "Upload images related to your issue. You can attach multiple images.",
     "clickToUpload": "Click to upload images",
@@ -76,8 +79,7 @@ const translations = {
     "deleteTicket": "Delete ticket",
     "ticketDetails": "Ticket details",
     "ticketNumber": "Ticket #",
-    "title": "Title",
-    "description": "Description",
+    "description": "Description:",
     "category": "Category",
     "status": "Status",
     "assignedTo": "Assigned to",
@@ -308,6 +310,8 @@ const translations = {
     "createNewTicketNow": "Create a new ticket now"
   },  es: {
     // Navegación y menú lateral (existentes)
+    "titleIncident": "Título de la incidencia:",
+    "descriptionIncident": "Descripción de la incidencia:",
     "noAssignedTickets": "No tienes tickets asignados",
     "noAssignedTicketsDesc": "Aún no tienes tickets asignados a ti",
     "attachImages": "Adjuntar imágenes",
@@ -395,8 +399,8 @@ const translations = {
     "deleteTicket": "Eliminar ticket",
     "ticketDetails": "Detalles del ticket",
     "ticketNumber": "Ticket #",
-    "title": "Título",
-    "description": "Descripción",
+    "title": "Título:",
+    "description": "Descripción:",
     "category": "Categoría",
     "status": "Estado",
     "assignedTo": "Asignado a",
