@@ -11,19 +11,18 @@ export function useFilteredNavigation(items: any[]) {
   if (loading || !role) {
     return [];
   }
-  
-  // Los usuarios normales solo pueden acceder a tickets, nueva ticket, sugerencias, perfil, ayuda y language
+    // Los usuarios normales solo pueden acceder a tickets, nueva ticket, sugerencias, perfil, ayuda y language
   if (role === 'user') {
     return items.filter(item => {
       // Filtrar para mostrar solo Tickets, NewTicket, Suggestions, Profile, HowItWorks y Language
-      // Excluir dashboard, search, adminSuggestions y adminHowItWorks
-      return !['dashboard', 'search', 'adminSuggestions', 'adminHowItWorks'].includes(item.titleKey);
+      // Excluir dashboard, search, adminSuggestions, adminHowItWorks y adminAssignedTickets
+      return !['dashboard', 'search', 'adminSuggestions', 'adminHowItWorks', 'adminAssignedTickets'].includes(item.titleKey);
     });
   }
 
-  // Los agentes pueden acceder a todo excepto "How it Works", "Suggestions", "adminSuggestions" y "adminHowItWorks"
+  // Los agentes pueden acceder a todo excepto "How it Works", "Suggestions", "adminSuggestions", "adminHowItWorks" y "adminAssignedTickets"
   if (role === 'agent') {
-    return items.filter(item => !['howItWorks', 'suggestions', 'adminSuggestions', 'adminHowItWorks'].includes(item.titleKey));
+    return items.filter(item => !['howItWorks', 'suggestions', 'adminSuggestions', 'adminHowItWorks', 'adminAssignedTickets'].includes(item.titleKey));
   }
   
   // Los administradores pueden acceder a todo excepto "How it Works" y "Suggestions" (pero sí a adminSuggestions y adminHowItWorks)

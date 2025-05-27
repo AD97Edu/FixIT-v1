@@ -379,6 +379,7 @@ const translations = {
     "daysAgo": "días atrás",
     
     // Tickets
+    "allTickets": "Todos los tickets",
     "createTicket": "Crear ticket",
     "editTicket": "Editar ticket",
     "deleteTicket": "Eliminar ticket",
