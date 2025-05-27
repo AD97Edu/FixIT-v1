@@ -4,6 +4,11 @@ import { useState, useEffect } from 'react';
 // Objeto con las traducciones
 const translations = {
   en: {
+    "settings": "Settings",
+    "security": "Security",
+    "fullName": "Full Name",
+    "email": "Email",
+    "emailCannotBeChanged": "Email cannot be changed",
     "confirmDeleteTicket": "Delete ticket",
     "deleteTicketWarning": "Are you sure you want to delete this ticket? This action cannot be undone.",
     "createSuggestionNow": "Create new suggestion",
@@ -314,6 +319,11 @@ const translations = {
     "createNewTicketNow": "Create a new ticket now"
   },  es: {
     // Navegación y menú lateral (existentes)
+    "settings": "Configuración",
+    "security": "Seguridad",
+    "fullName": "Nombre completo",
+    "updateYourInfo": "Actualiza tu información personal",
+    "emailCannotBeChanged": "El correo electrónico no se puede cambiar",
     "confirmDeleteTicket": "Borrar ticket",
     "deleteTicketWarning": "Estás seguro de que quieres eliminar este ticket? Esta acción no se puede deshacer.",
     "createSuggestionNow": "Crear nueva sugerencia",
