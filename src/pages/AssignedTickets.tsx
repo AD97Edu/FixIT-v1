@@ -18,9 +18,8 @@ type SortOption = "newest" | "oldest";
 
 const AssignedTickets = () => {
   const { t } = useLanguage();  const { user } = useAuth();
-  const { role, loading: roleLoading } = useUserRole();  const { data: tickets = [], isLoading: ticketsLoading } = useAssignedTickets();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<Status | "all">("open"); // Por defecto: "open"
+  const { role, loading: roleLoading } = useUserRole();  const { data: tickets = [], isLoading: ticketsLoading } = useAssignedTickets();  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<Status | "all">("in_progress"); // Por defecto: "in_progress"
   const [priorityFilter, setPriorityFilter] = useState<Priority | "all">("all");
   const [sortBy, setSortBy] = useState<SortOption>("newest"); // Por defecto: ordenar por más recientes
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,9 +32,8 @@ const AssignedTickets = () => {
       setDataReady(false);
       return;
     }
-    
-    // Asegurarse de que el filtro por estado sea "open" por defecto
-    setStatusFilter("open");
+      // Asegurarse de que el filtro por estado sea "in_progress" por defecto
+    setStatusFilter("in_progress");
     
     // Añadimos un pequeño delay para asegurarnos de que los datos han sido filtrados correctamente
     const timer = setTimeout(() => {

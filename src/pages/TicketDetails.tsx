@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import { Comment, Status, Priority } from "@/types";
 import { format } from "date-fns";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,6 +35,7 @@ import {
 const TicketDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();  
+  const location = useLocation();
   const { user } = useAuth();
   const { role, isAdmin } = useUserRole();
   const { t } = useLanguage();
@@ -46,25 +47,56 @@ const TicketDetails = () => {
   const { mutate: editComment, isPending: isEditingComment } = useEditComment();
   const { mutate: updatePriority, isPending: isUpdatingPriority } = useUpdateTicketPriority();
   const { mutate: assignTicket, isPending: isAssigningTicket } = useAssignTicket();
-  
-  const [newComment, setNewComment] = useState("");
+    const [newComment, setNewComment] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState("");
   // Estado para el modal de selección de prioridad
   const [isPriorityModalOpen, setIsPriorityModalOpen] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState<Priority>("medium");
   
+  // Función para determinar la ruta de regreso basándose en el origen
+  const getBackRoute = () => {
+    // Verificar si hay información de navegación previa
+    const navigationState = location.state as { from?: string; search?: string } | null;
+    
+    if (navigationState?.from) {
+      // Si el usuario vino desde una página específica, regresamos allí
+      const fromPath = navigationState.from;
+      const search = navigationState.search || '';
+      
+      if (fromPath === '/admin/assigned-tickets') {
+        return `/admin/assigned-tickets${search}`;
+      }
+      // Si en el futuro se agrega la ruta /assigned-tickets, se puede descomentar:
+      // if (fromPath === '/assigned-tickets') {
+      //   return `/assigned-tickets${search}`;
+      // }
+      if (fromPath === '/tickets') {
+        return `/tickets${search}`;
+      }
+    }
+    
+    // Fallback: determinar basándose en el rol del usuario
+    if (role === 'admin') {
+      return '/admin/assigned-tickets';
+    }
+    
+    // Por defecto, regresar a la lista general de tickets
+    return '/tickets';
+  };
+
+  const backRoute = getBackRoute();
+  
   if (isLoadingTicket || isLoadingComments) {
     return <div className="text-center py-12">{t('loading')}...</div>;
   }
-  
-  if (!ticket) {
+    if (!ticket) {
     return (      <div className="text-center py-12">
         <AlertTriangle className="mx-auto h-12 w-12 text-yellow-500" />
         <h2 className="mt-4 text-2xl font-semibold">{t('ticketNotFound')}</h2>
         <p className="mt-2 text-gray-600">{t('ticketNotFoundDesc')}</p>
-        <Button onClick={() => navigate('/tickets')} className="mt-6">
-          {t('returnToTickets')}
+        <Button onClick={() => navigate(backRoute)} className="mt-6">
+          {t('back')}
         </Button>
       </div>
     );
@@ -222,11 +254,11 @@ const TicketDetails = () => {
       }
     });
   };
-  
-  return (
-    <div className="max-w-4xl mx-auto">      <Link to="/tickets" className="flex items-center text-gray-600 hover:text-gray-900 mb-6">
+    return (
+    <div className="max-w-4xl mx-auto">
+      <Link to={backRoute} className="flex items-center text-gray-600 hover:text-gray-900 mb-6">
         <ArrowLeft className="mr-2 h-4 w-4" />
-        {t('tickets')}
+        {t('back')}
       </Link>
       
       <Card className="mb-6">
