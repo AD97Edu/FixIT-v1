@@ -120,7 +120,6 @@ const AdminAssignedTickets = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
         <Select
           value={statusFilter}
           onValueChange={(value) => setStatusFilter(value as Status | "all")}
@@ -164,9 +163,13 @@ const AdminAssignedTickets = () => {
             <SelectItem value="newest">{t('newest')}</SelectItem>
             <SelectItem value="oldest">{t('oldest')}</SelectItem>
           </SelectContent>
-        </Select>
+        </Select>  
       </div>
-      
+      <div className="text-sm text-muted-foreground">
+        {t('showing')} {filteredAndSortedTickets.length} {filteredAndSortedTickets.length !== 1 ? t('tickets').toLowerCase() : t('ticket')}
+        {statusFilter !== 'all' && ` ${t('withStatus')} "${t(`status_${statusFilter}`)}" `}
+        {priorityFilter !== 'all' && ` ${t('andPriority')} "${t(`priority_${priorityFilter}`)}"`}
+      </div>
       {/* Grid de tarjetas de tickets */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {paginatedTickets.length > 0 ? (

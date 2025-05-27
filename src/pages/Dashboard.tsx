@@ -298,7 +298,7 @@ const Dashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 overflow-y-auto max-h-[530px] pr-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 max-h-[400px] gap-3 overflow-y-auto md:max-h-[530px] pr-1">
                 {recentTickets.map((ticket) => (
                   <TicketCard key={ticket.id} ticket={ticket} />
                 ))}
