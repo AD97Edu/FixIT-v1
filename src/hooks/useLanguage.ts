@@ -14,7 +14,7 @@ const translations = {
     "search": "Search",
     "profile": "Profile",
     "suggestions": "Suggestions",    "adminSuggestions": "Manage suggestions",
-    "adminAssignedTickets": "Mis tickets asignados",
+    "adminAssignedTickets": "My assigned tickets",
     "assignedTickets": "My assigned tickets",
     "noAssignedTickets": "No assigned tickets",
     "noAssignedTicketsDesc": "You don't have any tickets assigned to you yet",
@@ -266,6 +266,9 @@ const translations = {
     "statusResolvedDesc": "The issue has been fixed and your ticket is closed.",
     "personalizeApp": "Personalizing your experience",
     "profileDesc": "Update your personal information and account settings.",
+    "language": "Language",
+    "en": "English",
+    "es": "Spanish",
     "languageDesc": "Change the application language to your preference.",
     "darkModeDesc": "Switch between light and dark themes for comfortable viewing.",
     "personalSettings": "Personal settings",
@@ -306,6 +309,8 @@ const translations = {
   },
   es: {
     // Navegación y menú lateral (existentes)
+    "noAssignedTickets": "No tienes tickets asignados",
+    "noAssignedTicketsDesc": "Aún no tienes tickets asignados a ti",
     "attachImages": "Adjuntar imágenes",
     "uploadImagesDesc": "Sube imágenes relacionadas con tu incidencia. Puedes adjuntar varias imágenes.",
     "clickToUpload": "Haz clic para subir imágenes",
