@@ -305,11 +305,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <Dialog open={isAvatarDialogOpen} onOpenChange={setIsAvatarDialogOpen}>
-        <DialogContent>
-          <DialogTitle className="text-lg font-semibold">
-           ""
-          </DialogTitle>
+      <Dialog open={isAvatarDialogOpen} onOpenChange={setIsAvatarDialogOpen}>        <DialogContent>
           <DialogHeader>
             <DialogTitle>Update Profile Picture</DialogTitle>
             <DialogDescription>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 // Objeto con las traducciones
 const translations = {
   en: {
+    "createSuggestionNow": "Create new suggestion",
     "titleIncident": "Incident Title",
     "descrpitionIncident": "Description of the incident",
     "title": "Title:",
@@ -311,6 +312,7 @@ const translations = {
     "createNewTicketNow": "Create a new ticket now"
   },  es: {
     // Navegación y menú lateral (existentes)
+    "createSuggestionNow": "Crear nueva sugerencia",
     "titleIncident": "Título de la incidencia:",
     "descriptionIncident": "Descripción de la incidencia:",
     "noAssignedTickets": "No tienes tickets asignados",
@@ -519,7 +521,7 @@ const translations = {
     "ticketNotFoundDesc": "El ticket que buscas no existe o ha sido eliminado.",
     "returnToTickets": "Volver a tickets",
       // How It Works Page
-    "howItWorks": "Cómo funciona",
+    "howItWorks": "Bienvenido a FixIT!",
     "adminHowItWorks": "Guía de administrador",
     "adminHowItWorksIntro": "Guía completa de funcionalidades administrativas en la plataforma FixIT.",
     "adminDashboardStats": "Dashboard y Estadísticas",
@@ -584,7 +586,7 @@ const translations = {
     "adminNeedMoreInfo": "¿Necesitas más información?",
     "adminNeedMoreInfoDesc": "Si necesitas asistencia adicional o tienes preguntas sobre las funciones administrativas:",
     
-    "howItWorksIntro": "Bienvenido a FixIT. Esta guía te ayudará a entender cómo usar nuestra plataforma de manera efectiva.",
+    "howItWorksIntro": "Esta guía te ayudará a entender cómo usar nuestra plataforma de manera efectiva. Recuerda que si tienes alguna duda, siempre puedes contactar a nuestro equipo de soporte.",
     "createTickets": "Crear tickets",
     "manageTickets": "Gestionar tickets",
     "customizeExperience": "Personalizar",
@@ -617,6 +619,8 @@ const translations = {
     "contactSupport": "Si aún tienes preguntas, contacta a nuestro equipo de soporte:",
     
     // New Suggestions Tab
+    "readyToCreateSuggestion": "¿Listo para sugerir?",
+    "startCreatingSuggestion": "Si consideras que FixIT puede mejorar, ¡comienza creando una nueva sugerencia!",
     "sendFeedback": "Enviar sugerencias",
     "suggestionsAndFeedback": "Sugerencias y comentarios",
     "suggestImprovements": "Sugerir mejoras",
@@ -624,8 +628,8 @@ const translations = {
     "contactTechnical": "Contactar al equipo técnico",
     "contactTechnicalDesc": "Comunícate directamente con nuestro departamento técnico para consultas específicas.",
     "howToSendSuggestions": "Cómo enviar sugerencias",
-    "suggestionStep1": "Crea un nuevo ticket con 'Sugerencia' en el título.",
-    "suggestionStep2": "Selecciona 'Otros' como categoría.",
+    "suggestionStep1": "Accede al apartado de sugerencias.",
+    "suggestionStep2": "Elige un título para tu sugerencia.",
     "suggestionStep3": "Describe tu sugerencia en detalle, explicando los beneficios.",
     "suggestionStep4": "Envía tu sugerencia y nuestro equipo técnico la revisará.",
     "viewFeedbackGuidelines": "Ver pautas para sugerencias",

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AppSidebar } from './AppSidebar';
 import { Menu, ArrowLeftToLine, ArrowRightToLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
 interface AppLayoutProps {
@@ -63,8 +63,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 <Button variant="ghost" size="icon" className="h-9 w-9">
                   <Menu className="h-6 w-6 text-foreground" />
                 </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="p-0 w-full max-w-[280px]">
+              </SheetTrigger>              <SheetContent side="left" className="p-0 w-full max-w-[280px]">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                <SheetDescription className="sr-only">
+                  Use the navigation menu to access different sections of the app.
+                </SheetDescription>
                 <div className="h-full flex flex-col">
                   <AppSidebar hideHeader={true} inSheet={true} />
                 </div>

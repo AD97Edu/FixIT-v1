@@ -213,16 +213,22 @@ const HowItWorks = () => {
             </ol>
           </div>
 
-          <div className="flex justify-end">
-            <div className="flex items-center gap-2 text-primary cursor-pointer">
-              <span>{t('viewFeedbackGuidelines')}</span>
-              <MoveRight size={16} />
-            </div>
+          <div className="flex flex-col items-center gap-4 mt-8 bg-primary/5 p-6 rounded-lg border border-primary/20">
+            <h3 className="text-xl font-medium">{t('readyToCreateSuggestion')}</h3>
+            <p className="text-center text-muted-foreground">{t('startCreatingSuggestion')}</p>
+            <Button 
+              size="lg" 
+              onClick={() => navigate('/suggestions')}
+              className="flex items-center gap-2"
+            >
+              <Plus size={18} />
+              {t('createSuggestionNow')}
+            </Button>
           </div>
         </TabsContent>
       </Tabs>
 
-      <div className="mt-12 p-5 border rounded-lg bg-card">
+      <div className="mt-6 p-5 border rounded-lg bg-card">
         <h3 className="text-xl font-medium mb-2">{t('needMoreHelp')}</h3>
         <p className="mb-4">{t('contactSupport')}</p>
         <div className="flex justify-start">
