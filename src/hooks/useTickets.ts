@@ -444,3 +444,65 @@ export const useAssignTicket = () => {
     }
   });
 };
+
+// Función para obtener los tickets asignados al usuario actual
+export const useAssignedTickets = () => {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ['assignedTickets', user?.id],
+    queryFn: async () => {
+      if (!user?.id) {
+        throw new Error("User not authenticated");
+      }
+      
+      // Consultar tickets asignados al usuario actual
+      const { data, error } = await supabase
+        .from('tickets')
+        .select('*')
+        .eq('assigned_to', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      // Transformar los tickets básicos
+      const tickets = data.map(transformTicketData) as Ticket[];
+      
+      // Obtener todos los IDs únicos de usuarios
+      const userIds = new Set<string>();
+      tickets.forEach(ticket => {
+        if (ticket.submittedBy) userIds.add(ticket.submittedBy);
+        if (ticket.assignedTo) userIds.add(ticket.assignedTo);
+      });
+      
+      // Cargar los datos de todos los usuarios en una sola consulta
+      if (userIds.size > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', Array.from(userIds));
+        
+        if (profilesData && profilesData.length > 0) {
+          // Crear un mapa de ID a nombre
+          const userMap = new Map<string, string>();
+          profilesData.forEach(profile => {
+            userMap.set(profile.id, profile.full_name || 'No Name');
+          });
+          
+          // Asignar nombres a cada ticket
+          tickets.forEach(ticket => {
+            if (ticket.submittedBy) {
+              ticket.submitterName = userMap.get(ticket.submittedBy) || 'Unknown';
+            }
+            if (ticket.assignedTo) {
+              ticket.assigneeName = userMap.get(ticket.assignedTo) || 'Unknown';
+            }
+          });
+        }
+      }
+      
+      return tickets;
+    },
+    enabled: !!user // Solo ejecutar la consulta si hay un usuario autenticado
+  });
+};

@@ -20,6 +20,7 @@ import NewTicket from "./pages/NewTicket";
 import TicketDetails from "./pages/TicketDetails";
 import HowItWorks from "./pages/HowItWorks";
 import AdminHowItWorks from "./pages/AdminHowItWorks";
+import AdminAssignedTickets from "./pages/AdminAssignedTickets";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Suggestions from "./pages/Suggestions";
@@ -132,14 +133,25 @@ const App = () => {
                         </AdminOnlyRoute>
                       </ProtectedRoute>
                     }
-                  />
-                  <Route
+                  />                  <Route
                     path="/admin/how-it-works"
                     element={
                       <ProtectedRoute>
                         <AdminOnlyRoute>
                           <AppLayout>
                             <AdminHowItWorks />
+                          </AppLayout>
+                        </AdminOnlyRoute>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/assigned-tickets"
+                    element={
+                      <ProtectedRoute>
+                        <AdminOnlyRoute>
+                          <AppLayout>
+                            <AdminAssignedTickets />
                           </AppLayout>
                         </AdminOnlyRoute>
                       </ProtectedRoute>
