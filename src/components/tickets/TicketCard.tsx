@@ -3,7 +3,7 @@ import { Ticket } from "@/types";
 import { format, formatDistanceToNow } from "date-fns";
 import PriorityBadge from "./PriorityBadge";
 import StatusBadge from "./StatusBadge";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -14,6 +14,7 @@ interface TicketCardProps {
 const TicketCard = ({ ticket }: TicketCardProps) => {
   const { t } = useLanguage();
   const isMobile = useIsMobile();
+  const location = useLocation();
   
   // Función segura para formatear la fecha
   const formatCreationDate = () => {
@@ -24,12 +25,17 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
       console.error("Error formatting date:", error, ticket.createdAt);
       return t('invalid');
     }
-  };  return (
+  };
+
+  // Generar el estado de navegación con información sobre la página de origen
+  const navigationState = {
+    from: location.pathname,
+    search: location.search
+  };return (
     <Card className="card-enhanced hover:translate-y-[-4px]">
       <CardHeader className="pb-2">
-  <div className="flex flex-col gap-2">
-    {/* Título del ticket */}
-    <Link to={`/tickets/${ticket.id}`} className="flex-1 min-w-0">
+  <div className="flex flex-col gap-2">    {/* Título del ticket */}
+    <Link to={`/tickets/${ticket.id}`} state={navigationState} className="flex-1 min-w-0">
       <CardTitle className="text-xl truncate max-w-full" title={ticket.title}>
         {ticket.title}
       </CardTitle>
@@ -59,9 +65,8 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
       <CardFooter className="border-t border-border pt-2 flex justify-between text-xs text-muted-foreground">
         <div>
           {t('created')} {formatCreationDate()}
-        </div>
-        <div>
-          <Link to={`/tickets/${ticket.id}`} className="text-primary hover:underline hover:text-primary/80 font-medium transition-colors">
+        </div>        <div>
+          <Link to={`/tickets/${ticket.id}`} state={navigationState} className="text-primary hover:underline hover:text-primary/80 font-medium transition-colors">
             {t('details')}
           </Link>
         </div>

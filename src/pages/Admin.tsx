@@ -747,6 +747,9 @@ const Admin = () => {
       {/* Dialog para editar usuario */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
+          <DialogTitle className="text-lg font-semibold">
+           ""
+          </DialogTitle>
           <DialogHeader>
             <DialogTitle>Editar Usuario</DialogTitle>
           </DialogHeader>
@@ -807,6 +810,9 @@ const Admin = () => {
       {/* Dialog para crear usuario */}
       <Dialog open={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen}>
         <DialogContent className="sm:max-w-md">
+          <DialogTitle className="text-lg font-semibold">
+           ""
+          </DialogTitle>
           <DialogHeader>
             <DialogTitle>Crear Nuevo Usuario</DialogTitle>
             <DialogDescription>
@@ -879,6 +885,9 @@ const Admin = () => {
       {/* Confirmación de cambio de rol */}
       <AlertDialog open={showRoleConfirm} onOpenChange={setShowRoleConfirm}>
         <AlertDialogContent>
+          <DialogTitle className="text-lg font-semibold">
+           ""
+          </DialogTitle>
           <AlertDialogHeader>
             <AlertDialogTitle>¿Cambiar rol de usuario?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -896,6 +905,9 @@ const Admin = () => {
       {/* Diálogo para ver detalles del usuario */}
       <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
         <DialogContent className="sm:max-w-lg">
+          <DialogTitle className="text-lg font-semibold">
+           ""
+          </DialogTitle>
           <DialogHeader>
             <DialogTitle>Detalles del Usuario</DialogTitle>
             <DialogDescription>

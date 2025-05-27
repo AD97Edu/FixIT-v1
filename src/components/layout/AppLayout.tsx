@@ -47,9 +47,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           ) : (
             <ArrowLeftToLine className="h-5 w-5 text-sidebar-foreground" />
           )}
-        </Button>
-
-        <div className="flex-1 overflow-y-auto">
+        </Button>        <div className="flex-1 overflow-y-auto overflow-x-hidden">
           <AppSidebar hideHeader={sidebarCollapsed} collapsed={sidebarCollapsed} />
         </div>
       </div>
