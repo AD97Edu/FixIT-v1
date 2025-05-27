@@ -35,6 +35,7 @@ import {
   Image as ImageIcon,
   MessageCircle,
   MoreHorizontal,
+  Trash2,
   User,
   X,
 } from "lucide-react";
@@ -44,6 +45,7 @@ import {
   useUpdateTicketStatus,
   useUpdateTicketPriority,
   useAssignTicket,
+  useDeleteTicket,
 } from "@/hooks/useTickets";
 import {
   useComments,
@@ -82,17 +84,20 @@ const TicketDetails = () => {
   const { mutate: updateStatus, isPending: isUpdatingStatus } =
     useUpdateTicketStatus();
   const { mutate: addComment, isPending: isAddingComment } = useAddComment();
-  const { mutate: editComment, isPending: isEditingComment } = useEditComment();
-  const { mutate: updatePriority, isPending: isUpdatingPriority } =
+  const { mutate: editComment, isPending: isEditingComment } = useEditComment();  const { mutate: updatePriority, isPending: isUpdatingPriority } =
     useUpdateTicketPriority();
   const { mutate: assignTicket, isPending: isAssigningTicket } =
     useAssignTicket();
+  const { mutate: deleteTicket, isPending: isDeletingTicket } =
+    useDeleteTicket();
   const [newComment, setNewComment] = useState("");
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState("");
   // Estado para el modal de selección de prioridad
   const [isPriorityModalOpen, setIsPriorityModalOpen] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState<Priority>("medium");
+  // Estado para el modal de confirmación de borrado
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Función para determinar la ruta de regreso basándose en el origen
   const getBackRoute = () => {
@@ -244,7 +249,6 @@ const TicketDetails = () => {
     setSelectedPriority(ticket?.priority || "medium");
     setIsPriorityModalOpen(true);
   };
-
   // Función que se ejecutará cuando se confirme la prioridad
   const handleConfirmAssignment = () => {
     if (!user) return;
@@ -296,6 +300,24 @@ const TicketDetails = () => {
     setIsPriorityModalOpen(false);
   };
 
+  // Función para confirmar la eliminación del ticket
+  const handleDeleteTicket = () => {
+    if (!ticket) return;
+
+    deleteTicket(ticket.id, {
+      onSuccess: () => {
+        toast.success(t("ticketDeleted"));
+        navigate(backRoute);
+      },
+      onError: (error) => {
+        console.error("Error deleting ticket:", error);
+        toast.error(t("pleaseTryAgain"));
+      }
+    });
+
+    setIsDeleteModalOpen(false);
+  };
+
   // En una aplicación real, aquí se obtendría información detallada sobre el usuario asignado
   // mediante una consulta adicional a la API/base de datos
   const assignedUser = ticket?.assignedTo || null; // Disponible para expansión futura
@@ -340,10 +362,20 @@ const TicketDetails = () => {
             <div className="flex flex-wrap gap-2 mb-2">
               <div className="flex items-center gap-2">
                 <StatusBadge status={ticket.status as Status} />
-                <PriorityBadge priority={ticket.priority} />
-                <span className="text-sm text-gray-500">
+                <PriorityBadge priority={ticket.priority} />                <span className="text-sm text-gray-500">
                   #{ticket.shortId || "N/A"}
                 </span>
+                {isAdmin && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    className="ml-2 h-6 w-6"
+                    title={t("deleteTicket")}
+                  >
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                  </Button>
+                )}
               </div>
               {isAdmin && (
                 <div className="flex gap-2 w-full mt-2">
@@ -611,14 +643,9 @@ const TicketDetails = () => {
             )}
           </div>
         </CardFooter>
-      </Card>
-
-      {/* Modal para selección de prioridad */}
+      </Card>      {/* Modal para selección de prioridad */}
       <Dialog open={isPriorityModalOpen} onOpenChange={setIsPriorityModalOpen}>
         <DialogContent className="sm:max-w-[425px]">
-          <DialogTitle className="text-lg font-semibold">
-           ""
-          </DialogTitle>
           <DialogHeader>
             <DialogTitle>{t("selectPriority")}</DialogTitle>
             <DialogDescription>{t("selectPriorityDesc")}</DialogDescription>
@@ -663,6 +690,37 @@ const TicketDetails = () => {
               {t("cancel")}
             </Button>{" "}
             <Button onClick={handleConfirmAssignment}>{t("confirm")}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Modal para confirmar eliminación del ticket */}
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{t("confirmDeleteTicket")}</DialogTitle>
+            <DialogDescription>{t("deleteTicketWarning")}</DialogDescription>
+          </DialogHeader>
+          
+          <div className="my-4">
+            <p>Se va a borrar el ticket con titulo:</p>
+            <p className="text-destructive font-semibold text-decoration-line: underline; text-xl mb-2 mt-2">{ticket?.title}</p>
+          </div>
+
+          <DialogFooter className="flex justify-between">
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteModalOpen(false)}
+            >
+              {t("cancel")}
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={handleDeleteTicket}
+              disabled={isDeletingTicket}
+            >
+              {isDeletingTicket ? t("deleting") : t("deleteTicket")}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

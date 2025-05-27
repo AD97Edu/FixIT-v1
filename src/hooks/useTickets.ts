@@ -4,6 +4,7 @@ import { Ticket, Status } from "@/types";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { PostgrestError } from "@supabase/supabase-js";
+import { toast } from "sonner";
 
 // Función para generar un identificador corto a partir del UUID
 const generateShortId = (id: string): string => {
@@ -504,5 +505,77 @@ export const useAssignedTickets = () => {
       return tickets;
     },
     enabled: !!user // Solo ejecutar la consulta si hay un usuario autenticado
+  });
+};
+
+export const useDeleteTicket = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { role } = useUserRole();
+  
+  return useMutation({
+    mutationFn: async (id: string) => {
+      // Solo administradores pueden eliminar cualquier ticket
+      // Los usuarios normales solo pueden eliminar sus propios tickets
+      if (role !== 'admin') {
+        // Verificar que el ticket pertenezca al usuario actual
+        const { data: ticketCheck, error: ticketCheckError } = await supabase
+          .from('tickets')
+          .select('submitted_by')
+          .eq('id', id)
+          .single();
+          
+        if (ticketCheckError) throw ticketCheckError;
+        
+        if (ticketCheck.submitted_by !== user?.id) {
+          throw { code: '42501', message: 'Permission denied' };
+        }
+      }
+      
+      // Primero, eliminar las imágenes relacionadas al ticket si las hay
+      try {
+        // Lista todos los archivos en la carpeta del ticket
+        const { data, error } = await supabase.storage
+          .from('fixit-tickets')
+          .list(`tickets/${id}`);
+        
+        if (!error && data && data.length > 0) {
+          // Construye un array con las rutas completas de los archivos
+          const filesToDelete = data.map(file => `tickets/${id}/${file.name}`);
+          
+          // Elimina los archivos
+          await supabase.storage
+            .from('fixit-tickets')
+            .remove(filesToDelete);
+        }
+      } catch (imageError) {
+        console.error("Error deleting ticket images:", imageError);
+        // Continuamos con la eliminación del ticket aunque falle la eliminación de imágenes
+      }
+      
+      // Eliminar el ticket
+      const { error } = await supabase
+        .from('tickets')
+        .delete()
+        .eq('id', id);
+        
+      if (error) throw error;
+      
+      return { id };
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      toast.success('Ticket eliminado con éxito');
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      console.error("Delete ticket error:", {
+        message: error?.message,
+        details: error?.details,
+        hint: error?.hint,
+        code: error?.code
+      });
+      toast.error('Error al eliminar el ticket');
+    }
   });
 };
