@@ -36,7 +36,7 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
       <CardHeader className="pb-2">
   <div className="flex flex-col gap-2">    {/* Título del ticket */}
     <Link to={`/tickets/${ticket.id}`} state={navigationState} className="flex-1 min-w-0">
-      <CardTitle className="text-xl truncate max-w-full" title={ticket.title}>
+      <CardTitle className="text-xl truncate max-w-full underline decoration-1" title={ticket.title}>
         {ticket.title}
       </CardTitle>
     </Link>
