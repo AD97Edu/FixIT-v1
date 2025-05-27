@@ -591,22 +591,24 @@ const TicketDetails = () => {
             onChange={(e) => setNewComment(e.target.value)}
             disabled={isAddingComment}
           />{" "}
-          <div className={`w-full ${isMobile ? 'flex flex-col space-y-2' : 'flex justify-between'}`}>
-            {isAdmin && (
-              <Button
-                onClick={() => handleStatusChange("resolved")}
-                disabled={isUpdatingStatus || ticket.status === "resolved"}
-              >
-                <Check className="mr-1 h-4 w-4" />
-                {t("resolveTicket")}
-              </Button>
-            )}            <Button
+          <div className={`w-full ${isMobile ? 'flex flex-col space-y-2' : 'flex justify-between'}`}>            
+            <Button
               onClick={handleAddComment}
               disabled={isAddingComment || !newComment.trim()}
               className={isAdmin ? "" : isMobile ? "" : "ml-auto"}
             >
               {isAddingComment ? t("posting") : t("postComment")}
             </Button>
+            {isAdmin && (
+              <Button
+                onClick={() => handleStatusChange("resolved")}
+                disabled={isUpdatingStatus || ticket.status === "resolved"}
+                className=""
+              >
+                <Check className="mr-1 h-4 w-4" />
+                {t("resolveTicket")}
+              </Button>
+            )}
           </div>
         </CardFooter>
       </Card>

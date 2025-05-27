@@ -147,11 +147,7 @@ export default function AdminSuggestions() {
         </CardContent>
       </Card>
 
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <DialogTitle className="text-lg font-semibold">
-           ""
-          </DialogTitle>
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>        <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
             <AlertDialogDescription>

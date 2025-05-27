@@ -745,11 +745,7 @@ const Admin = () => {
       )}
 
       {/* Dialog para editar usuario */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogTitle className="text-lg font-semibold">
-           ""
-          </DialogTitle>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Editar Usuario</DialogTitle>
           </DialogHeader>
@@ -808,11 +804,7 @@ const Admin = () => {
       </Dialog>
       
       {/* Dialog para crear usuario */}
-      <Dialog open={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogTitle className="text-lg font-semibold">
-           ""
-          </DialogTitle>
+      <Dialog open={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen}>        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Crear Nuevo Usuario</DialogTitle>
             <DialogDescription>
