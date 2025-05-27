@@ -28,9 +28,11 @@ const StatusBadge = ({ status }: StatusBadgeProps) => {
   };
 
   return (
+    <div className="mt-2 mb-2">
     <Badge className={cn(getStatusStyles())}>
       {getStatusLabel()}
     </Badge>
+    </div>
   );
 };
 

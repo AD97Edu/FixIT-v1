@@ -360,22 +360,14 @@ const TicketDetails = () => {
         <CardHeader>
           <div>
             <div className="flex flex-wrap gap-2 mb-2">
-              <div className="flex items-center gap-2">
+              <div className="md:flex items-center gap-2">
                 <StatusBadge status={ticket.status as Status} />
-                <PriorityBadge priority={ticket.priority} />                <span className="text-sm text-gray-500">
+
+                <PriorityBadge priority={ticket.priority} /> 
+
+                <span className="text-sm text-gray-500">
                   #{ticket.shortId || "N/A"}
                 </span>
-                {isAdmin && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setIsDeleteModalOpen(true)}
-                    className="ml-2 h-6 w-6"
-                    title={t("deleteTicket")}
-                  >
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
-                )}
               </div>
               {isAdmin && (
                 <div className="flex gap-2 w-full mt-2">
@@ -475,9 +467,21 @@ const TicketDetails = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <h1 className="text-4xl truncate max-w-full mb-6">{ticket.title}</h1>
-          <h3 className="font-medium mb-2">{t("descriptionIncident")}</h3>
+          <h1 className="text-4xl truncate max-w-full mb-6 underline decoration-1 ">{ticket.title}</h1>
+          <h3 className="font-medium mb-2 text-gray-400">{t("descriptionIncident")}</h3>
           <p className="whitespace-pre-line">{ticket.description}</p>
+          <div className="mt-16 text-gray-500 flex flex-wrap">
+                <p className="text-1xl">{t("deleteTicket")}:</p>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    className="ml-2 h-6 w-6"
+                    title={t("deleteTicket")}
+                  >
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                  </Button>
+                  </div>
 
           {/* Imágenes adjuntas */}
           {ticket.imageUrls && ticket.imageUrls.length > 0 && (
