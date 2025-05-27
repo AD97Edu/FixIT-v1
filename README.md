@@ -1,6 +1,6 @@
 # 🛠️ FixIT - Plataforma de Gestión de Incidencias
 
-FixIT es una aplicación web moderna para la gestión rápida y eficiente de incidencias técnicas en entornos empresariales. Permite a los usuarios reportar problemas, seguir su estado y recibir actualizaciones, mientras que los técnicos y administradores pueden gestionar y resolver estas incidencias de manera organizada.
+FixIT es una aplicación web moderna para la gestión rápida y eficiente de incidencias técnicas en entornos empresariales. Permite a los usuarios reportar problemas, seguir su estado y recibir actualizaciones, mientras que los administradores pueden gestionar y resolver estas incidencias de manera organizada.
 
 ![FixIT Logo](public/Fixit-LOGO.png)
 
@@ -8,8 +8,7 @@ FixIT es una aplicación web moderna para la gestión rápida y eficiente de inc
 
 ### 👤 Sistema de usuarios con roles diferenciados
 - **Usuarios**: Pueden reportar y consultar sus propias incidencias
-- **Técnicos**: Asignan, gestionan y resuelven tickets
-- **Administradores**: Acceso completo a todas las funcionalidades
+- **Administradores**: Asignan, gestionan y resuelven tickets
 
 ### 🎫 Gestión completa de tickets
 - Creación detallada con título, descripción, categoría y prioridad
@@ -22,14 +21,9 @@ FixIT es una aplicación web moderna para la gestión rápida y eficiente de inc
 - Distribución por categorías y prioridades
 - Tiempo medio de resolución y métricas clave
 
-### 🔔 Sistema de notificaciones
-- Alertas sobre cambios de estado en tickets
-- Notificaciones de nuevos comentarios
-- Confirmaciones de acciones realizadas
-
 ### 💡 Gestión de sugerencias
 - Canal dedicado para propuestas de mejora
-- Revisión y respuesta a sugerencias por parte de administradores
+- Revisión de las sugerencias por parte de administradores
 
 ### 🌐 Experiencia de usuario optimizada
 - Interfaz responsive para móvil, tablet y escritorio
@@ -66,11 +60,9 @@ La aplicación está diseñada siguiendo principios mobile-first, adaptándose p
 ## 🚀 Flujo de trabajo típico
 
 1. El usuario reporta una incidencia técnica desde su cuenta
-2. El sistema notifica a los técnicos disponibles
-3. Un técnico se asigna la incidencia y actualiza su estado a "En progreso"
-4. El técnico y el usuario pueden comunicarse mediante comentarios
-5. Al resolver el problema, el técnico marca la incidencia como "Resuelta"
-6. El usuario recibe notificación de resolución
+2. Un técnico se asigna a la incidencia y se actualiza automáticamente su estado a "En progreso"
+3. El técnico y el usuario pueden comunicarse mediante comentarios
+4. Al resolver el problema, el técnico marca la incidencia como "Resuelta"
 
 ## 🛠️ Instalación y configuración
 
@@ -84,10 +76,6 @@ npm install
 # o usando el script incluido
 ./install-deps.bat
 
-# Configurar variables de entorno
-cp .env.example .env.local
-# Editar .env.local con las credenciales de Supabase
-
 # Iniciar servidor de desarrollo
 npm run dev
 # o usando el script incluido
@@ -96,9 +84,8 @@ npm run dev
 
 ## 📚 Documentación
 
-La aplicación cuenta con extensa documentación disponible:
-- Manual de usuario integrado en la aplicación
-- Guía de inicio rápido en la sección "How It Works"
+La aplicación cuenta con documentación disponible:
+- Manual de usuario y administrador integrado en la aplicación
 - Ayuda contextual en funciones complejas
 
 ## 🧪 Testing
@@ -110,15 +97,15 @@ El proyecto incluye:
 
 ## 🌱 Roadmap futuro
 
+- Implementación de sistema de notificaciones push y por email
 - Implementación de dashboard analítico avanzado
 - Sistema de tickets recurrentes
-- Integración con servicios externos
 - Implementación de PWA para acceso offline
 - Asignación automática de tickets basada en carga de trabajo
 
 ## 👥 Contribución
 
-Las contribuciones son bienvenidas. Por favor, consulta las directrices de contribución antes de enviar cualquier cambio.
+Por ahora este es un proyecto privado. No se admiten contribuciones de desarrolladores externos.
 
 ## 📄 Licencia
 
