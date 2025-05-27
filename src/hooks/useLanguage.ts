@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 // Objeto con las traducciones
 const translations = {
   en: {
+    "attachImages": "Attach images",
+    "uploadImagesDesc": "Upload images related to your issue. You can attach multiple images.",
+    "clickToUpload": "Click to upload images",
     "navigation": "Navigation",
     "dashboard": "Dashboard",
     "tickets": "Tickets",
@@ -295,9 +298,6 @@ const translations = {
     "suggestionHistory": "History of suggestions you have sent",
     "noSuggestionsYet": "You haven't sent any suggestions yet.",
     "submittedOn": "Submitted on",
-    "attachImages": "Attach images",
-    "uploadImagesDesc": "Upload images related to your issue. You can attach multiple images.",
-    "clickToUpload": "Click to upload images",
     
     // New translations for Call-to-Action
     "readyToCreateTicket": "Ready to create a ticket?",
@@ -306,6 +306,9 @@ const translations = {
   },
   es: {
     // Navegación y menú lateral (existentes)
+    "attachImages": "Adjuntar imágenes",
+    "uploadImagesDesc": "Sube imágenes relacionadas con tu incidencia. Puedes adjuntar varias imágenes.",
+    "clickToUpload": "Haz clic para subir imágenes",
     "recentTickets": "Tickets abiertos recientemente",    "navigation": "Navegación",
     "dashboard": "Panel de estadísticas",
     "tickets": "Tickets",
