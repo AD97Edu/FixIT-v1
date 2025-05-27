@@ -17,25 +17,25 @@ import { useAssignedTickets } from "@/hooks/useTickets";
 type SortOption = "newest" | "oldest";
 
 const AssignedTickets = () => {
-  const { t } = useLanguage();
-  const { user } = useAuth();
-  const { role, loading: roleLoading } = useUserRole();
-  const { data: tickets = [], isLoading: ticketsLoading } = useAssignedTickets();
+  const { t } = useLanguage();  const { user } = useAuth();
+  const { role, loading: roleLoading } = useUserRole();  const { data: tickets = [], isLoading: ticketsLoading } = useAssignedTickets();
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<Status | "all">("all"); // Por defecto: "all"
+  const [statusFilter, setStatusFilter] = useState<Status | "all">("open"); // Por defecto: "open"
   const [priorityFilter, setPriorityFilter] = useState<Priority | "all">("all");
   const [sortBy, setSortBy] = useState<SortOption>("newest"); // Por defecto: ordenar por más recientes
   const [currentPage, setCurrentPage] = useState(1);
   const [dataReady, setDataReady] = useState(false);
   const TICKETS_PER_PAGE = 18;
-  
-  // Efecto para controlar el estado de "listo para mostrar datos"
+    // Efecto para controlar el estado de "listo para mostrar datos"
   useEffect(() => {
     // Si el rol aún se está cargando o los tickets aún se están cargando, no estamos listos
     if (roleLoading || ticketsLoading) {
       setDataReady(false);
       return;
     }
+    
+    // Asegurarse de que el filtro por estado sea "open" por defecto
+    setStatusFilter("open");
     
     // Añadimos un pequeño delay para asegurarnos de que los datos han sido filtrados correctamente
     const timer = setTimeout(() => {
@@ -120,14 +120,12 @@ const AssignedTickets = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-        </div>
-        
-        <Select
+        </div>          <Select
           value={statusFilter}
           onValueChange={(value) => setStatusFilter(value as Status | "all")}
         >
           <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder={`${t('status')}: ${t('all')}`} />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t('all')}</SelectItem>

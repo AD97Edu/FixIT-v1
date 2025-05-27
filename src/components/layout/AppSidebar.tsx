@@ -35,7 +35,8 @@ const navItems = [
 		titleKey: "tickets",
 		icon: FileText,
 		path: "/tickets",
-	},	{
+	},
+	{
 		titleKey: "adminAssignedTickets",
 		icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ticket"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>,
 		path: "/admin/assigned-tickets",
@@ -213,15 +214,14 @@ export function AppSidebar({
 				<span className="text-base">{t("logout")}</span>
 			</button>
 		);
-	};
-	return (
+	};	return (
 		<TooltipProvider>
 			<div
 				className={cn(
-					"shrink-0 bg-sidebar-background h-full flex flex-col text-sidebar-foreground",
+					"shrink-0 bg-sidebar-background h-full flex flex-col text-sidebar-foreground overflow-x-hidden",
 					collapsed ? "w-[64px]" : "w-64"
 				)}
-			>				{/* Encabezado - solo visible si no está oculto */}
+			>{/* Encabezado - solo visible si no está oculto */}
 				{!hideHeader && (
 					<div className="p-4 border-b border-sidebar-border">
 						<div className="flex items-center justify-between md:justify-center">
@@ -249,10 +249,9 @@ export function AppSidebar({
 							</p>
 						)}
 					</div>
-				)}				{/* Navegación */}
-				<div
+				)}				{/* Navegación */}				<div
 					className={cn(
-						"p-2 flex-1 flex flex-col",
+						"p-2 flex-1 flex flex-col overflow-hidden",
 						collapsed ? "px-1" : "p-4"
 					)}
 				>
@@ -260,13 +259,13 @@ export function AppSidebar({
 						<div className="mb-4 text-sm font-medium text-muted-foreground px-2">
 							{t("navigation")}
 						</div>
-					)}<nav className="space-y-2 flex-1 flex flex-col">
+					)}<nav className="space-y-2 flex-1 flex flex-col overflow-x-hidden">
 						{filteredNavItems.map((item) => (
 							<NavItem key={item.path} item={item} />
 						))}
 						{/* Añadimos el selector de idioma antes del botón de logout */}
 						<LanguageSelector collapsed={collapsed} inSheet={inSheet} />
-					</nav>					{/* Botón de logout siempre abajo */}
+					</nav>{/* Botón de logout siempre abajo */}
 					<div
 						className={cn(
 							"mt-auto pt-2 space-y-1",
@@ -279,7 +278,7 @@ export function AppSidebar({
 					</div>
 				</div>				{/* Footer - solo visible si no está colapsado */}
 				{!collapsed && (
-					<div className="p-4 border-t border-sidebar-border text-xs text-center text-muted-foreground">
+					<div className="p-4 border-t border-sidebar-border text-xs text-center text-muted-foreground overflow-hidden">
 						{t("version")}
 					</div>
 				)}
