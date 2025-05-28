@@ -248,11 +248,65 @@ body {
     max-width: 100% !important;
     height: auto !important;
   }
-  
-  /* Fix for pre and code elements on mobile */
+    /* Fix for pre and code elements on mobile */
   pre, code {
     overflow-x: auto;
     max-width: 100%;
     word-wrap: break-word;
+  }
+  /* Sidebar mobile improvements */
+  [data-radix-sheet-content] {
+    backdrop-filter: blur(8px);
+    background: hsla(var(--sidebar-background), 0.95) !important;
+  }
+
+  /* Sheet overlay styling */
+  [data-radix-sheet-overlay] {
+    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.3) !important;
+  }
+  /* Fix for mobile sidebar icons alignment */
+  .mobile-nav-item {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    gap: 0.75rem !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+  }
+
+  .mobile-nav-item svg {
+    flex-shrink: 0 !important;
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    margin-right: 0 !important;
+  }
+
+  .mobile-nav-item span {
+    flex: 1 !important;
+    text-align: left !important;
+  }
+  /* Ensure sidebar content is properly styled on mobile */
+  [data-sidebar="sidebar"] {
+    backdrop-filter: blur(12px);
+    background: rgba(var(--sidebar-background), 0.95);
+  }
+
+  /* Enhanced mobile sidebar styling */
+  @media (max-width: 768px) {
+    .mobile-nav-item:hover {
+      transform: translateX(2px);
+      transition: all 0.2s ease-in-out;
+    }
+
+    .mobile-nav-item:active {
+      transform: translateX(1px);
+      scale: 0.98;
+    }
+
+    /* Improve backdrop blur for mobile sidebar */
+    [data-radix-collection-item] {
+      backdrop-filter: blur(8px);
+    }
   }
 }
