@@ -368,15 +368,14 @@ const TicketDetails = () => {
                 <span className="text-sm text-gray-500">
                   #{ticket.shortId || "N/A"}
                 </span>
-              </div>
-              {isAdmin && (
-                <div className="flex gap-2 w-full mt-2">
+              </div>              {isAdmin && (
+                <div className="flex flex-col sm:flex-row gap-2 w-full mt-2">
                   <Select
                     value={ticket.priority}
                     onValueChange={handlePriorityChange}
                     disabled={isUpdatingPriority}
                   >
-                    <SelectTrigger className="w-[140px]">
+                    <SelectTrigger className="w-full sm:w-[140px] max-w-full">
                       <SelectValue placeholder={t("priority")} />
                     </SelectTrigger>
                     <SelectContent>
@@ -401,7 +400,7 @@ const TicketDetails = () => {
                     }
                     disabled={isUpdatingStatus}
                   >
-                    <SelectTrigger className="w-[140px]">
+                    <SelectTrigger className="w-full sm:w-[140px] max-w-full">
                       <SelectValue placeholder={t("status")} />
                     </SelectTrigger>
                     <SelectContent>
@@ -421,7 +420,7 @@ const TicketDetails = () => {
 
           <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2 text-sm">
             {" "}
-            <div className="flex items-center">
+            <div className="flex items-center mt-2">
               <Calendar className="mr-2 h-4 w-4" />
               <span>
                 {t("created")}: {formatDate(ticket.createdAt, "MMM d, yyyy")}
@@ -443,11 +442,14 @@ const TicketDetails = () => {
             <div className="flex items-center">
               <User className="mr-2 h-4 w-4" />
               <span>{t("assignedTo")}: </span>
-              <span className="ml-1 font-medium">
+              <span className="ml-1 font-medium truncate">
                 {ticket.assignedTo
                   ? ticket.assigneeName || t("unnamed")
                   : t("noAdminAssigned")}
               </span>{" "}
+            </div>
+            <div
+              className="mt-4">
               {showAssignButton && (
                 <Button
                   size="sm"
@@ -463,11 +465,12 @@ const TicketDetails = () => {
                     : t("assignToMe")}
                 </Button>
               )}
+              
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <h1 className="text-4xl truncate max-w-full mb-6 underline decoration-1 ">{ticket.title}</h1>
+          <h1 className="text-4xl  max-w-full mb-6 underline decoration-1 ">{ticket.title}</h1>
           <h3 className="font-medium mb-2 text-gray-400">{t("descriptionIncident")}</h3>
           <p className="whitespace-pre-line">{ticket.description}</p>
           <div className="mt-16 text-gray-500 flex flex-wrap">
@@ -618,10 +621,10 @@ const TicketDetails = () => {
           )}
         </CardContent>
         <CardFooter className="border-t flex-col items-start pt-4">
-          {" "}
-          <h4 className="font-medium mb-2">{t("addComment")}</h4>          <Textarea
+          {" "}          <h4 className="font-medium mb-2">{t("addComment")}</h4>
+          <Textarea
             placeholder={t("typeCommentHere")}
-            className="resize-none mb-3"
+            className="resize-none mb-3 max-w-full"
             rows={3}
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}

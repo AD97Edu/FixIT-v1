@@ -205,30 +205,51 @@ const TicketList = () => {
 
       {/* Paginación */}
       {totalPages > 1 && (
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex justify-center items-center">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                  className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-                />
+          <PaginationPrevious
+            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+            className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+          />
               </PaginationItem>
-              {Array.from({ length: totalPages }, (_, i) => (
-                <PaginationItem key={i}>
-                  <PaginationLink
-                    isActive={currentPage === i + 1}
-                    onClick={() => handlePageChange(i + 1)}
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
+              
+              {/* Mobile-friendly pagination logic */}
+              {Array.from({ length: totalPages }, (_, i) => {
+          const pageNum = i + 1;
+          // Show current page and 3 more pages, or first/last page if within range
+          const shouldShow = 
+            pageNum === currentPage || 
+            (pageNum >= currentPage && pageNum <= currentPage + 2) || 
+            pageNum === 1 || 
+            pageNum === totalPages;
+          
+          // Show ellipsis for gaps in pagination
+          const showEllipsisBefore = pageNum === totalPages && currentPage + 2 < totalPages - 1;
+          const showEllipsisAfter = pageNum === 1 && currentPage > 4;
+          
+          return shouldShow ? (
+            <PaginationItem key={i}>
+              <PaginationLink
+                isActive={currentPage === pageNum}
+                onClick={() => handlePageChange(pageNum)}
+              >
+                {pageNum}
+              </PaginationLink>
+            </PaginationItem>
+          ) : (showEllipsisBefore || showEllipsisAfter) ? (
+            <PaginationItem key={i} className="hidden sm:flex">
+              <PaginationLink className="cursor-default">...</PaginationLink>
+            </PaginationItem>
+          ) : null;
+              }).filter(Boolean)}
+              
               <PaginationItem>
-                <PaginationNext
-                  onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                  className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-                />
+          <PaginationNext
+            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+            className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+          />
               </PaginationItem>
             </PaginationContent>
           </Pagination>
