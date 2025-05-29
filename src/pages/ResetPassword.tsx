@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Mail } from "lucide-react";
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import HCaptchaInfo from "@/components/auth/HCaptchaInfo";
 

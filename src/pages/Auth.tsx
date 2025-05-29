@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import HCaptchaInfo from "@/components/auth/HCaptchaInfo";
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 
 // Input sanitization function
 const sanitizeInput = (input: string): string => {

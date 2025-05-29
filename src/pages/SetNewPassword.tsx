@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Lock, Eye, EyeOff } from "lucide-react";
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 
 // Input sanitization function
 const sanitizeInput = (input: string): string => {
