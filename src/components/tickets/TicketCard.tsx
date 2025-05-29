@@ -54,7 +54,7 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
         {ticket.title}
       </CardTitle>
     </Link>
-    {/* Estado y prioridad SIEMPRE debajo del título */}
+    {/* Estado, prioridad y categoría SIEMPRE debajo del título */}
     <div className="flex flex-col gap-1 w-full mt-1">
       <div className="flex items-center">
         <span className="text-sm text-muted-foreground mr-1 whitespace-nowrap">{t('status')}:</span>
@@ -63,6 +63,10 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
       <div className="flex items-center">
         <span className="text-sm text-muted-foreground mr-1 whitespace-nowrap">{t('priority')}:</span>
         <PriorityBadge priority={ticket.priority} />
+      </div>
+      <div className="flex items-center">
+        <span className="text-sm text-muted-foreground mr-1 whitespace-nowrap">{t('category')}:</span>
+        <span className="text-sm font-medium capitalize">{t(`category_${ticket.category}`)}</span>
       </div>
     </div>
     {/* Identificador corto */}
