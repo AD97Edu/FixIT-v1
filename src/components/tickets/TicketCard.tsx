@@ -18,7 +18,12 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/tickets/${ticket.id}`); // Redirige a la página de detalles del ticket
+    // Generar el estado de navegación con información sobre la página de origen
+    const navigationState = {
+      from: location.pathname,
+      search: location.search
+    };
+    navigate(`/tickets/${ticket.id}`, { state: navigationState });
   };
   
   // Función segura para formatear la fecha
@@ -36,7 +41,9 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
   const navigationState = {
     from: location.pathname,
     search: location.search
-  };return (
+  };
+
+  return (
     <Card 
     onClick={handleClick}
     className="card-enhanced hover:translate-y-[-4px] hover:cursor-pointer transition-transform duration-200 ease-in-out">

@@ -107,29 +107,16 @@ const TicketDetails = () => {
       search?: string;
     } | null;
 
+    // Si hay estado de navegación, usarlo para determinar la ruta de retorno
     if (navigationState?.from) {
-      // Si el usuario vino desde una página específica, regresamos allí
-      const fromPath = navigationState.from;
-      const search = navigationState.search || "";
-
-      if (fromPath === "/admin/assigned-tickets") {
-        return `/admin/assigned-tickets${search}`;
-      }
-      // Si en el futuro se agrega la ruta /assigned-tickets, se puede descomentar:
-      // if (fromPath === '/assigned-tickets') {
-      //   return `/assigned-tickets${search}`;
-      // }
-      if (fromPath === "/tickets") {
-        return `/tickets${search}`;
-      }
+      return navigationState.from + (navigationState.search || "");
     }
 
-    // Fallback: determinar basándose en el rol del usuario
-    if (role === "admin") {
+    // Si no hay estado de navegación, usar la ruta actual para determinar el retorno
+    if (location.pathname.includes("/admin")) {
       return "/admin/assigned-tickets";
     }
 
-    // Por defecto, regresar a la lista general de tickets
     return "/tickets";
   };
 
