@@ -22,6 +22,8 @@ import HowItWorks from "./pages/HowItWorks";
 import AdminHowItWorks from "./pages/AdminHowItWorks";
 import AdminAssignedTickets from "./pages/AdminAssignedTickets";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
+import SetNewPassword from "./pages/SetNewPassword";
 import Profile from "./pages/Profile";
 import Suggestions from "./pages/Suggestions";
 import AdminSuggestions from "./pages/AdminSuggestions";
@@ -49,7 +51,10 @@ const App = () => {
             <div className="min-h-screen bg-background">
               <BrowserRouter>
                 <Routes>
-                  <Route path="/auth" element={<Auth />} />                  <Route
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/auth/reset-password" element={<ResetPassword />} />
+                  <Route path="/auth/set-new-password" element={<SetNewPassword />} />
+                  <Route
                     path="/"
                     element={
                       <ProtectedRoute>
