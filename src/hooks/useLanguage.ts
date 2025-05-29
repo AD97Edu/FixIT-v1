@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 // Objeto con las traducciones
 const translations = {
   en: {
+    "statusUpdated": "Status updated successfully",
     "settings": "Settings",
     "security": "Security",
     "fullName": "Full Name",
@@ -318,6 +319,7 @@ const translations = {
     "createNewTicketNow": "Create a new ticket now"
   },  es: {
     // Navegación y menú lateral (existentes)
+    "statusUpdated": "Estado actualizado correctamente",
     "settings": "Configuración",
     "security": "Seguridad",
     "fullName": "Nombre completo",
