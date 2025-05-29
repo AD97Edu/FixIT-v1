@@ -7,13 +7,12 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Mail } from "lucide-react";
-import DOMPurify from "dompurify";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import HCaptchaInfo from "@/components/auth/HCaptchaInfo";
 
 // Input sanitization function
 const sanitizeInput = (input: string): string => {
-  return DOMPurify.sanitize(input.trim());
+  return input.trim();
 };
 
 // Email validation function
