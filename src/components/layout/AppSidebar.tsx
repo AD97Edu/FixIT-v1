@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Home, FileText, Calendar, Search, User, LogOut, X, HelpCircle } from "lucide-react";
+import { Home, FileText, Calendar, Search, User, LogOut, X, HelpCircle, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SheetClose } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -12,6 +12,8 @@ import { LanguageSelector } from "@/components/ui/language-selector";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useFilteredNavigation } from "@/hooks/useFilteredNavigation";
+import { useUnreadNotificationsCount } from "@/hooks/useNotifications";
+import { Badge } from "@/components/ui/badge";
 
 // Definimos los navItems pero usaremos las traducciones para los títulos
 const navItems = [
@@ -34,6 +36,11 @@ const navItems = [
 		titleKey: "newTicket",
 		icon: Calendar,
 		path: "/tickets/new",
+	},
+	{
+		titleKey: "notifications",
+		icon: Bell,
+		path: "/notifications",
 	},
 	{
 		titleKey: "adminAssignedTickets",
@@ -105,6 +112,9 @@ export function AppSidebar({
 
 	// Renderizado condicional del NavItem según si está dentro de un Sheet o no
 	const NavItem = ({ item }: { item: typeof navItems[0] }) => {
+		const { data: unreadCount } = useUnreadNotificationsCount();
+		const showBadge = item.titleKey === "notifications" && unreadCount && unreadCount > 0;
+
 		// Si está en Sheet, siempre mostrar con texto y envolver con SheetClose
 		if (inSheet) {
 			return (
@@ -113,7 +123,7 @@ export function AppSidebar({
 						to={item.path}
 						className={({ isActive }) =>
 							cn(
-								"flex items-center gap-3 p-3 rounded-md w-full transition-colors",
+								"flex items-center gap-3 p-3 rounded-md w-full transition-colors relative",
 								isActive
 									? "bg-sidebar-accent text-sidebar-primary font-medium"
 									: "text-sidebar-foreground hover:bg-sidebar-accent/70 hover:text-sidebar-primary/80"
@@ -122,6 +132,11 @@ export function AppSidebar({
 					>
 						<item.icon className="h-5 w-5 flex-shrink-0" />
 						<span className="text-base">{t(item.titleKey)}</span>
+						{showBadge && (
+							<Badge variant="destructive" className="ml-4">
+								{unreadCount}
+							</Badge>
+						)}
 					</NavLink>
 				</SheetClose>
 			);
@@ -136,7 +151,7 @@ export function AppSidebar({
 							to={item.path}
 							className={({ isActive }) =>
 								cn(
-									"flex items-center justify-center p-3 rounded-md w-full transition-colors",
+									"flex items-center justify-center p-3 rounded-md w-full transition-colors relative",
 									isActive
 										? "bg-sidebar-accent text-sidebar-primary font-medium"
 										: "text-sidebar-foreground hover:bg-sidebar-accent/70 hover:text-sidebar-primary/80"
@@ -144,6 +159,11 @@ export function AppSidebar({
 							}
 						>
 							<item.icon className="h-5 w-5 flex-shrink-0" />
+							{showBadge && (
+								<Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+									{unreadCount}
+								</Badge>
+							)}
 						</NavLink>
 					</TooltipTrigger>
 					<TooltipContent side="right">{t(item.titleKey)}</TooltipContent>
@@ -157,7 +177,7 @@ export function AppSidebar({
 				to={item.path}
 				className={({ isActive }) =>
 					cn(
-						"flex items-center gap-3 p-3 rounded-md w-full transition-colors",
+						"flex items-center gap-3 p-3 rounded-md w-full transition-colors relative",
 						isActive
 							? "bg-sidebar-accent text-sidebar-primary font-medium"
 							: "text-sidebar-foreground hover:bg-sidebar-accent/70 hover:text-sidebar-primary/80"
@@ -166,6 +186,11 @@ export function AppSidebar({
 			>
 				<item.icon className="h-5 w-5 flex-shrink-0" />
 				<span className="text-base">{t(item.titleKey)}</span>
+				{showBadge && (
+					<Badge variant="destructive" className="ml-4">
+						{unreadCount}
+					</Badge>
+				)}
 			</NavLink>
 		);
 	};

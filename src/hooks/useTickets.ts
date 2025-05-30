@@ -5,6 +5,8 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { PostgrestError } from "@supabase/supabase-js";
 import { toast } from "sonner";
+import { useLanguage } from "@/hooks/useLanguage";
+import { notificationsService } from "@/services/notifications";
 
 // Función para generar un identificador corto a partir del UUID
 const generateShortId = (id: string): string => {
@@ -302,51 +304,76 @@ export const useUpdateTicketStatus = () => {
   const queryClient = useQueryClient();
   const { role } = useUserRole();
   const { user } = useAuth();
+  const { t } = useLanguage();
   
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: Status }) => {
-      // Comprobamos si es admin/agent antes de la actualización
-      if (role !== 'admin' && role !== 'agent') {
-        // Verifica si el ticket pertenece al usuario actual antes de permitir la actualización
-        const { data: ticketCheck, error: ticketCheckError } = await supabase
+      try {
+        console.log('Updating ticket status:', { id, status, role });
+        
+        // Comprobamos si es admin/agent antes de la actualización
+        if (role !== 'admin' && role !== 'agent') {
+          // Verifica si el ticket pertenece al usuario actual antes de permitir la actualización
+          const { data: ticketCheck, error: ticketCheckError } = await supabase
+            .from('tickets')
+            .select('submitted_by')
+            .eq('id', id)
+            .single();
+            
+          if (ticketCheckError) throw ticketCheckError;
+          
+          // Si el ticket no pertenece al usuario actual, lanzamos un error de permiso
+          if (ticketCheck.submitted_by !== user?.id) {
+            throw { code: '42501', message: 'Permission denied' };
+          }
+        }
+        
+        // Si es admin/agent o el ticket le pertenece, procedemos con la actualización
+        const { error: updateError } = await supabase
+          .from('tickets')
+          .update({ status, updated_at: new Date().toISOString() })
+          .eq('id', id)
+          .select();
+          
+        if (updateError) throw updateError;
+
+        // Obtenemos el ID del usuario que creó el ticket
+        const { data: ticketData, error: ticketError } = await supabase
           .from('tickets')
           .select('submitted_by')
           .eq('id', id)
           .single();
-          
-        if (ticketCheckError) throw ticketCheckError;
-        
-        // Si el ticket no pertenece al usuario actual, lanzamos un error de permiso
-        if (ticketCheck.submitted_by !== user?.id) {
-          throw { code: '42501', message: 'Permission denied' };
+
+        if (ticketError) throw ticketError;
+
+        if (!ticketData) {
+          throw new Error('Ticket not found');
         }
-      }
-      
-      // Si es admin/agent o el ticket le pertenece, procedemos con la actualización
-      const { error } = await supabase
-        .from('tickets')
-        .update({ status, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .select();
+
+        console.log('Creating notification for status:', status);
         
-      if (error) throw error;
-      // No devolvemos datos, solo invalidamos queries
-      return { id, status };
-    },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['tickets'] });
-      queryClient.invalidateQueries({ queryKey: ['tickets', variables.id] });
-    },
-    onError: (error: any) => {
-      console.error("Mutation error details:", {
-        message: error?.message,
-        details: error?.details,
-        hint: error?.hint,
-        code: error?.code
-      });
-      if (error?.code === "42501") {
-        console.error("This appears to be a permissions error. Check Supabase RLS policies.");
+        // Creamos la notificación según el estado
+        if (status === 'resolved') {
+          console.log('Creating resolved notification');
+          await notificationsService.createTicketResolvedNotification(id, ticketData.submitted_by);
+        } else if (status === 'in_progress') {
+          console.log('Creating in-progress notification');
+          await notificationsService.createTicketInProgressNotification(id, ticketData.submitted_by);
+        }
+
+        return { id, status };
+      } catch (error) {
+        console.error('Error in useUpdateTicketStatus:', error);
+        throw error;
       }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      toast.success(t('statusUpdated'));
+    },
+    onError: (error: PostgrestError) => {
+      console.error('Error updating ticket status:', error);
+      toast.error(t('error'));
     }
   });
 };
