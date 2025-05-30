@@ -38,7 +38,6 @@ export const useAddComment = () => {
   
   return useMutation({
     mutationFn: async (comment: Omit<Comment, 'id' | 'createdAt'>) => {
-      
       const commentData = {
         ticket_id: comment.ticketId,
         user_id: comment.userId,
@@ -53,14 +52,13 @@ export const useAddComment = () => {
         .single();
 
       if (error) {
-        console.error("Supabase error:", error); // Para depuración
+        console.error("Supabase error:", error);
         throw error;
       }
 
-      // Si el comentario es de un admin, crear una notificación
+      // Si el comentario es de un admin, notificar al usuario que creó el ticket
       if (role === 'admin' || role === 'agent') {
         try {
-          // Obtener el ID del usuario que creó el ticket
           const { data: ticketData } = await supabase
             .from('tickets')
             .select('submitted_by')
@@ -76,7 +74,26 @@ export const useAddComment = () => {
           }
         } catch (error) {
           console.error("Error creating comment notification:", error);
-          // No lanzamos el error para no interrumpir el flujo principal
+        }
+      } 
+      // Si el comentario es de un usuario normal, notificar al admin asignado
+      else {
+        try {
+          const { data: ticketData } = await supabase
+            .from('tickets')
+            .select('assigned_to')
+            .eq('id', comment.ticketId)
+            .single();
+
+          if (ticketData?.assigned_to) {
+            await notificationsService.createCommentNotification(
+              comment.ticketId,
+              ticketData.assigned_to,
+              comment.content
+            );
+          }
+        } catch (error) {
+          console.error("Error creating comment notification for admin:", error);
         }
       }
 
