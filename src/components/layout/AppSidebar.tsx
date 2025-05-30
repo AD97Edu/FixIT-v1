@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Home, FileText, Calendar, Search, User, LogOut, X, HelpCircle } from "lucide-react";
+import { Home, FileText, Calendar, Search, User, LogOut, X, HelpCircle, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SheetClose } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -34,6 +34,11 @@ const navItems = [
 		titleKey: "newTicket",
 		icon: Calendar,
 		path: "/tickets/new",
+	},
+	{
+		titleKey: "notifications",
+		icon: Bell,
+		path: "/notifications",
 	},
 	{
 		titleKey: "adminAssignedTickets",

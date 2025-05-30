@@ -52,11 +52,23 @@ CREATE TABLE public.comments (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Notifications table
+CREATE TABLE public.notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  ticket_id UUID REFERENCES public.tickets(id) ON DELETE CASCADE NOT NULL,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Create indexes for better performance
 CREATE INDEX idx_comments_ticket_id ON public.comments(ticket_id);
 CREATE INDEX idx_usuario_rol_user_id ON public.usuario_rol(user_id);
 CREATE INDEX idx_tickets_submitted_by ON public.tickets(submitted_by);
 CREATE INDEX idx_tickets_assigned_to ON public.tickets(assigned_to);
+CREATE INDEX idx_notifications_user_id ON public.notifications(user_id);
+CREATE INDEX idx_notifications_ticket_id ON public.notifications(ticket_id);
 
 -- Set up RLS (Row Level Security)
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -64,6 +76,7 @@ ALTER TABLE public.usuario_rol ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tickets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.suggestions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
 -- Create function to check if user is admin
 CREATE OR REPLACE FUNCTION public.is_admin(user_id UUID)
@@ -161,6 +174,19 @@ CREATE POLICY "Users can delete own suggestions"
 CREATE POLICY "Admins can manage suggestions"
   ON public.suggestions FOR ALL
   USING (public.is_admin(auth.uid()));
+
+-- Notifications policies
+CREATE POLICY "Users can view their own notifications"
+  ON public.notifications FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own notifications"
+  ON public.notifications FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own notifications"
+  ON public.notifications FOR DELETE
+  USING (auth.uid() = user_id);
 
 -- Create triggers for updated_at timestamp
 CREATE OR REPLACE FUNCTION public.update_modified_column()

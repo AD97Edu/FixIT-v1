@@ -316,7 +316,13 @@ const translations = {
     // New translations for Call-to-Action
     "readyToCreateTicket": "Ready to create a ticket?",
     "startCreatingTicket": "Get started by creating a new support ticket",
-    "createNewTicketNow": "Create a new ticket now"
+    "createNewTicketNow": "Create a new ticket now",
+    "notifications": "Notifications",
+    "noNotifications": "No notifications",
+    "ticketResolved": "A ticket has been resolved",
+    "markAsRead": "Mark as read",
+    "deleteNotification": "Delete notification",
+    "notificationDeleted": "Notification deleted successfully"
   },  es: {
     // Navegación y menú lateral (existentes)
     "settings": "Configuración",
@@ -665,7 +671,13 @@ const translations = {
     // Nuevas traducciones para Call-to-Action
     "readyToCreateTicket": "¿Listo para crear un ticket?",
     "startCreatingTicket": "Comienza creando un nuevo ticket de soporte",
-    "createNewTicketNow": "Crear un nuevo ticket ahora"
+    "createNewTicketNow": "Crear un nuevo ticket ahora",
+    "notifications": "Notificaciones",
+    "noNotifications": "No hay notificaciones",
+    "ticketResolved": "Un ticket ha sido resuelto",
+    "markAsRead": "Marcar como leída",
+    "deleteNotification": "Eliminar notificación",
+    "notificationDeleted": "Notificación eliminada con éxito"
   }
 };
 

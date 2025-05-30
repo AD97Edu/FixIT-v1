@@ -25,6 +25,7 @@ import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Suggestions from "./pages/Suggestions";
 import AdminSuggestions from "./pages/AdminSuggestions";
+import Notifications from "./pages/Notifications";
 import { useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -122,7 +123,18 @@ const App = () => {
                         </UserOnlyRoute>
                       </ProtectedRoute>
                     }
-                  />                  <Route
+                  />
+                  <Route
+                    path="/notifications"
+                    element={
+                      <ProtectedRoute>
+                        <AppLayout>
+                          <Notifications />
+                        </AppLayout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
                     path="/admin/suggestions"
                     element={
                       <ProtectedRoute>
