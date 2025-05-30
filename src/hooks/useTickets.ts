@@ -309,6 +309,8 @@ export const useUpdateTicketStatus = () => {
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: Status }) => {
       try {
+        console.log('Updating ticket status:', { id, status, role });
+        
         // Comprobamos si es admin/agent antes de la actualización
         if (role !== 'admin' && role !== 'agent') {
           // Verifica si el ticket pertenece al usuario actual antes de permitir la actualización
@@ -335,22 +337,28 @@ export const useUpdateTicketStatus = () => {
           
         if (updateError) throw updateError;
 
-        // Si el ticket se ha resuelto, creamos una notificación para el usuario que lo creó
+        // Obtenemos el ID del usuario que creó el ticket
+        const { data: ticketData, error: ticketError } = await supabase
+          .from('tickets')
+          .select('submitted_by')
+          .eq('id', id)
+          .single();
+
+        if (ticketError) throw ticketError;
+
+        if (!ticketData) {
+          throw new Error('Ticket not found');
+        }
+
+        console.log('Creating notification for status:', status);
+        
+        // Creamos la notificación según el estado
         if (status === 'resolved') {
-          const { data: ticketData, error: ticketError } = await supabase
-            .from('tickets')
-            .select('submitted_by')
-            .eq('id', id)
-            .single();
-
-          if (ticketError) throw ticketError;
-
-          if (!ticketData) {
-            throw new Error('Ticket not found');
-          }
-
-          // Creamos la notificación usando el servicio
+          console.log('Creating resolved notification');
           await notificationsService.createTicketResolvedNotification(id, ticketData.submitted_by);
+        } else if (status === 'in_progress') {
+          console.log('Creating in-progress notification');
+          await notificationsService.createTicketInProgressNotification(id, ticketData.submitted_by);
         }
 
         return { id, status };

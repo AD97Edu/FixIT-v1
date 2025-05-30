@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Comment } from "@/types";
+import { notificationsService } from "@/services/notifications";
+import { useUserRole } from "@/hooks/useUserRole";
 
 // Función para transformar los campos de snake_case a camelCase
 const transformCommentData = (comment: any): Comment => {
@@ -32,6 +34,7 @@ export const useComments = (ticketId: string) => {
 
 export const useAddComment = () => {
   const queryClient = useQueryClient();
+  const { role } = useUserRole();
   
   return useMutation({
     mutationFn: async (comment: Omit<Comment, 'id' | 'createdAt'>) => {
@@ -52,6 +55,29 @@ export const useAddComment = () => {
       if (error) {
         console.error("Supabase error:", error); // Para depuración
         throw error;
+      }
+
+      // Si el comentario es de un admin, crear una notificación
+      if (role === 'admin' || role === 'agent') {
+        try {
+          // Obtener el ID del usuario que creó el ticket
+          const { data: ticketData } = await supabase
+            .from('tickets')
+            .select('submitted_by')
+            .eq('id', comment.ticketId)
+            .single();
+
+          if (ticketData) {
+            await notificationsService.createCommentNotification(
+              comment.ticketId,
+              ticketData.submitted_by,
+              comment.content
+            );
+          }
+        } catch (error) {
+          console.error("Error creating comment notification:", error);
+          // No lanzamos el error para no interrumpir el flujo principal
+        }
       }
 
       return transformCommentData(data);

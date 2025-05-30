@@ -39,6 +39,8 @@ export const notificationsService = {
 
   async createTicketResolvedNotification(ticketId: string, userId: string): Promise<void> {
     try {
+      console.log('Creating resolved notification for:', { ticketId, userId });
+      
       // Primero verificamos que el ticket existe
       const { data: ticketData, error: ticketError } = await supabase
         .from('tickets')
@@ -81,8 +83,118 @@ export const notificationsService = {
         console.error('Error creating notification:', insertError);
         throw insertError;
       }
+
+      console.log('Resolved notification created successfully');
     } catch (error) {
       console.error('Error in createTicketResolvedNotification:', error);
+      throw error;
+    }
+  },
+
+  async createTicketInProgressNotification(ticketId: string, userId: string): Promise<void> {
+    try {
+      console.log('Creating in-progress notification for:', { ticketId, userId });
+      
+      // Primero verificamos que el ticket existe
+      const { data: ticketData, error: ticketError } = await supabase
+        .from('tickets')
+        .select('title')
+        .eq('id', ticketId)
+        .single();
+
+      if (ticketError) {
+        console.error('Error fetching ticket:', ticketError);
+        throw new Error('Ticket not found');
+      }
+
+      if (!ticketData) {
+        throw new Error('Ticket not found');
+      }
+
+      // Verificamos que el usuario existe
+      const { data: userData, error: userError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', userId)
+        .single();
+
+      if (userError || !userData) {
+        console.error('Error fetching user:', userError);
+        throw new Error('User not found');
+      }
+
+      // Si todo está bien, creamos la notificación
+      const { error: insertError } = await supabase
+        .from('notifications')
+        .insert({
+          ticket_id: ticketId,
+          user_id: userId,
+          message: `El ticket "${ticketData.title}" está siendo atendido`,
+          is_read: false
+        });
+
+      if (insertError) {
+        console.error('Error creating notification:', insertError);
+        throw insertError;
+      }
+
+      console.log('In-progress notification created successfully');
+    } catch (error) {
+      console.error('Error in createTicketInProgressNotification:', error);
+      throw error;
+    }
+  },
+
+  async createCommentNotification(ticketId: string, userId: string, commentText: string): Promise<void> {
+    try {
+      console.log('Creating comment notification for:', { ticketId, userId });
+      
+      // Primero verificamos que el ticket existe
+      const { data: ticketData, error: ticketError } = await supabase
+        .from('tickets')
+        .select('title')
+        .eq('id', ticketId)
+        .single();
+
+      if (ticketError) {
+        console.error('Error fetching ticket:', ticketError);
+        throw new Error('Ticket not found');
+      }
+
+      if (!ticketData) {
+        throw new Error('Ticket not found');
+      }
+
+      // Verificamos que el usuario existe
+      const { data: userData, error: userError } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .eq('id', userId)
+        .single();
+
+      if (userError || !userData) {
+        console.error('Error fetching user:', userError);
+        throw new Error('User not found');
+      }
+
+      // Si todo está bien, creamos la notificación
+      const { error: insertError } = await supabase
+        .from('notifications')
+        .insert({
+          ticket_id: ticketId,
+          user_id: userId,
+          message: `${userData.full_name} ha comentado en el ticket "${ticketData.title}": "${commentText.substring(0, 50)}${commentText.length > 50 ? '...' : ''}"`,
+          is_read: false
+        });
+
+      if (insertError) {
+        console.error('Error creating notification:', insertError);
+        throw insertError;
+      }
+
+      console.log('Comment notification created successfully');
+    } catch (error) {
+      console.error('Error in createCommentNotification:', error);
       throw error;
     }
   }
