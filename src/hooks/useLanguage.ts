@@ -527,7 +527,7 @@ const translations = {
     "provideInformation": "Proporcione información sobre el problema que está experimentando",
     "provideRelevantInfo": "Por favor proporcione toda la información relevante posible",
     "submitting": "Enviando...",    // ProjectStats keys
-    "projectStatistics": "Estadísticas del proyecto",
+    "projectStatistics": "Estadísticas",
     "totalTickets": "Total de tickets",
     "averageResolutionTime": "Tiempo medio de resolución",
     "unresolvedTickets": "Tickets sin resolver",
@@ -682,7 +682,7 @@ const translations = {
     "deleteNotification": "Eliminar notificación",
     "notificationDeleted": "Notificación eliminada con éxito",
     "confirmResolveTicket": "Confirmar resolución de ticket",
-    "confirmResolveTicketDesc": "¿Estás seguro de que quieres marcar este ticket como resuelto? Esta acción no se puede deshacer.",
+    "confirmResolveTicketDesc": "¿Estás seguro de que quieres marcar este ticket como resuelto?",
     "updating": "Actualizando..."
   }
 };
