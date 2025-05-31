@@ -98,6 +98,8 @@ const TicketDetails = () => {
   const [selectedPriority, setSelectedPriority] = useState<Priority>("medium");
   // Estado para el modal de confirmación de borrado
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  // Estado para el diálogo de confirmación de resolución
+  const [isResolveModalOpen, setIsResolveModalOpen] = useState(false);
 
   // Función para determinar la ruta de regreso basándose en el origen
   const getBackRoute = () => {
@@ -173,11 +175,32 @@ const TicketDetails = () => {
     );
   };
   const handleStatusChange = (newStatus: Status) => {
+    if (newStatus === "resolved") {
+      setIsResolveModalOpen(true);
+      return;
+    }
+    
     updateStatus(
       { id: ticket.id, status: newStatus },
       {
         onSuccess: () => {
           toast.success(t("ticketUpdated"));
+        },
+        onError: (error) => {
+          console.error("Error updating status:", error);
+          toast.error(t("pleaseTryAgain"));
+        },
+      }
+    );
+  };
+
+  const handleConfirmResolve = () => {
+    updateStatus(
+      { id: ticket.id, status: "resolved" },
+      {
+        onSuccess: () => {
+          toast.success(t("ticketUpdated"));
+          setIsResolveModalOpen(false);
         },
         onError: (error) => {
           console.error("Error updating status:", error);
@@ -637,7 +660,9 @@ const TicketDetails = () => {
             )}
           </div>
         </CardFooter>
-      </Card>      {/* Modal para selección de prioridad */}
+      </Card>
+
+      {/* Modal para selección de prioridad */}
       <Dialog open={isPriorityModalOpen} onOpenChange={setIsPriorityModalOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -714,6 +739,32 @@ const TicketDetails = () => {
               disabled={isDeletingTicket}
             >
               {isDeletingTicket ? t("deleting") : t("deleteTicket")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Diálogo de confirmación para resolver ticket */}
+      <Dialog open={isResolveModalOpen} onOpenChange={setIsResolveModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("confirmResolveTicket")}</DialogTitle>
+            <DialogDescription>
+              {t("confirmResolveTicketDesc")}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsResolveModalOpen(false)}
+            >
+              {t("cancel")}
+            </Button>
+            <Button
+              onClick={handleConfirmResolve}
+              disabled={isUpdatingStatus}
+            >
+              {isUpdatingStatus ? t("updating") : t("confirm")}
             </Button>
           </DialogFooter>
         </DialogContent>

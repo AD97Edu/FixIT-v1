@@ -322,7 +322,10 @@ const translations = {
     "ticketResolved": "A ticket has been resolved",
     "markAsRead": "Mark as read",
     "deleteNotification": "Delete notification",
-    "notificationDeleted": "Notification deleted successfully"
+    "notificationDeleted": "Notification deleted successfully",
+    "confirmResolveTicket": "Confirm ticket resolution",
+    "confirmResolveTicketDesc": "Are you sure you want to mark this ticket as resolved?",
+    "updating": "Updating..."
   },  es: {
     // Navegación y menú lateral (existentes)
     "statusUpdated": "Estado actualizado correctamente",
@@ -332,7 +335,7 @@ const translations = {
     "updateYourInfo": "Actualiza tu información personal",
     "emailCannotBeChanged": "El correo electrónico no se puede cambiar",
     "confirmDeleteTicket": "Borrar ticket",
-    "deleteTicketWarning": "Estás seguro de que quieres eliminar este ticket? Esta acción no se puede deshacer.",
+    "deleteTicketWarning": "Estás seguro de que quieres eliminar este ticket?",
     "createSuggestionNow": "Crear nueva sugerencia",
     "titleIncident": "Título de la incidencia:",
     "descriptionIncident": "Descripción de la incidencia:",
@@ -677,7 +680,10 @@ const translations = {
     "ticketResolved": "Un ticket ha sido resuelto",
     "markAsRead": "Marcar como leída",
     "deleteNotification": "Eliminar notificación",
-    "notificationDeleted": "Notificación eliminada con éxito"
+    "notificationDeleted": "Notificación eliminada con éxito",
+    "confirmResolveTicket": "Confirmar resolución de ticket",
+    "confirmResolveTicketDesc": "¿Estás seguro de que quieres marcar este ticket como resuelto? Esta acción no se puede deshacer.",
+    "updating": "Actualizando..."
   }
 };
 
