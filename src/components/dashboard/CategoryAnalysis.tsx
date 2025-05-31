@@ -32,7 +32,7 @@ const CategoryAnalysis = ({ tickets, title = "Category Analysis", className }: C
         Critical: critical,
         total: categoryTickets.length
       };
-    }).filter(cat => cat.total > 0);
+    }); // Eliminamos el .filter(cat => cat.total > 0) para mostrar todas las categorías
   }, [tickets]);
   
   const formatTooltip = (value: number, name: string) => {
@@ -48,7 +48,7 @@ const CategoryAnalysis = ({ tickets, title = "Category Analysis", className }: C
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
+        <div className="h-[400px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={categoryPriorityData}

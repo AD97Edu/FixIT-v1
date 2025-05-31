@@ -89,7 +89,7 @@ const ResolutionTrend: React.FC<ResolutionTrendProps> = ({ tickets, days = 30, t
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
+        <div className="mt-5 h-[380px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={trendData}
