@@ -22,14 +22,14 @@ const CategoryAnalysis = ({ tickets, title = "Category Analysis", className }: C
       const high = categoryTickets.filter(t => t.priority === 'high').length;
       const medium = categoryTickets.filter(t => t.priority === 'medium').length;
       const low = categoryTickets.filter(t => t.priority === 'low').length;
-      const info = categoryTickets.filter(t => t.priority === 'info').length;
+      const critical = categoryTickets.filter(t => t.priority === 'critical').length;
       
       return {
         name: category.charAt(0).toUpperCase() + category.slice(1),
         High: high,
         Medium: medium,
         Low: low,
-        Info: info,
+        Critical: critical,
         total: categoryTickets.length
       };
     }).filter(cat => cat.total > 0);
@@ -60,10 +60,10 @@ const CategoryAnalysis = ({ tickets, title = "Category Analysis", className }: C
               <YAxis dataKey="name" type="category" />
               <Tooltip formatter={formatTooltip} />
               <Legend />
-              <Bar dataKey="High" stackId="a" fill="#ef4444" /> {/* Red */}
-              <Bar dataKey="Medium" stackId="a" fill="#f59e0b" /> {/* Amber */}
+              <Bar dataKey="High" stackId="a" fill="#f97316" /> {/* Orange */}
+              <Bar dataKey="Medium" stackId="a" fill="#eab308" /> {/* Yellow */}
               <Bar dataKey="Low" stackId="a" fill="#10b981" /> {/* Green */}
-              <Bar dataKey="Info" stackId="a" fill="#3b82f6" /> {/* Blue */}
+              <Bar dataKey="Critical" stackId="a" fill="#dc2626" /> {/* Dark Red */}
             </BarChart>
           </ResponsiveContainer>
         </div>
