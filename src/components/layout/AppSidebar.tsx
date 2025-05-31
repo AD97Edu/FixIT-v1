@@ -113,7 +113,8 @@ export function AppSidebar({
 	// Renderizado condicional del NavItem según si está dentro de un Sheet o no
 	const NavItem = ({ item }: { item: typeof navItems[0] }) => {
 		const { data: unreadCount } = useUnreadNotificationsCount();
-		const showBadge = item.titleKey === "notifications" && unreadCount && unreadCount > 0;
+		const showBadge = item.titleKey === "notifications";
+		const hasUnread = unreadCount && unreadCount > 0;
 
 		// Si está en Sheet, siempre mostrar con texto y envolver con SheetClose
 		if (inSheet) {
@@ -133,8 +134,8 @@ export function AppSidebar({
 						<item.icon className="h-5 w-5 flex-shrink-0" />
 						<span className="text-base">{t(item.titleKey)}</span>
 						{showBadge && (
-							<Badge variant="destructive" className="ml-4">
-								{unreadCount}
+							<Badge variant={hasUnread ? "destructive" : "secondary"} className="ml-4">
+								{unreadCount || 0}
 							</Badge>
 						)}
 					</NavLink>
@@ -160,8 +161,8 @@ export function AppSidebar({
 						>
 							<item.icon className="h-5 w-5 flex-shrink-0" />
 							{showBadge && (
-								<Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
-									{unreadCount}
+								<Badge variant={hasUnread ? "destructive" : "secondary"} className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+									{unreadCount || 0}
 								</Badge>
 							)}
 						</NavLink>
@@ -187,8 +188,8 @@ export function AppSidebar({
 				<item.icon className="h-5 w-5 flex-shrink-0" />
 				<span className="text-base">{t(item.titleKey)}</span>
 				{showBadge && (
-					<Badge variant="destructive" className="ml-4">
-						{unreadCount}
+					<Badge variant={hasUnread ? "destructive" : "secondary"} className="ml-4">
+						{unreadCount || 0}
 					</Badge>
 				)}
 			</NavLink>

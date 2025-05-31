@@ -1,4 +1,7 @@
--- Create tables based on the schema
+## Este archivo contiene el esquema de la base de datos de Supabase.
+##No tiene ninguna utilidad en el proyecto, está añadida aqui a titulo informativo
+## Para asi poder ver como está estructurada la base de datos
+
 
 -- Profiles table (extends auth.users)
 CREATE TABLE public.profiles (

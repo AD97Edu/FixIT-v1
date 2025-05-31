@@ -64,6 +64,7 @@ La aplicación está diseñada siguiendo principios mobile-first, adaptándose p
 2. Un técnico se asigna a la incidencia y se actualiza automáticamente su estado a "En progreso"
 3. El técnico y el usuario pueden comunicarse mediante comentarios
 4. Al resolver el problema, el técnico marca la incidencia como "Resuelta"
+5. El usuario recibe una notificación de que su incidencia ha sido resuelta
 
 ## 🛠️ Instalación y configuración
 
