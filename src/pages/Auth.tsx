@@ -67,7 +67,7 @@ const Auth = () => {
       return;
     }
 
-    if (!isValidPassword(sanitizedPassword)) {
+    if (!isLogin && !isValidPassword(sanitizedPassword)) {
       toast.error("La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número");
       return;
     }

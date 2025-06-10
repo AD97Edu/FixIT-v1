@@ -592,7 +592,6 @@ export const useDeleteTicket = () => {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
-      toast.success('Ticket eliminado con éxito');
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
